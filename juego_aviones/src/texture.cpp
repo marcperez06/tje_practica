@@ -9,6 +9,8 @@
 #include "extra/picopng.h"
 #include <cassert>
 
+std::map<std::string, Texture*> Texture::sTexturesLoaded;
+
 Texture::Texture()
 {
 	width = 0;
@@ -305,4 +307,38 @@ Texture::ImageInfo* Texture::loadPNG(const char* filename)
 bool isPowerOfTwo( int n )
 {
 	return (n & (n - 1)) == 0;
+}
+
+Texture* Texture::Load(const char * filename) {
+	assert(filename);
+	std::map<std::string, Texture*>::iterator it = sTexturesLoaded.find(filename);
+	if (it != sTexturesLoaded.end())
+		return it->second;
+
+	Texture* t = new Texture();
+	t->filename = filename;
+
+	char file_format = 0;
+	std::string ext = t->filename.substr(t->filename.size() - 4, 4);
+
+	if (ext != ".tga") {
+		std::cerr << "Unknown mesh format: " << filename << std::endl;
+		return NULL;
+	}
+
+	long time = getTime();
+	std::cout << " + Texture loading: " << filename << " ... ";
+	std::string binfilename = filename;
+
+	bool loaded = t->load(filename);
+
+	if (!loaded)
+	{
+		delete t;
+		std::cout << "[ERROR]: Mesh not found" << std::endl;
+		return NULL;
+	}
+
+	sTexturesLoaded[filename] = t;
+	return t;
 }

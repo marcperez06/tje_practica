@@ -6,8 +6,10 @@
 class Transform {
 	private:
 
-		Vector3 position;
-		Vector3 rotation;
+		Matrix44 matrixModel;
+		Vector3 globalPosition;
+		Vector3 localPosition;
+		float rotationAngle;
 
 	public:
 		// Carpetas generales
@@ -17,17 +19,43 @@ class Transform {
 		static const Vector3 RIGHT;
 
 		Transform() {}
-		Transform(Vector3 position, Vector3 rotation) {
-			this->position = position;
-			this->rotation = rotation;
+		Transform(Vector3 const position, float rotationAngle) {
+			this->rotationAngle = rotationAngle;
+			this->globalPosition = this->matrixModel * position;
+			this->localPosition = position;
+			this->matrixModel.traslate(position.x, position.y, position.z);
 		}
 
-		Vector3 getPosition() const { return this->position; }
-		Vector3 getRotation() const { return this->rotation; }
+		Vector3 getLocalPosition() const { return this->localPosition; }
+		float getRotationAngle() const { return this->rotationAngle; }
+		Matrix44 getMatrixModel() const { return this->matrixModel; }
 
-		Vector3 setPosition(Vector3 const position) { this->position = position; }
-		Vector3 setRotation(Vector3 const rotation) { this->rotation = rotation; }
-		
+		void setLocalPosition(Vector3 const position) {
+			this->localPosition = position;
+
+			std::cout << "X: " + std::to_string(this->localPosition.x) << std::endl;
+			std::cout << "Y: " + std::to_string(this->localPosition.y) << std::endl;
+			std::cout << "Z: " + std::to_string(this->localPosition.z) << std::endl;
+
+			this->matrixModel.traslate(this->localPosition.x, this->localPosition.y, this->localPosition.z);
+		}
+
+		void setRotationAngle(float rotationAngle) { this->rotationAngle = rotationAngle; }
+		void setMatrixModel(Matrix44 model) { this->matrixModel = model; }
+
+		void traslate(Vector3 const traslation) {
+			Matrix44 T;
+			
+			this->localPosition = this->localPosition + traslation;
+
+			std::cout << "X: " + std::to_string(this->localPosition.x) << std::endl;
+			std::cout << "Y: " + std::to_string(this->localPosition.y) << std::endl;
+			std::cout << "Z: " + std::to_string(this->localPosition.z) << std::endl;
+
+			T.setTranslation(this->localPosition.x, this->localPosition.y, this->localPosition.z);
+			this->matrixModel = T * this->matrixModel;
+		}
+
 };
 
 const  Vector3 Transform::UP = Vector3(0, 1, 0);
