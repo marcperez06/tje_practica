@@ -15,7 +15,7 @@ class Paths {
 		static const std::string recursos;
 
 		// Carpetas que contienen las meshes
-		static const std::string wildcat;
+		static const std::string spitfire;
 		static const std::string island;
 
 
@@ -28,7 +28,7 @@ const std::string Paths::meshBin = Paths::data + "mesh_bin/";
 const std::string Paths::shaders = Paths::data + "shaders/";
 const std::string Paths::textures = Paths::data + "textures/";
 const std::string Paths::recursos = Paths::data + "recursos_javi_agenjo/";
-const std::string Paths::wildcat = Paths::recursos + "wildcat/";
+const std::string Paths::spitfire = Paths::recursos + "spitfire/";
 const std::string Paths::island = Paths::recursos + "island/";
 
 #endif

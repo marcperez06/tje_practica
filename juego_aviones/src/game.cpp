@@ -7,6 +7,8 @@
 #include "input.h"
 
 #include <cmath>
+#include "general_info\Paths.h"
+#include "my_utils\StringUtils.h"
 
 //some globals
 Mesh* mesh = NULL;
@@ -41,11 +43,11 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
 
 	//create a plane mesh
-	mesh = Mesh::Load("data/box.ASE");
+	mesh = Mesh::Load("data/mes_ASE/box.ASE");
 
 	//load one texture
 	texture = new Texture();
- 	texture->load("data/texture.tga");
+ 	texture->load("data/textures/texture.tga");
 
 	// example of shader loading
 	shader = Shader::Load("data/shaders/texture.vs", "data/shaders/texture.fs");
@@ -76,6 +78,9 @@ void Game::render(void)
 	Matrix44 m;
 	m.rotate( (float)(angle * DEG2RAD), Vector3(0.0f,1.0f, 0.0f) ); //build a rotation matrix
 
+	Mesh* spitfire = Mesh::Load("data/recursos_javi_agenjo/spitfire/spitfire.ASE");
+	//Mesh* island = Mesh::Load("data/recursos_javi_agenjo/island/island.ASE");
+
 	if(shader) 
 	{
 		//enable shader
@@ -89,8 +94,8 @@ void Game::render(void)
 		shader->setUniform("u_model", m);
 
 		//draw with the shader
-		mesh->render(GL_TRIANGLES, shader);
-
+		spitfire->render(GL_TRIANGLES, shader);
+		//island->render(GL_TRIANGLES, shader);
 		//disable shader
 		shader->disable();
 	}
