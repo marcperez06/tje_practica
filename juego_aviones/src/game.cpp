@@ -13,6 +13,8 @@
 
 //some globals
 Mesh* mesh = NULL;
+Mesh* island = NULL;
+Mesh* skybox = NULL;
 Texture* texture = NULL;
 Shader* shader = NULL;
 float angle = 0;
@@ -44,6 +46,8 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	//mesh = Mesh::Load("data/mes_ASE/box.ASE");
 	Mesh* spitfire = Mesh::Load("data/recursos_javi_agenjo/spitfire/spitfire.ASE");
 	//Mesh* island = Mesh::Load("data/recursos_javi_agenjo/island/island.ASE");
+	island = Mesh::Load("data/recursos_javi_agenjo/island/island.ASE");
+	skybox = Mesh::Load("data/recursos_javi_agenjo/cielo/cielo.ASE");
 
 	//load one texture
 	//texture = new Texture();
@@ -60,7 +64,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	camera = new Camera();
 	//camera->lookAt(Vector3(pos.x, pos.y - 20.f, pos.z - 20.f), Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
 	camera->lookAt(Vector3(0.f, 100.f, 100.f), Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f)); //position the camera and point to 0,0,0
-	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
+	camera->setPerspective(70.f,window_width/(float)window_height,1.f,100000.f); //set the projection, we want to be perspective
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -88,7 +92,26 @@ void Game::render(void)
 	Matrix44 m;
 	m.rotate( (float)(angle * DEG2RAD), Vector3(0.0f,1.0f, 0.0f) ); //build a rotation matrix
 
-	
+	// Pintar la isla...
+	//texture->bind();
+	island->render(GL_TRIANGLES, NULL);
+	//texture->unbind();
+
+	// Pintar el cielo....
+	Matrix44 matrix_sky;
+	matrix_sky.traslate(camera->eye.x, camera->eye.y, camera->eye.z);
+	//glPushMatrix();
+	skybox->render(GL_TRIANGLES, NULL);
+	//glPopMatrix();
+
+
+	// Pintar el agua del mar..
+	Matrix44 matrix_water;
+	matrix_water.traslate(camera->eye.x, 0, camera->eye.z);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	Mesh::Load("data/box.ASE");
+	glDisable(GL_BLEND);
 
 	if(shader) 
 	{
@@ -227,6 +250,7 @@ void Game::drawGrid()
 	glEnable(GL_BLEND);
 	glDepthMask(false);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	/*
 	Shader* grid_shader = Shader::getDefaultShader("grid");
 	grid_shader->enable();
 	Matrix44 m;
@@ -239,4 +263,5 @@ void Game::drawGrid()
 	glDisable(GL_BLEND);
 	glDepthMask(true);
 	grid_shader->disable();
+	*/
 }

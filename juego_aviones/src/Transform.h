@@ -9,7 +9,7 @@ class Transform {
 		Matrix44 matrixModel;
 		Vector3 globalPosition;
 		Vector3 localPosition;
-		float rotationAngle;
+		Quaternion rotation;
 
 	public:
 		// Carpetas generales
@@ -19,15 +19,15 @@ class Transform {
 		static const Vector3 RIGHT;
 
 		Transform() {}
-		Transform(Vector3 const position, float rotationAngle) {
-			this->rotationAngle = rotationAngle;
+		Transform(Vector3 const position, Quaternion rotation) {
+			this->rotation = rotation;
 			this->globalPosition = this->matrixModel * position;
 			this->localPosition = position;
 			this->matrixModel.traslate(position.x, position.y, position.z);
 		}
 
 		Vector3 getLocalPosition() const { return this->localPosition; }
-		float getRotationAngle() const { return this->rotationAngle; }
+		Quaternion getRotation() const { return this->rotation; }
 		Matrix44 getMatrixModel() const { return this->matrixModel; }
 
 		void setLocalPosition(Vector3 const position) {
@@ -40,7 +40,7 @@ class Transform {
 			this->matrixModel.traslate(this->localPosition.x, this->localPosition.y, this->localPosition.z);
 		}
 
-		void setRotationAngle(float rotationAngle) { this->rotationAngle = rotationAngle; }
+		void setRotationAngle(Quaternion rotation) { this->rotation = rotation; }
 		void setMatrixModel(Matrix44 model) { this->matrixModel = model; }
 
 		void traslate(Vector3 const traslation) {

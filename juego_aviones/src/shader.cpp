@@ -170,7 +170,8 @@ bool Shader::compileFromMemory(const std::string& vsm, const std::string& psm)
 	if (glCreateProgram == 0)
 	{
 		std::cout << "Error: your graphics cards dont support shaders. Sorry." << std::endl;
-		exit(0);
+		//exit(0);
+		return false;
 	}
 
 	program = glCreateProgram();

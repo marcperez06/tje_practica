@@ -10,7 +10,10 @@ class GameObject {
 
 	protected:
 		Transform transform;
-		Mesh mesh;
+		Mesh* mesh;
+		//Material* material; // Texture + Shader + Vector4 color + como se pinta booleanas (blend_alpha, depth_test, cull_face)
+		std::string name;
+		int uuid;
 
 	public:
 		GameObject(const Vector3 position, const Mesh & mesh) {

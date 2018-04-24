@@ -24,7 +24,7 @@ long Mesh::num_triangles_rendered = 0;
 Mesh::Mesh()
 {
 	radius = 0;
-	vertices_vbo_id = uvs_vbo_id = normals_vbo_id = colors_vbo_id = 0;
+	vertices_vbo_id = uvs_vbo_id = normals_vbo_id = colors_vbo_id = interleaved_vbo_id = 0;
 
 	primitive = GL_TRIANGLES;
 	collision_model = NULL;
@@ -175,7 +175,8 @@ void Mesh::uploadToVRAM()
 	if (glGenBuffersARB == 0)
 	{
 		std::cout << "Error: your graphics cards dont support VBOs. Sorry." << std::endl;
-		exit(0);
+		//exit(0);
+		return;
 	}
 
 	if (interleaved.size())
