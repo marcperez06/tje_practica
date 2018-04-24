@@ -321,7 +321,7 @@ Texture* Texture::Load(const char * filename) {
 	char file_format = 0;
 	std::string ext = t->filename.substr(t->filename.size() - 4, 4);
 
-	if ((ext != ".tga") || (ext != ".png")) {
+	if ((ext != ".tga") && (ext != ".png")) {
 		std::cerr << "Unknown mesh format: " << filename << std::endl;
 		return NULL;
 	}

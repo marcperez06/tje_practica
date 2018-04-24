@@ -57,7 +57,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	// example of shader loading
 	shader = Shader::Load("data/shaders/texture.vs", "data/shaders/texture.fs");
 
-	avion = new GameObject(Vector3(0, 10, 0), *spitfire);
+	avion = new GameObject(Vector3(0, 10, 0), spitfire);
 	//Vector3 pos = avion->getTransform()->getLocalPosition();
 
 	//create our camera
@@ -94,14 +94,14 @@ void Game::render(void)
 
 	// Pintar la isla...
 	//texture->bind();
-	island->render(GL_TRIANGLES, NULL);
+	island->render(GL_TRIANGLES, shader);
 	//texture->unbind();
 
 	// Pintar el cielo....
 	Matrix44 matrix_sky;
 	matrix_sky.traslate(camera->eye.x, camera->eye.y, camera->eye.z);
 	//glPushMatrix();
-	skybox->render(GL_TRIANGLES, NULL);
+	skybox->render(GL_TRIANGLES, shader);
 	//glPopMatrix();
 
 
@@ -110,7 +110,7 @@ void Game::render(void)
 	matrix_water.traslate(camera->eye.x, 0, camera->eye.z);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	Mesh::Load("data/box.ASE");
+	//Mesh::Load("data/box.ASE");
 	glDisable(GL_BLEND);
 
 	if(shader) 
@@ -250,7 +250,6 @@ void Game::drawGrid()
 	glEnable(GL_BLEND);
 	glDepthMask(false);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	/*
 	Shader* grid_shader = Shader::getDefaultShader("grid");
 	grid_shader->enable();
 	Matrix44 m;
@@ -263,5 +262,4 @@ void Game::drawGrid()
 	glDisable(GL_BLEND);
 	glDepthMask(true);
 	grid_shader->disable();
-	*/
 }
