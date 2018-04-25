@@ -24,19 +24,19 @@ class Transform {
 			this->matrixModel.translate(position.x, position.y, position.z);
 		}
 
-		Vector3 getLocalPosition() const { return this->position; }
+		Vector3 getPosition() const { return this->position; }
 		Quaternion getRotation() const { return this->rotation; }
 		Matrix44 getMatrixModel() const { return this->matrixModel; }
 
-		void setLocalPosition(Vector3 const position) {
+		void setPosition(Vector3 const position) {
 			this->position = position;
 			this->matrixModel.translate(this->position.x, this->position.y, this->position.z);
 		}
 
-		void setRotationAngle(Quaternion rotation) { this->rotation = rotation; }
+		void setRotation(Quaternion rotation) { this->rotation = rotation; }
 		void setMatrixModel(Matrix44 model) { this->matrixModel = model; }
 
-		void traslate(Vector3 const traslation) {
+		void translate(Vector3 const traslation) {
 			Matrix44 T;
 			
 			this->position = this->position + traslation;
