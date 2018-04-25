@@ -32,8 +32,18 @@ class Material {
 			this->depthTest = depthTest;
 			this->cullFace = cullFace;
 		}
-
 		
+		Texture* getTexture() const { return this->texture; }
+		Shader* getShader() const { return this->shader; }
+		Vector4 getColor() const { return this->color; }
+
+		void setTexture(Texture* texture) { this->texture = texture; }
+		void setShader(Shader* shader) { this->shader = shader; }
+		void setColor(Vector4 color) { this->color = color; }
+
+		void setBlendAlpha(bool value) { this->blendAlpha = value; }
+		void setDepthTest(bool value) { this->depthTest = value; }
+		void setCullFace(bool value) { this->cullFace = value; }
 
 };
 

@@ -7,8 +7,7 @@ class Transform {
 	private:
 
 		Matrix44 matrixModel;
-		Vector3 globalPosition;
-		Vector3 localPosition;
+		Vector3 position; // Posicion Local del objeto, respecto a su eje de cordenadas.
 		Quaternion rotation;
 
 	public:
@@ -21,23 +20,17 @@ class Transform {
 		Transform() {}
 		Transform(Vector3 const position, Quaternion rotation) {
 			this->rotation = rotation;
-			this->globalPosition = this->matrixModel * position;
-			this->localPosition = position;
-			this->matrixModel.traslate(position.x, position.y, position.z);
+			this->position = position;
+			this->matrixModel.translate(position.x, position.y, position.z);
 		}
 
-		Vector3 getLocalPosition() const { return this->localPosition; }
+		Vector3 getLocalPosition() const { return this->position; }
 		Quaternion getRotation() const { return this->rotation; }
 		Matrix44 getMatrixModel() const { return this->matrixModel; }
 
 		void setLocalPosition(Vector3 const position) {
-			this->localPosition = position;
-
-			std::cout << "X: " + std::to_string(this->localPosition.x) << std::endl;
-			std::cout << "Y: " + std::to_string(this->localPosition.y) << std::endl;
-			std::cout << "Z: " + std::to_string(this->localPosition.z) << std::endl;
-
-			this->matrixModel.traslate(this->localPosition.x, this->localPosition.y, this->localPosition.z);
+			this->position = position;
+			this->matrixModel.translate(this->position.x, this->position.y, this->position.z);
 		}
 
 		void setRotationAngle(Quaternion rotation) { this->rotation = rotation; }
@@ -46,13 +39,9 @@ class Transform {
 		void traslate(Vector3 const traslation) {
 			Matrix44 T;
 			
-			this->localPosition = this->localPosition + traslation;
+			this->position = this->position + traslation;
 
-			std::cout << "X: " + std::to_string(this->localPosition.x) << std::endl;
-			std::cout << "Y: " + std::to_string(this->localPosition.y) << std::endl;
-			std::cout << "Z: " + std::to_string(this->localPosition.z) << std::endl;
-
-			T.setTranslation(this->localPosition.x, this->localPosition.y, this->localPosition.z);
+			T.setTranslation(this->position.x, this->position.y, this->position.z);
 			this->matrixModel = T * this->matrixModel;
 		}
 

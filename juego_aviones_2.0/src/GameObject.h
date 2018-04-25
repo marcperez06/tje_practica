@@ -20,7 +20,7 @@ class GameObject {
 			this->mesh = mesh;
 		}
 
-		Transform* getTransform() { std::cout << "Get Transform" << std::endl; return &this->transform; }
+		Transform* getTransform() { return &this->transform; }
 		Mesh* getMesh() { return this->mesh; }
 	
 		void setPosition(Vector3 position) {
@@ -34,6 +34,9 @@ class GameObject {
 			Vector3 newPos = newModel * pos;
 			this->transform.setLocalPosition(newPos);
 		}
+
+		void render() {}
+		virtual void uptade(float deltaTime) {}
 
 };
 
