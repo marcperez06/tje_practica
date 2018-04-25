@@ -9,8 +9,6 @@
 #include "extra/picopng.h"
 #include <cassert>
 
-std::map<std::string, Texture*> Texture::sTexturesLoaded;
-
 Texture::Texture()
 {
 	width = 0;
@@ -19,12 +17,13 @@ Texture::Texture()
 	mipmaps = false;
 	format = 0;
 	type = 0;
+	texture_type = GL_TEXTURE_2D;
 	info.width = info.height = info.bpp = 0;
 	info.BGR = false;
 	info.data = NULL;
 }
 
-Texture::Texture(unsigned int width, unsigned int height, int format, int type, bool mipmaps, Uint8* data, int data_format)
+Texture::Texture(unsigned int width, unsigned int height, unsigned int format, unsigned int type, bool mipmaps, Uint8* data, unsigned int data_format)
 {
 	texture_id = 0;
 	create(width, height, format, type, mipmaps, data, data_format);
@@ -35,34 +34,35 @@ Texture::~Texture()
 	if (info.data)
 		delete []info.data;
 	glDeleteTextures(1, &texture_id);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(this->texture_type, 0);
 }
 
-void Texture::create(unsigned int width, unsigned int height, int format, int type, bool mipmaps, Uint8* data, int data_format)
+void Texture::create(unsigned int width, unsigned int height, unsigned int format, unsigned int type, bool mipmaps, Uint8* data, unsigned int data_format)
 {
 	assert(width && height && "texture must have a size");
 
-	this->width = width;
-	this->height = height;
+	this->width = (float)width;
+	this->height = (float)height;
 	this->format = format;
 	this->type = type;
+	this->texture_type = GL_TEXTURE_2D;
 
 	glGenTextures(1, &texture_id); //we need to create an unique ID for the texture
-	glBindTexture(GL_TEXTURE_2D, texture_id);	//we activate this id to tell opengl we are going to use this texture
+	glBindTexture(this->texture_type, texture_id);	//we activate this id to tell opengl we are going to use this texture
 
-	glTexImage2D( GL_TEXTURE_2D, 0, format, width, height, 0, data_format == -1 ? format : data_format, type, data );
+	glTexImage2D(this->texture_type, 0, format, width, height, 0, data_format == 0 ? format : data_format, type, data );
 
 	this->mipmaps = mipmaps && isPowerOfTwo(width) && isPowerOfTwo(height) && format != GL_DEPTH_COMPONENT;
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//set the min filter
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->mipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);   //set the mag filter
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this->mipmaps ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this->mipmaps ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	glTexParameteri(this->texture_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//set the min filter
+	glTexParameteri(this->texture_type, GL_TEXTURE_MIN_FILTER, this->mipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);   //set the mag filter
+	glTexParameteri(this->texture_type, GL_TEXTURE_WRAP_S, this->mipmaps ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	glTexParameteri(this->texture_type, GL_TEXTURE_WRAP_T, this->mipmaps ? GL_REPEAT : GL_CLAMP_TO_EDGE);
 
 	if(data && this->mipmaps)
 		generateMipmaps(); //glGenerateMipmapEXT(GL_TEXTURE_2D); 
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(this->texture_type, 0);
 	assert(glGetError() == GL_NO_ERROR && "Error creating texture");
 }
 
@@ -101,16 +101,11 @@ bool Texture::load( const char* filename, bool mipmaps, bool upload_to_vram )
 		return true;
 	}
 
-	//How to store a texture in VRAM
-	glGenTextures(1, &texture_id); //we need to create an unique ID for the texture
-	glBindTexture(GL_TEXTURE_2D, texture_id);	//we activate this id to tell opengl we are going to use this texture
+	this->texture_type = GL_TEXTURE_2D;
 
-	this->mipmaps = mipmaps && isPowerOfTwo(width) && isPowerOfTwo(height);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );	//set the min filter
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->mipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR); //set the mag filter
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this->mipmaps ? GL_REPEAT : GL_CLAMP_TO_EDGE );
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this->mipmaps ? GL_REPEAT : GL_CLAMP_TO_EDGE );
-	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 4); //better quality but takes more resources
+	//How to store a texture in VRAM
+	if(texture_id == 0)
+		glGenTextures(1, &texture_id); //we need to create an unique ID for the texture
 
 	type = GL_UNSIGNED_BYTE;
 	format = (info->bpp == 24 ? GL_RGB : GL_RGBA);
@@ -119,12 +114,24 @@ bool Texture::load( const char* filename, bool mipmaps, bool upload_to_vram )
 	this->info = *info;
 	this->info.data = NULL; //data is not keep in RAM
 
-	if(info->BGR)
-		glTexImage2D(GL_TEXTURE_2D, 0, format, info->width, info->height, 0, (info->bpp == 24 ? GL_BGR : GL_BGRA), type, info->data); //upload without mipmaps
-	else
-		glTexImage2D(GL_TEXTURE_2D, 0, format, info->width, info->height, 0, (info->bpp == 24 ? GL_RGB : GL_RGBA), type, info->data); //upload without mipmaps
+	this->mipmaps = mipmaps && isPowerOfTwo((int)width) && isPowerOfTwo((int)height);
 
-	generateMipmaps(); 
+	//if (width != height) this->texture_type = GL_TEXTURE_RECTANGLE;
+
+	glBindTexture(this->texture_type, texture_id);	//we activate this id to tell opengl we are going to use this texture
+	glTexParameteri(this->texture_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//set the min filter
+	glTexParameteri(this->texture_type, GL_TEXTURE_MIN_FILTER, this->mipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR); //set the mag filter
+	glTexParameteri(this->texture_type, GL_TEXTURE_WRAP_S, this->mipmaps ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	glTexParameteri(this->texture_type, GL_TEXTURE_WRAP_T, this->mipmaps ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 4); //better quality but takes more resources
+
+	if(info->BGR)
+		glTexImage2D(this->texture_type, 0, format, info->width, info->height, 0, (info->bpp == 24 ? GL_BGR : GL_BGRA), type, info->data); //upload without mipmaps
+	else
+		glTexImage2D(this->texture_type, 0, format, info->width, info->height, 0, (info->bpp == 24 ? GL_RGB : GL_RGBA), type, info->data); //upload without mipmaps
+
+	if(this->mipmaps)
+		generateMipmaps(); 
 
 	delete info->data;
 	delete info;
@@ -136,14 +143,14 @@ bool Texture::load( const char* filename, bool mipmaps, bool upload_to_vram )
 
 void Texture::bind()
 {
-	glEnable( GL_TEXTURE_2D ); //enable the textures 
-	glBindTexture( GL_TEXTURE_2D, texture_id );	//enable the id of the texture we are going to use
+	glEnable(this->texture_type); //enable the textures 
+	glBindTexture(this->texture_type, texture_id );	//enable the id of the texture we are going to use
 }
 
 void Texture::unbind()
 {
-	glDisable( GL_TEXTURE_2D ); //disable the textures 
-	glBindTexture( GL_TEXTURE_2D, 0 );	//disable the id of the texture we are going to use
+	glDisable(this->texture_type); //disable the textures 
+	glBindTexture(this->texture_type, 0 );	//disable the id of the texture we are going to use
 }
 
 void Texture::UnbindAll()
@@ -159,9 +166,9 @@ void Texture::generateMipmaps()
 	if(!glGenerateMipmapEXT)
 		return;
 
-	glBindTexture( GL_TEXTURE_2D, texture_id );	//enable the id of the texture we are going to use
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR ); //set the mag filter
-	glGenerateMipmapEXT(GL_TEXTURE_2D);
+	glBindTexture(this->texture_type, texture_id );	//enable the id of the texture we are going to use
+	glTexParameteri(this->texture_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR ); //set the mag filter
+	glGenerateMipmapEXT(this->texture_type);
 }
 
 
@@ -307,38 +314,4 @@ Texture::ImageInfo* Texture::loadPNG(const char* filename)
 bool isPowerOfTwo( int n )
 {
 	return (n & (n - 1)) == 0;
-}
-
-Texture* Texture::Load(const char * filename) {
-	assert(filename);
-	std::map<std::string, Texture*>::iterator it = sTexturesLoaded.find(filename);
-	if (it != sTexturesLoaded.end())
-		return it->second;
-
-	Texture* t = new Texture();
-	t->filename = filename;
-
-	char file_format = 0;
-	std::string ext = t->filename.substr(t->filename.size() - 4, 4);
-
-	if ((ext != ".tga") && (ext != ".png")) {
-		std::cerr << "Unknown mesh format: " << filename << std::endl;
-		return NULL;
-	}
-
-	long time = getTime();
-	std::cout << " + Texture loading: " << filename << " ... ";
-	std::string binfilename = filename;
-
-	bool loaded = t->load(filename);
-
-	if (!loaded)
-	{
-		delete t;
-		std::cout << "[ERROR]: Mesh not found" << std::endl;
-		return NULL;
-	}
-
-	sTexturesLoaded[filename] = t;
-	return t;
 }

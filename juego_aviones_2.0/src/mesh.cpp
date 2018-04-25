@@ -14,6 +14,8 @@
 
 std::map<std::string, Mesh*> Mesh::sMeshesLoaded;
 bool Mesh::use_binary = true;
+bool Mesh::auto_upload_to_vram = true;
+bool Mesh::interleave_meshes = true;
 long Mesh::num_meshes_rendered = 0;
 long Mesh::num_triangles_rendered = 0;
 
@@ -24,9 +26,7 @@ long Mesh::num_triangles_rendered = 0;
 Mesh::Mesh()
 {
 	radius = 0;
-	vertices_vbo_id = uvs_vbo_id = normals_vbo_id = colors_vbo_id = interleaved_vbo_id = 0;
-
-	primitive = GL_TRIANGLES;
+	vertices_vbo_id = uvs_vbo_id = normals_vbo_id = colors_vbo_id = 0;
 	collision_model = NULL;
 	clear();
 }
@@ -65,17 +65,14 @@ void Mesh::clear()
 		delete collision_model;
 }
 
-void Mesh::render(unsigned int primitive, Shader* sh, int submesh_id)
+int vertex_location = 1;
+int normal_location = 1;
+int uv_location = 1;
+int color_location = -1;
+
+void Mesh::enableBuffers(Shader* sh)
 {
-	if (!sh || !sh->compiled)
-	{
-		assert(0 && "no shader or shader not compiled");
-		return;
-	}
-
-	assert( (interleaved.size() || vertices.size()) && "No vertices in this mesh");
-
-	int vertex_location = sh->getAttribLocation("a_vertex");
+	vertex_location = sh->getAttribLocation("a_vertex");
 	assert(vertex_location != -1 && "No a_vertex found in shader");
 
 	if (vertex_location == -1)
@@ -89,13 +86,13 @@ void Mesh::render(unsigned int primitive, Shader* sh, int submesh_id)
 
 	if (vertices_vbo_id || interleaved_vbo_id)
 	{
-		glBindBuffer( GL_ARRAY_BUFFER, interleave_offset ? interleaved_vbo_id : vertices_vbo_id );
+		glBindBuffer(GL_ARRAY_BUFFER, interleave_offset ? interleaved_vbo_id : vertices_vbo_id);
 		glVertexAttribPointer(vertex_location, 3, GL_FLOAT, GL_FALSE, interleave_offset, 0);
 	}
 	else
-		glVertexAttribPointer(vertex_location, 3, GL_FLOAT, GL_FALSE, interleave_offset, interleave_offset ? &interleaved[0].vertex : &vertices[0] );
+		glVertexAttribPointer(vertex_location, 3, GL_FLOAT, GL_FALSE, interleave_offset, interleave_offset ? &interleaved[0].vertex : &vertices[0]);
 
-	int normal_location = -1;
+	normal_location = -1;
 	if (normals.size() || interleave_offset)
 	{
 		normal_location = sh->getAttribLocation("a_normal");
@@ -105,14 +102,14 @@ void Mesh::render(unsigned int primitive, Shader* sh, int submesh_id)
 			if (normals_vbo_id || interleaved_vbo_id)
 			{
 				glBindBuffer(GL_ARRAY_BUFFER, interleaved_vbo_id ? interleaved_vbo_id : normals_vbo_id);
-				glVertexAttribPointer(normal_location, 3, GL_FLOAT, GL_FALSE, interleave_offset, (void*)offset_normal );
+				glVertexAttribPointer(normal_location, 3, GL_FLOAT, GL_FALSE, interleave_offset, (void*)offset_normal);
 			}
 			else
 				glVertexAttribPointer(normal_location, 3, GL_FLOAT, GL_FALSE, interleave_offset, interleave_offset ? &interleaved[0].normal : &normals[0]);
 		}
 	}
 
-	int uv_location = -1;
+	uv_location = -1;
 	if (uvs.size() || interleave_offset)
 	{
 		uv_location = sh->getAttribLocation("a_uv");
@@ -122,14 +119,14 @@ void Mesh::render(unsigned int primitive, Shader* sh, int submesh_id)
 			if (uvs_vbo_id || interleaved_vbo_id)
 			{
 				glBindBuffer(GL_ARRAY_BUFFER, interleaved_vbo_id ? interleaved_vbo_id : uvs_vbo_id);
-				glVertexAttribPointer(uv_location, 2, GL_FLOAT, GL_FALSE, interleave_offset, (void*)offset_uv );
+				glVertexAttribPointer(uv_location, 2, GL_FLOAT, GL_FALSE, interleave_offset, (void*)offset_uv);
 			}
 			else
 				glVertexAttribPointer(uv_location, 2, GL_FLOAT, GL_FALSE, interleave_offset, interleave_offset ? &interleaved[0].uv : &uvs[0]);
 		}
 	}
 
-	int color_location = -1;
+	color_location = -1;
 	if (colors.size())
 	{
 		color_location = sh->getAttribLocation("a_color");
@@ -146,26 +143,162 @@ void Mesh::render(unsigned int primitive, Shader* sh, int submesh_id)
 		}
 	}
 
+}
+
+void Mesh::render(unsigned int primitive, Shader* sh, int submesh_id, int num_instances)
+{
+	if (!sh || !sh->compiled || Shader::current != sh)
+	{
+		assert(0 && "no shader or shader not compiled or enabled");
+		return;
+	}
+	assert((interleaved.size() || vertices.size()) && "No vertices in this mesh");
+
+	//bind buffers to attribute locations
+	enableBuffers(sh);
+
 	int start = 0;
 	int size = vertices.size();
 	if (interleaved.size())
 		size = interleaved.size();
 
 	if (submesh_id > 0)
+	{
 		start = material_range[submesh_id - 1] * 3;
-	if (!material_range.empty())
-		size = material_range[submesh_id] * 3 - start;
+		if (!material_range.empty())
+			size = material_range[submesh_id] * 3 - start;
+	}
 
-	glDrawArrays(primitive, start, size);
+	//DRAW
+	if (num_instances > 0)
+		glDrawArraysInstanced(primitive, start, size, num_instances);
+	else
+		glDrawArrays(primitive, start, size);
 
-	num_triangles_rendered += size / 3;
+	num_triangles_rendered += (size / 3) * (num_instances ? num_instances : 1);
 	num_meshes_rendered++;
 
+	//unbind them
+	disableBuffers(sh);
+}
+
+void Mesh::disableBuffers(Shader* shader)
+{
 	glDisableVertexAttribArray(vertex_location);
 	if (normal_location != -1) glDisableVertexAttribArray(normal_location);
 	if (uv_location != -1) glDisableVertexAttribArray(uv_location);
 	if (color_location != -1) glDisableVertexAttribArray(color_location);
-	glBindBuffer(GL_ARRAY_BUFFER, 0); //if crashes here, comment this line
+	glBindBuffer(GL_ARRAY_BUFFER, 0);    //if crashes here, COMMENT THIS LINE ****************************
+}
+
+GLuint instances_buffer_id = 0;
+
+//should be faster but in some system it is slower
+void Mesh::renderInstanced(unsigned int primitive, Shader* shader, const Matrix44* instanced_models, int num_instances)
+{
+	if (!num_instances)
+		return;
+
+	bool foo = false;
+	if (instances_buffer_id == 0)
+		glGenBuffersARB(1, &instances_buffer_id);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, instances_buffer_id);
+		glBufferDataARB(GL_ARRAY_BUFFER_ARB, num_instances * sizeof(Matrix44), instanced_models, GL_DYNAMIC_DRAW_ARB);
+
+	int attribLocation = shader->getAttribLocation("u_model");
+	assert(attribLocation != -1 && "shader must have attribute mat4 u_model (not a uniform)");
+	if (attribLocation == -1)
+		return; //this shader doesnt support instanced model
+
+	//mat4 count as 4 different attributes of vec4... (thanks opengl...)
+	for (int k = 0; k < 4; ++k)
+	{
+		glEnableVertexAttribArray(attribLocation + k );
+		int offset = sizeof(float) * 4 * k;
+		const Uint8* addr = (Uint8*) offset;
+		glVertexAttribPointer(attribLocation + k, 4, GL_FLOAT, false, sizeof(Matrix44), addr); 
+		glVertexAttribDivisor(attribLocation + k, 1); // This makes it instanced!
+	}
+
+	//regular render
+	render(primitive, shader, 0, num_instances);
+
+	//disable instanced attribs
+	for (int k = 0; k < 4; ++k)
+	{
+		glDisableVertexAttribArray(attribLocation + k);
+		glVertexAttribDivisor(attribLocation + k, 0);
+	}
+}
+
+//super obsolete rendering method, do not use
+void Mesh::renderFixedPipeline(int primitive)
+{
+	assert((vertices.size() || interleaved.size()) && "No vertices in this mesh");
+
+	int interleave_offset = interleaved.size() ? sizeof(tInterleaved) : 0;
+	int offset_normal = sizeof(Vector3);
+	int offset_uv = sizeof(Vector3) + sizeof(Vector3);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	if (vertices_vbo_id || interleaved_vbo_id)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, interleave_offset ? interleaved_vbo_id : vertices_vbo_id);
+		glVertexAttribPointer(vertex_location, 3, GL_FLOAT, GL_FALSE, interleave_offset, 0);
+	}
+	else
+		glVertexAttribPointer(vertex_location, 3, GL_FLOAT, GL_FALSE, interleave_offset, interleave_offset ? &interleaved[0].vertex : &vertices[0]);
+
+	if (normals.size() || interleave_offset)
+	{
+		glEnableClientState(GL_NORMAL_ARRAY);
+		if (normals_vbo_id || interleaved_vbo_id)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, interleaved_vbo_id ? interleaved_vbo_id : normals_vbo_id);
+			glVertexAttribPointer(normal_location, 3, GL_FLOAT, GL_FALSE, interleave_offset, (void*)offset_normal);
+		}
+		else
+			glVertexAttribPointer(normal_location, 3, GL_FLOAT, GL_FALSE, interleave_offset, interleave_offset ? &interleaved[0].normal : &normals[0]);
+	}
+
+	if (uvs.size() || interleave_offset)
+	{
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		if (uvs_vbo_id || interleaved_vbo_id)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, interleaved_vbo_id ? interleaved_vbo_id : uvs_vbo_id);
+			glVertexAttribPointer(uv_location, 2, GL_FLOAT, GL_FALSE, interleave_offset, (void*)offset_uv);
+		}
+		else
+			glVertexAttribPointer(uv_location, 2, GL_FLOAT, GL_FALSE, interleave_offset, interleave_offset ? &interleaved[0].uv : &uvs[0]);
+	}
+
+	if (colors.size())
+	{
+		glEnableClientState(GL_COLOR_ARRAY);
+		if (colors_vbo_id)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, colors_vbo_id);
+			glVertexAttribPointer(color_location, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+		}
+		else
+			glVertexAttribPointer(color_location, 4, GL_FLOAT, GL_FALSE, 0, &colors[0]);
+	}
+
+	int size = vertices.size();
+	if (!size)
+		size = interleaved.size();
+
+	glDrawArrays(primitive, 0, (GLsizei)size);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	if (normals.size())
+		glDisableClientState(GL_NORMAL_ARRAY);
+	if (uvs.size())
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	if (colors.size())
+		glDisableClientState(GL_COLOR_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, 0); //if it crashes, comment this line
 }
 
 void Mesh::uploadToVRAM()
@@ -175,8 +308,7 @@ void Mesh::uploadToVRAM()
 	if (glGenBuffersARB == 0)
 	{
 		std::cout << "Error: your graphics cards dont support VBOs. Sorry." << std::endl;
-		//exit(0);
-		return;
+		exit(0);
 	}
 
 	if (interleaved.size())
@@ -234,7 +366,7 @@ void Mesh::createCollisionModel()
 {
 	CollisionModel3D* collision_model = newCollisionModel3D();
 	//collision_model->setTriangleNumber(vStrip.size() / 3);
-	for (int count = 0; count < vertices.size()/3; count++)
+	for (unsigned int count = 0; count < vertices.size()/3; count++)
 		collision_model->addTriangle( vertices[count*3].x, vertices[count*3].y, vertices[count*3].z,
 									vertices[count*3+1].x, vertices[count*3+1].y, vertices[count*3+1].z,
 									vertices[count*3+2].x, vertices[count*3+2].y, vertices[count*3+2].z);
@@ -276,7 +408,7 @@ bool Mesh::interleaveBuffers()
 
 	interleaved.resize(vertices.size());
 
-	for (int i = 0; i < vertices.size(); ++i)
+	for (unsigned int i = 0; i < vertices.size(); ++i)
 	{
 		interleaved[i].vertex = vertices[i];
 		interleaved[i].normal = normals[i];
@@ -286,6 +418,8 @@ bool Mesh::interleaveBuffers()
 	vertices.resize(0);
 	normals.resize(0);
 	uvs.resize(0);
+
+	return true;
 }
 
 typedef struct 
@@ -365,8 +499,8 @@ bool Mesh::readBin(const char* filename)
 
 	aabb_max = info.aabb_max;
 	aabb_min = info.aabb_min;
-	center = info.center;
-	halfsize = info.halfsize;
+	box.center = info.center;
+	box.halfsize = info.halfsize;
 	radius = info.radius;
 
 	for (int i = 0; i < 4; i++)
@@ -401,8 +535,8 @@ bool Mesh::writeBin(const char* filename)
 	info.size = interleaved.size() ? interleaved.size() : vertices.size();
 	info.aabb_max = aabb_max;
 	info.aabb_min = aabb_min;
-	info.center = center;
-	info.halfsize = halfsize;
+	info.center = box.center;
+	info.halfsize = box.halfsize;
 	info.radius = radius;
 
 	info.streams[0] = interleaved.size() ? 'I' : 'V';
@@ -468,17 +602,17 @@ bool Mesh::loadASE(const char* filename)
 	{
 		t.seek("*MESH_VERTEX");
 		vId = t.getint();
-		vtxX=t.getfloat();
-		vtxY=t.getfloat();
-		vtxZ=t.getfloat();
+		vtxX=(float)t.getfloat();
+		vtxY= (float)t.getfloat();
+		vtxZ= (float)t.getfloat();
 		Vector3 v(-vtxX,vtxZ,vtxY);
 		unique_vertices[count] = v;
 		aabb_min.setMin( v );
 		aabb_max.setMax( v );
 	}
-	center = (aabb_max + aabb_min) * 0.5;
-	halfsize = (aabb_max - center) * 2;
-	radius = max( aabb_max.length(), aabb_min.length() );
+	box.center = (aabb_max + aabb_min) * 0.5;
+	box.halfsize = (aabb_max - box.center);
+	radius = (float)fmax( aabb_max.length(), aabb_min.length() );
 	
 	int prev_mat = 0;
 
@@ -516,8 +650,8 @@ bool Mesh::loadASE(const char* filename)
 	{
 		t.seek("*MESH_TVERT");
 		vId = t.getint();
-		vtxX=t.getfloat();
-		vtxY=t.getfloat();
+		vtxX= (float)t.getfloat();
+		vtxY= (float)t.getfloat();
 		unique_uvs[count]=Vector2(vtxX,vtxY);
 	}
 
@@ -537,21 +671,21 @@ bool Mesh::loadASE(const char* filename)
 	{
 		t.seek("*MESH_VERTEXNORMAL");
 		aId = t.getint();
-		nX = t.getfloat();
-		nY = t.getfloat();
-		nZ = t.getfloat();
+		nX = (float)t.getfloat();
+		nY = (float)t.getfloat();
+		nZ = (float)t.getfloat();
 		normals[count*3]=Vector3(-nX,nZ,nY);
 		t.seek("*MESH_VERTEXNORMAL");
 		aId = t.getint();
-		nX = t.getfloat();
-		nY = t.getfloat();
-		nZ = t.getfloat();
+		nX = (float)t.getfloat();
+		nY = (float)t.getfloat();
+		nZ = (float)t.getfloat();
 		normals[count*3+1]=Vector3(-nX,nZ,nY);
 		t.seek("*MESH_VERTEXNORMAL");
 		aId = t.getint();
-		nX = t.getfloat();
-		nY = t.getfloat();
-		nZ = t.getfloat();
+		nX = (float)t.getfloat();
+		nY = (float)t.getfloat();
+		nZ = (float)t.getfloat();
 		normals[count*3+2]=Vector3(-nX,nZ,nY);
 	}
 
@@ -617,7 +751,7 @@ bool Mesh::loadOBJ(const char* filename)
 
 		if (tokens[0] == "v" && tokens.size() == 4)
 		{
-			Vector3 v( atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()) );
+			Vector3 v((float)atof(tokens[1].c_str()), (float)atof(tokens[2].c_str()), (float)atof(tokens[3].c_str()) );
 			indexed_positions.push_back(v);
 
 			aabb_min.setMin( v );
@@ -625,12 +759,12 @@ bool Mesh::loadOBJ(const char* filename)
 		}
 		else if (tokens[0] == "vt" && tokens.size() == 4)
 		{
-			Vector2 v( atof(tokens[1].c_str()), atof(tokens[2].c_str()) );
+			Vector2 v((float)atof(tokens[1].c_str()), (float)atof(tokens[2].c_str()) );
 			indexed_uvs.push_back(v);
 		}
 		else if (tokens[0] == "vn" && tokens.size() == 4)
 		{
-			Vector3 v( atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()) );
+			Vector3 v((float)atof(tokens[1].c_str()), (float)atof(tokens[2].c_str()), (float)atof(tokens[3].c_str()) );
 			indexed_normals.push_back(v);
 		}
 		else if (tokens[0] == "s") //surface? it appears one time before the faces
@@ -649,34 +783,34 @@ bool Mesh::loadOBJ(const char* filename)
 				v2.parseFromText( tokens[iPoly].c_str(), '/' );
 				v3.parseFromText( tokens[iPoly+1].c_str(), '/' );
 
-				vertices.push_back( indexed_positions[ unsigned int(v1.x) -1 ] );
-				vertices.push_back( indexed_positions[ unsigned int(v2.x) -1] );
-				vertices.push_back( indexed_positions[ unsigned int(v3.x) -1] );
+				vertices.push_back( indexed_positions[ (unsigned int)(v1.x) -1 ] );
+				vertices.push_back( indexed_positions[ (unsigned int)(v2.x) -1] );
+				vertices.push_back( indexed_positions[ (unsigned int)(v3.x) -1] );
 				//triangles.push_back( VECTOR_INDICES_TYPE(vertex_i, vertex_i+1, vertex_i+2) ); //not needed
 				vertex_i += 3;
 
 				if (indexed_uvs.size() > 0)
 				{
-					uvs.push_back( indexed_uvs[ unsigned int(v1.y) -1] );
-					uvs.push_back( indexed_uvs[ unsigned int(v2.y) -1] );
-					uvs.push_back( indexed_uvs[ unsigned int(v3.y) -1] );
+					uvs.push_back( indexed_uvs[(unsigned int)(v1.y) -1] );
+					uvs.push_back( indexed_uvs[(unsigned int)(v2.y) -1] );
+					uvs.push_back( indexed_uvs[(unsigned int)(v3.y) -1] );
 				}
 
 				if (indexed_normals.size() > 0)
 				{
-					normals.push_back( indexed_normals[ unsigned int(v1.z) -1] );
-					normals.push_back( indexed_normals[ unsigned int(v2.z) -1] );
-					normals.push_back( indexed_normals[ unsigned int(v3.z) -1] );
+					normals.push_back( indexed_normals[(unsigned int)(v1.z) -1] );
+					normals.push_back( indexed_normals[(unsigned int)(v2.z) -1] );
+					normals.push_back( indexed_normals[(unsigned int)(v3.z) -1] );
 				}
 			}
 		}
 	}
 
-	center = (aabb_max + aabb_min) * 0.5;
-	halfsize = (aabb_max - center) * 2;
-	radius = max( aabb_max.length(), aabb_min.length() );
+	box.center = (aabb_max + aabb_min) * 0.5;
+	box.halfsize = (aabb_max - box.center);
+	radius = (float)fmax( aabb_max.length(), aabb_min.length() );
 
-	material_range.push_back(vertices.size() / 3.0);
+	material_range.push_back( (unsigned int)(vertices.size() / 3.0) );
 
 	createCollisionModel();
 
@@ -691,6 +825,13 @@ void Mesh::createCube()
 	uvs.resize(6 * 2 * 3);
 	memcpy(&vertices[0], _verts, sizeof(Vector3) * vertices.size());
 	memcpy(&uvs[0], _uvs, sizeof(Vector2) * uvs.size());
+}
+
+void Mesh::createWireBox()
+{
+	const float _verts[] = { -1,-1,-1,  1,-1,-1,  -1,1,-1,  1,1,-1, -1,-1,1,  1,-1,1, -1,1,1,  1,1,1,    -1,-1,-1, -1,1,-1, 1,-1,-1, 1,1,-1, -1,-1,1, -1,1,1, 1,-1,1, 1,1,1,   -1,-1,-1, -1,-1,1, 1,-1,-1, 1,-1,1, -1,1,-1, -1,1,1, 1,1,-1, 1,1,1 };
+	vertices.resize(24);
+	memcpy(&vertices[0], _verts, sizeof(Vector3) * vertices.size());
 }
 
 void Mesh::createQuad(float center_x, float center_y, float w, float h, bool flip_uvs)
@@ -765,14 +906,14 @@ void Mesh::createGrid(float dist)
 	int num_lines = 2000;
 	Vector4 color(0.5, 0.5, 0.5, 1);
 
-	for (int i = num_lines * -0.5; i <= num_lines * 0.5; ++i)
+	for (float i = num_lines * -0.5f; i <= num_lines * 0.5f; ++i)
 	{
-		vertices.push_back(Vector3(i*dist, 0, dist * num_lines * -0.5 ));
-		vertices.push_back(Vector3(i*dist, 0, dist * num_lines * +0.5));
-		vertices.push_back(Vector3(dist * num_lines * 0.5, 0, i*dist));
-		vertices.push_back(Vector3(dist * num_lines * -0.5, 0, i*dist));
+		vertices.push_back(Vector3(i*dist, 0.0f, dist * num_lines * -0.5f ));
+		vertices.push_back(Vector3(i*dist, 0.0f, dist * num_lines * +0.5f));
+		vertices.push_back(Vector3(dist * num_lines * 0.5f, 0.0f, i*dist));
+		vertices.push_back(Vector3(dist * num_lines * -0.5f, 0.0f, i*dist));
 
-		Vector4 color = i % 10 == 0 ? Vector4(1, 1, 1, 1) : Vector4(0.75, 0.75, 0.75, 0.5);
+		Vector4 color = int(i) % 10 == 0 ? Vector4(1.0f, 1.0f, 1.0f, 1.0f) : Vector4(0.75f, 0.75f, 0.75f, 0.5f);
 		colors.push_back(color);
 		colors.push_back(color);
 		colors.push_back(color);
@@ -780,24 +921,41 @@ void Mesh::createGrid(float dist)
 	}
 }
 
+Mesh* wire_box = NULL;
 
-
-void Mesh::renderAABB( const Matrix44& model )
+void Mesh::renderBounding( const Matrix44& model, bool world_bounding )
 {
-	Mesh m;
-	m.createCube();
-	Shader* sh = Shader::getDefaultShader("flat");
-	sh->setUniform("u_color", Vector4(1, 1, 0, 1));
-	sh->setUniform("u_model", Camera::current->viewprojection_matrix);
-	sh->setUniform("u_viewprojection", Camera::current->viewprojection_matrix );
+	if (!wire_box)
+	{
+		wire_box = new Mesh();
+		wire_box->createWireBox();
+		wire_box->uploadToVRAM();
+	}
 
-	/*
-	glPushMatrix();
-		glTranslatef( center.x, center.y, center.z);
-		glScalef( halfsize.x, halfsize.y, halfsize.z );
-		//glutWireCube(1);
-	glPopMatrix();
-	*/
+	Shader* sh = Shader::getDefaultShader("flat");
+	sh->enable();
+	sh->setUniform("u_viewprojection", Camera::current->viewprojection_matrix);
+
+	Matrix44 matrix;
+	matrix.translate(box.center.x, box.center.y, box.center.z);
+	matrix.scale(box.halfsize.x, box.halfsize.y, box.halfsize.z);
+
+	sh->setUniform("u_color", Vector4(1, 1, 0, 1));
+	sh->setUniform("u_model", matrix * model);
+	wire_box->render(GL_LINES,sh);
+
+	if (world_bounding)
+	{
+		BoundingBox AABB = transformBoundingBox(model, box);
+		matrix.setIdentity();
+		matrix.translate(AABB.center.x, AABB.center.y, AABB.center.z);
+		matrix.scale(AABB.halfsize.x, AABB.halfsize.y, AABB.halfsize.z);
+		sh->setUniform("u_model", matrix);
+		sh->setUniform("u_color", Vector4(0, 1, 1, 1));
+		wire_box->render(GL_LINES, sh);
+	}
+
+	sh->disable();
 }
 
 
@@ -824,9 +982,9 @@ Mesh* Mesh::Load(const char* filename)
 	Mesh* m = new Mesh();
 	m->name = filename;
 
+	//detect format
 	char file_format = 0;
 	std::string ext = m->name.substr(m->name.size() - 4, 4);
-
 	if (ext == ".ase" || ext == ".ASE")
 		file_format = FORMAT_ASE;
 	else if (ext == ".obj" || ext == ".OBJ")
@@ -839,7 +997,7 @@ Mesh* Mesh::Load(const char* filename)
 		return NULL;
 	}
 
-
+	//stats
 	long time = getTime();
 	std::cout << " + Mesh loading: " << filename << " ... ";
 	std::string binfilename = filename;
@@ -847,16 +1005,27 @@ Mesh* Mesh::Load(const char* filename)
 	if (file_format != FORMAT_BIN)
 		binfilename = binfilename + ".bin";
 
-	if (m->readBin(binfilename.c_str()) && use_binary)
+	//try loading the binary version
+	if ( m->readBin(binfilename.c_str()) && use_binary )
 	{
-		std::cout << "[VRAM] ";
-		m->uploadToVRAM();
+		if(interleave_meshes && m->interleaved.size() == 0)
+		{
+			std::cout << "[INTERL] ";
+			m->interleaveBuffers();
+		}
+
+		if (auto_upload_to_vram)
+		{
+			std::cout << "[VRAM] ";
+			m->uploadToVRAM();
+		}
 
 		std::cout << "[OK BIN]  Faces: " << (m->interleaved.size() ? m->interleaved.size() : m->vertices.size()) / 3 << " Time: " << (getTime() - time) * 0.001 << "sec" << std::endl;
 		sMeshesLoaded[filename] = m;
 		return m;
 	}
 
+	//load the ascii version
 	bool loaded = false;
 	if (file_format == FORMAT_OBJ)
 		loaded = m->loadOBJ(filename);
@@ -870,10 +1039,19 @@ Mesh* Mesh::Load(const char* filename)
 		return NULL;
 	}
 
-	std::cout << "[INTERL] ";
-	m->interleaveBuffers();
-	std::cout << "[VRAM] ";
-	m->uploadToVRAM();
+	//to optimize, interleave the meshes
+	if (interleave_meshes)
+	{
+		std::cout << "[INTERL] ";
+		m->interleaveBuffers();
+	}
+
+	//and upload them to VRAM
+	if (auto_upload_to_vram)
+	{
+		std::cout << "[VRAM] ";
+		m->uploadToVRAM();
+	}
 
 	std::cout << "[OK]  Faces: " << m->vertices.size() / 3 << " Time: " << (getTime() - time) * 0.001 << "sec" << std::endl;
 	if (use_binary)

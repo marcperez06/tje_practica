@@ -7,22 +7,14 @@
 #include "input.h"
 
 #include <cmath>
-#include "general_info\Paths.h"
-#include "my_utils\StringUtils.h"
-#include "GameObject.h"
 
 //some globals
 Mesh* mesh = NULL;
-Mesh* island = NULL;
-Mesh* skybox = NULL;
 Texture* texture = NULL;
 Shader* shader = NULL;
 float angle = 0;
-FBO fbo;
 
 Game* Game::instance = NULL;
-
-GameObject* avion;
 
 Game::Game(int window_width, int window_height, SDL_Window* window)
 {
@@ -42,29 +34,20 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	glEnable( GL_CULL_FACE ); //render both sides of every triangle
 	glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
 
-	//create a plane mesh
-	//mesh = Mesh::Load("data/mes_ASE/box.ASE");
-	Mesh* spitfire = Mesh::Load("data/recursos_javi_agenjo/spitfire/spitfire.ASE");
-	//Mesh* island = Mesh::Load("data/recursos_javi_agenjo/island/island.ASE");
-	island = Mesh::Load("data/recursos_javi_agenjo/island/island.ASE");
-	skybox = Mesh::Load("data/recursos_javi_agenjo/cielo/cielo.ASE");
-
-	//load one texture
-	//texture = new Texture();
-	//texture->load("data/textures/texture.tga");
-	texture = Texture::Load("data/textures/texture.tga");
-
-	// example of shader loading
-	shader = Shader::Load("data/shaders/texture.vs", "data/shaders/texture.fs");
-
-	avion = new GameObject(Vector3(0, 10, 0), spitfire);
-	//Vector3 pos = avion->getTransform()->getLocalPosition();
-
 	//create our camera
 	camera = new Camera();
-	//camera->lookAt(Vector3(pos.x, pos.y - 20.f, pos.z - 20.f), Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
-	camera->lookAt(Vector3(0.f, 100.f, 100.f), Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f)); //position the camera and point to 0,0,0
-	camera->setPerspective(70.f,window_width/(float)window_height,1.f,100000.f); //set the projection, we want to be perspective
+	camera->lookAt(Vector3(0.f,100.f, 100.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
+	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
+
+	//create a plane mesh
+	mesh = Mesh::Load("data/box.ASE");
+
+	//load one texture
+	texture = new Texture();
+ 	texture->load("data/texture.tga");
+
+	// example of shader loading
+	shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -92,52 +75,32 @@ void Game::render(void)
 	Matrix44 m;
 	m.rotate( (float)(angle * DEG2RAD), Vector3(0.0f,1.0f, 0.0f) ); //build a rotation matrix
 
-	// Pintar la isla...
-	//texture->bind();
-	island->render(GL_TRIANGLES, shader);
-	//texture->unbind();
+	Shader* current_shader = shader;
 
-	// Pintar el cielo....
-	Matrix44 matrix_sky;
-	matrix_sky.traslate(camera->eye.x, camera->eye.y, camera->eye.z);
-	//glPushMatrix();
-	skybox->render(GL_TRIANGLES, shader);
-	//glPopMatrix();
-
-
-	// Pintar el agua del mar..
-	Matrix44 matrix_water;
-	matrix_water.traslate(camera->eye.x, 0, camera->eye.z);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//Mesh::Load("data/box.ASE");
-	glDisable(GL_BLEND);
-
-	if(shader) 
+	if(current_shader)
 	{
 		//enable shader
-		shader->enable();
+		current_shader->enable();
 
 		//upload uniforms
-		shader->setUniform("u_color", Vector4(1,1,1,1));
-		shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
-		shader->setUniform("u_texture", texture);
-		shader->setUniform("u_time", time);
-		shader->setUniform("u_model", avion->getTransform()->getMatrixModel());
+		current_shader->setUniform("u_color", Vector4(1,1,1,1));
+		current_shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
+		current_shader->setUniform("u_texture", texture);
+		current_shader->setUniform("u_model", m);
+		current_shader->setUniform("u_time", time);
 
-		//draw with the shader
-		avion->getMesh()->render(GL_TRIANGLES, shader);
-		//island->render(GL_TRIANGLES, shader);
+		//current_shader->setUniform("u_model", m);
+		mesh->render(GL_TRIANGLES, current_shader);
+
 		//disable shader
-		shader->disable();
+		current_shader->disable();
 	}
    
 	//Draw out world
 	drawGrid();
 
 	//render the FPS
-	drawText( 2, 2, "FPS: " + std::to_string(fps) + " DCS: " + std::to_string(Mesh::num_meshes_rendered), fps > 30 ? Vector3(1,1,1) : Vector3(1, 0.5, 0.5), 2 );
-	Mesh::num_meshes_rendered = 0;
+	drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
 
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
@@ -159,32 +122,10 @@ void Game::update(double seconds_elapsed)
 
 	//async input to move the camera around
 	if(Input::isKeyPressed(SDL_SCANCODE_LSHIFT) ) speed *= 10; //move faster with left shift
-	/*
 	if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
 	if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) camera->move(Vector3(0.0f, 0.0f,-1.0f) * speed);
 	if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
 	if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) camera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
-	*/
-
-	if (Input::isKeyPressed(SDL_SCANCODE_UP)) {
-		avion->move(Vector3(0, 1, -1) * speed);
-		//camera->move(Vector3(0, 1, -1) * speed);
-	}
-
-	if (Input::isKeyPressed(SDL_SCANCODE_DOWN)) {
-		avion->move(Vector3(0, -1, 1) * speed);
-		//camera->move(Vector3(0, -1, 1) * speed);
-	}
-
-	if (Input::isKeyPressed(SDL_SCANCODE_LEFT)) {
-		avion->move(Vector3(-1, -0.25f, 0) * speed);
-		//camera->move(Vector3(-1, -0.25f, 0) * speed);
-	}
-
-	if (Input::isKeyPressed(SDL_SCANCODE_RIGHT)) {
-		avion->move(Vector3(1, -0.25, 0) * speed);
-		//camera->move(Vector3(1, -0.25, 0) * speed);
-	}
 
 	//to navigate with the mouse fixed in the middle
 	if (mouse_locked)
@@ -237,29 +178,3 @@ void Game::onResize(int width, int height)
 	window_height = height;
 }
 
-Mesh* grid = NULL;
-
-void Game::drawGrid()
-{
-	if (!grid)
-	{
-		grid = new Mesh();
-		grid->createGrid(10);
-	}
-
-	glEnable(GL_BLEND);
-	glDepthMask(false);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	Shader* grid_shader = Shader::getDefaultShader("grid");
-	grid_shader->enable();
-	Matrix44 m;
-	m.traslate( floor(camera->eye.x/100.0)*100.0, 0, floor(camera->eye.z / 100.0)*100.0);
-	grid_shader->setUniform("u_color", Vector4(0.7, 0.7, 0.7, 0.7));
-	grid_shader->setUniform("u_model", m);
-	grid_shader->setUniform("u_camera_position", camera->eye );
-	grid_shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
-	grid->render(GL_LINES, grid_shader); //background grid
-	glDisable(GL_BLEND);
-	glDepthMask(true);
-	grid_shader->disable();
-}

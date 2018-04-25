@@ -170,8 +170,7 @@ bool Shader::compileFromMemory(const std::string& vsm, const std::string& psm)
 	if (glCreateProgram == 0)
 	{
 		std::cout << "Error: your graphics cards dont support shaders. Sorry." << std::endl;
-		//exit(0);
-		return false;
+		exit(0);
 	}
 
 	program = glCreateProgram();
@@ -434,7 +433,11 @@ int Shader::getUniformLocation(const char* varname)
 
 void Shader::setTexture(const char* varname, Texture* tex)
 {
-	setTexture( varname, tex->texture_id );
+	glActiveTexture(GL_TEXTURE0 + last_slot);
+	glBindTexture(tex->texture_type, tex->texture_id);
+	setUniform1(varname, last_slot);
+	last_slot++;
+	glActiveTexture(GL_TEXTURE0 + last_slot);
 }
 
 void Shader::setTexture(const char* varname, unsigned int tex)

@@ -11,6 +11,7 @@
 #include "game.h"
 #include "camera.h"
 #include "shader.h"
+#include "mesh.h"
 
 #include "extra/stb_easy_font.h"
 
@@ -165,10 +166,10 @@ std::vector<std::string> tokenize(const std::string& source, const char* delimit
 	std::vector<std::string> tokens;
 
 	std::string str;
-	char del_size = strlen(delimiters);
+	size_t del_size = strlen(delimiters);
 	const char* pos = source.c_str();
 	char in_string = 0;
-	int i = 0;
+	unsigned int i = 0;
 	while (*pos != 0)
 	{
 		bool split = false;
@@ -212,3 +213,50 @@ std::vector<std::string> tokenize(const std::string& source, const char* delimit
 	return tokens;
 }
 
+#define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
+#define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
+
+std::string getGPUStats()
+{
+	GLint nTotalMemoryInKB = 0;
+	glGetIntegerv(GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX, &nTotalMemoryInKB);
+	GLint nCurAvailMemoryInKB = 0;
+	glGetIntegerv(GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX, &nCurAvailMemoryInKB);
+	if (glGetError() != GL_NO_ERROR) //unsupported feature by driver
+	{
+		nTotalMemoryInKB = 0;
+		nCurAvailMemoryInKB = 0;
+	}
+
+	std::string str = "FPS: " + std::to_string(Game::instance->fps) + " DCS: " + std::to_string(Mesh::num_meshes_rendered) + " Tris: " + std::to_string(long(Mesh::num_triangles_rendered * 0.001)) + "Ks  VRAM: " + std::to_string(int(nCurAvailMemoryInKB * 0.001)) + "MBs / " + std::to_string(int(nTotalMemoryInKB * 0.001)) + "MBs";
+	Mesh::num_meshes_rendered = 0;
+	Mesh::num_triangles_rendered = 0;
+	return str;
+}
+
+Mesh* grid = NULL;
+
+void drawGrid()
+{
+	if (!grid)
+	{
+		grid = new Mesh();
+		grid->createGrid(10);
+	}
+
+	glEnable(GL_BLEND);
+	glDepthMask(false);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	Shader* grid_shader = Shader::getDefaultShader("grid");
+	grid_shader->enable();
+	Matrix44 m;
+	m.translate(floor(Camera::current->eye.x / 100.0)*100.0f, 0.0f, floor(Camera::current->eye.z / 100.0f)*100.0f);
+	grid_shader->setUniform("u_color", Vector4(0.7, 0.7, 0.7, 0.7));
+	grid_shader->setUniform("u_model", m);
+	grid_shader->setUniform("u_camera_position", Camera::current->eye);
+	grid_shader->setUniform("u_viewprojection", Camera::current->viewprojection_matrix);
+	grid->render(GL_LINES, grid_shader); //background grid
+	glDisable(GL_BLEND);
+	glDepthMask(true);
+	grid_shader->disable();
+}

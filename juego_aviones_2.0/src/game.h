@@ -45,8 +45,6 @@ public:
 	void onGamepadButtonUp(SDL_JoyButtonEvent event);
 	void onResize(int width, int height);
 
-	//helpers
-	void drawGrid();
 };
 
 

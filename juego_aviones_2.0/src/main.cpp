@@ -83,7 +83,9 @@ void mainLoop()
 {
 	SDL_Event sdlEvent;
 
-	double start_time = SDL_GetTicks();
+	long start_time = SDL_GetTicks();
+	long now = start_time;
+	long frames_this_second = 0;
 
 	while (!game->must_exit)
 	{
@@ -132,14 +134,19 @@ void mainLoop()
 
         
 		//compute delta time
-        long now = SDL_GetTicks();
+		long last_time = now;
+		now = SDL_GetTicks();
 		double elapsed_time = (now - last_time) * 0.001; //0.001 converts from milliseconds to seconds
-		last_time = now;
+		double last_time_seconds = game->time;
         game->time = float(now * 0.001);
 		game->elapsed_time = elapsed_time;
 		game->frame++;
-		if((game->frame%10) == 0)
-			game->fps = 1.0 / elapsed_time;
+		frames_this_second++;
+		if (int(last_time_seconds *2) != int(game->time*2)) //next half second
+		{
+			game->fps = frames_this_second*2;
+			frames_this_second = 0;
+		}
 
 		//update game logic
 		game->update(elapsed_time); 

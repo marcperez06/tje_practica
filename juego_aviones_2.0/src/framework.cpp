@@ -11,7 +11,7 @@
 //**************************************
 float Vector2::distance(const Vector2& v)
 {
-	return (v - *this).length();
+	return (float)(v - *this).length();
 }
 
 float Vector2::dot( const Vector2& v )
@@ -27,8 +27,8 @@ float Vector2::perpdot( const Vector2& v )
 void Vector2::random(float range)
 {
 	//rand returns a value between 0 and RAND_MAX
-	x = (rand() / (double)RAND_MAX) * 2 * range - range; //value between -range and range
-	y = (rand() / (double)RAND_MAX) * 2 * range - range; //value between -range and range
+	x = (float)(rand() / (double)RAND_MAX) * 2 * range - range; //value between -range and range
+	y = (float)(rand() / (double)RAND_MAX) * 2 * range - range; //value between -range and range
 }
 
 void Vector2::parseFromText(const char* text)
@@ -82,15 +82,15 @@ Vector3& Vector3::normalize()
 {
 	double len = length();
 	assert(len > 0.00000000001 && "Cannot normalize a vector with module 0");
-	x /= len;
-	y /= len;
-	z /= len;
+	x = (float)(x / len);
+	y = (float)(y / len);
+	z = (float)(z / len);
 	return *this;
 }
 
 float Vector3::distance(const Vector3& v) const
 {
-	return (v - *this).length();
+	return (float)(v - *this).length();
 }
 
 Vector3 Vector3::cross( const Vector3& b ) const
@@ -106,17 +106,17 @@ float Vector3::dot( const Vector3& v ) const
 void Vector3::random(float range)
 {
 	//rand returns a value between 0 and RAND_MAX
-	x = (rand() / (double)RAND_MAX) * 2 * range - range; //value between -range and range
-	y = (rand() / (double)RAND_MAX) * 2 * range - range; //value between -range and range
-	z = (rand() / (double)RAND_MAX) * 2 * range - range; //value between -range and range
+	x = (float)((rand() / (double)RAND_MAX) * 2 * range - range); //value between -range and range
+	y = (float)((rand() / (double)RAND_MAX) * 2 * range - range); //value between -range and range
+	z = (float)((rand() / (double)RAND_MAX) * 2 * range - range); //value between -range and range
 }
 
 void Vector3::random(Vector3 range)
 {
 	//rand returns a value between 0 and RAND_MAX
-	x = (rand() / (double)RAND_MAX) * 2 * range.x - range.x; //value between -range and range
-	y = (rand() / (double)RAND_MAX) * 2 * range.y - range.y; //value between -range and range
-	z = (rand() / (double)RAND_MAX) * 2 * range.z - range.z; //value between -range and range
+	x = (float)((rand() / (double)RAND_MAX) * 2 * range.x - range.x); //value between -range and range
+	y = (float)((rand() / (double)RAND_MAX) * 2 * range.y - range.y); //value between -range and range
+	z = (float)((rand() / (double)RAND_MAX) * 2 * range.z - range.z); //value between -range and range
 }
 
 void Vector3::setMin(const Vector3 & v)
@@ -218,20 +218,6 @@ void Matrix44::transpose()
    std::swap(m[6],m[9]); std::swap(m[7],m[13]); std::swap(m[11],m[14]);
 }
 
-void Matrix44::traslate(float x, float y, float z)
-{
-	Matrix44 T;
-	T.setTranslation(x, y, z);
-	*this = *this * T;
-}
-
-void Matrix44::rotate( float angle_in_rad, const Vector3& axis )
-{
-	Matrix44 R;
-	R.setRotation(angle_in_rad, axis);
-	*this = *this * R;
-}
-
 Vector3 Matrix44::rotateVector(const Vector3& v)
 {
 	Matrix44 temp = *this;
@@ -241,18 +227,48 @@ Vector3 Matrix44::rotateVector(const Vector3& v)
 	return temp * v;
 }
 
-void Matrix44::traslateLocal(float x, float y, float z)
+void Matrix44::translateGlobal(float x, float y, float z)
+{
+	Matrix44 T;
+	T.setTranslation(x, y, z);
+	*this = *this * T;
+}
+
+void Matrix44::rotateGlobal( float angle_in_rad, const Vector3& axis )
+{
+	Matrix44 R;
+	R.setRotation(angle_in_rad, axis);
+	*this = *this * R;
+}
+
+void Matrix44::translate(float x, float y, float z)
 {
 	Matrix44 T;
 	T.setTranslation(x, y, z);
 	*this = T * *this;
 }
 
-void Matrix44::rotateLocal( float angle_in_rad, const Vector3& axis )
+void Matrix44::rotate( float angle_in_rad, const Vector3& axis )
 {
 	Matrix44 R;
 	R.setRotation(angle_in_rad, axis);
 	*this = R * *this;
+}
+
+
+void Matrix44::scale(float x, float y, float z)
+{
+	Matrix44 S;
+	S.setScale(x, y, z);
+	*this = S * *this;
+}
+
+void Matrix44::setScale(float x, float y, float z)
+{
+	setIdentity();
+	m[0] = x;
+	m[5] = y;
+	m[10] = z;
 }
 
 //To create a traslation matrix
@@ -268,24 +284,6 @@ Vector3 Matrix44::getTranslation()
 {
 	return Vector3(m[12],m[13],m[14]);
 }
-
-void Matrix44::scale(float x, float y, float z)
-{
-	Matrix44 S;
-	S.setScale(x, y, z);
-	*this = *this * S;
-}
-
-void Matrix44::setScale(float x, float y, float z)
-{
-	setIdentity();
-	m[0] = x;
-	m[5] = y;
-	m[10] = z;
-}
-
-
-
 
 //To create a rotation matrix
 void Matrix44::setRotation( float angle_in_rad, const Vector3& axis  )
@@ -384,7 +382,7 @@ void Matrix44::lookAt(Vector3& eye, Vector3& center, Vector3& up)
 	M[1][0] = right.y; M[1][1] = top.y; M[1][2] = -front.y;
 	M[2][0] = right.z; M[2][1] = top.z; M[2][2] = -front.z;
 
-	traslateLocal(-eye.x, -eye.y, -eye.z);
+	translate(-eye.x, -eye.y, -eye.z);
 }
 
 //double check this functions
@@ -443,23 +441,6 @@ Matrix44 Matrix44::operator*(const Matrix44& matrix) const
 	}
 
 	return ret;
-}
-
-//it allows to add two vectors
-Vector3 operator + (const Vector3& a, const Vector3& b) 
-{
-	return Vector3(a.x + b.x, a.y + b.y, a.z + b.z );
-}
-
-//it allows to add two vectors
-Vector3 operator - (const Vector3& a, const Vector3& b) 
-{
-	return Vector3(a.x - b.x, a.y - b.y, a.z - b.z );
-}
-
-Vector3 operator * (const Vector3& a, float v) 
-{
-	return Vector3(a.x * v, a.y * v, a.z * v);
 }
 
 //Multiplies a vector by a matrix and returns the new vector
@@ -626,6 +607,17 @@ bool Matrix44::inverse()
 
    return true;
 }
+
+void Matrix44::multGL()
+{
+	glMultMatrixf(m);
+}
+
+void Matrix44::loadGL()
+{
+	glLoadMatrixf(m);
+}
+
 
 
 Quaternion::Quaternion()
@@ -810,7 +802,7 @@ void Quaternion::computeMinimumRotation(const Vector3& rotateFrom, const Vector3
 
 	const float _dot = dot(from, to);
 	Vector3 crossvec = cross(from, to);
-	const float crosslen = crossvec.length();
+	const float crosslen = (float)crossvec.length();
 
 	if (crosslen == 0.0f)
 	{
@@ -1215,3 +1207,41 @@ Vector3 normalize(Vector3 n)
 	return n.normalize();
 }
 
+int planeBoxOverlap( const Vector4& plane, const Vector3& center, const Vector3& halfsize )
+{
+	Vector3 n = plane.xyz;
+	float d = plane.w;
+	float radius = abs(halfsize.x * n[0]) + abs(halfsize.y * n[1]) + abs(halfsize.z * n[2]);
+	float distance = dot(n, center) + d;
+	if (distance <= -radius)
+		return CLIP_OUTSIDE;
+	else if (distance <= radius)
+		return CLIP_OVERLAP;
+	return CLIP_INSIDE;
+}
+
+float signedDistanceToPlane( const Vector4& plane, const Vector3& point )
+{
+	return dot(plane.xyz, point) + plane.w;
+}
+
+const Vector3 corners[] = { {1,1,1},  {1,1,-1},  {1,-1,1},  {1,-1,-1},  {-1,1,1},  {-1,1,-1},  {-1,-1,1},  {-1,-1,-1} };
+
+BoundingBox transformBoundingBox(const Matrix44 m, const BoundingBox& box)
+{
+	Vector3 min;
+	Vector3 max;
+
+	for (int i = 0; i < 8; ++i)
+	{
+		Vector3 corner = corners[i];
+		corner = box.halfsize * corner;
+		corner = corner + box.center;
+		corner = m * corner;
+		min.setMin(corner);
+		max.setMax(corner);
+	}
+
+	Vector3 halfsize = (max - min) * 0.5;
+	return BoundingBox( max - halfsize, halfsize );
+}

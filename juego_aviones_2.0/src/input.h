@@ -52,9 +52,9 @@ struct GamepadState
 	char prev_direction; //which direction was the left stick before
 	HATState hat; //digital pad
 
-	bool isButtonPressed(int num) { return button[num]; }
-	bool wasButtonPressed(int num) { return button[num] & !prev_button[num]; }
-	bool didDirectionChanged(char dir) { return direction != prev_direction && direction & dir; }
+	bool isButtonPressed(int num) { return button[num] != 0; }
+	bool wasButtonPressed(int num) { return (button[num] & !prev_button[num]) != 0; }
+	bool didDirectionChanged(char dir) { return direction != prev_direction && (direction & dir) != 0; }
 };
 
 
@@ -70,8 +70,8 @@ public:
 	static Vector2 mouse_delta; //mouse movement in the last frame
 
 	//keyboard
-	static bool isKeyPressed(int key_code) { return keystate[key_code]; }
-	static bool wasKeyPressed(int key_code) { return keystate[key_code] && !prev_keystate[key_code]; }
+	static bool isKeyPressed(int key_code) { return keystate[key_code] != 0; }
+	static bool wasKeyPressed(int key_code) { return keystate[key_code] != 0 && prev_keystate[key_code] == 0; }
 
 	//gamepad state
 	static GamepadState gamepads[4];

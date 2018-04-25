@@ -99,9 +99,11 @@ Vector3 normalize(Vector3 n);
 float dot( const Vector3& a, const Vector3& b);
 Vector3 cross(const Vector3&a, const Vector3& b);
 
-Vector3 operator + (const Vector3& a, const Vector3& b);
-Vector3 operator - (const Vector3& a, const Vector3& b);
-Vector3 operator * (const Vector3& a, float v);
+inline Vector3 operator + (const Vector3& a, const Vector3& b) { return Vector3(a.x + b.x, a.y + b.y, a.z + b.z); }
+inline Vector3 operator - (const Vector3& a, const Vector3& b) { return Vector3(a.x - b.x, a.y - b.y, a.z - b.z); }
+inline Vector3 operator * (const Vector3& a, const Vector3& b) { return Vector3(a.x * b.x, a.y * b.y, a.z * b.z); }
+inline Vector3 operator * (const Vector3& a, float v) { return Vector3(a.x * v, a.y * v, a.z * v); }
+inline Vector3 operator * (float v, const Vector3& a) { return Vector3(a.x * v, a.y * v, a.z * v); }
 
 class Vector4
 {
@@ -116,6 +118,7 @@ public:
 	Vector4() { x = y = z = w = 0.0; }
 	Vector4(float x, float y, float z, float w) { this->x = x; this->y = y; this->z = z; this->w = w; }
 	Vector4(const Vector3& v, float w) { x = v.x; y = v.y; z = v.z; this->w = w; }
+	Vector4(const float* v) { x = v[0]; x = v[1]; x = v[2]; x = v[3]; }
 	void set(float x, float y, float z, float w) { this->x = x; this->y = y; this->z = z; this->w = w; }
 };
 
@@ -162,14 +165,14 @@ class Matrix44
 		//rotate only
 		Vector3 rotateVector( const Vector3& v);
 
-		//transform using world coordinates
-		void traslate(float x, float y, float z);
+		//transform using local coordinates
+		void translate(float x, float y, float z);
 		void rotate( float angle_in_rad, const Vector3& axis  );
 		void scale(float x, float y, float z);
 
-		//transform using local coordinates
-		void traslateLocal(float x, float y, float z);
-		void rotateLocal( float angle_in_rad, const Vector3& axis  );
+		//transform using global coordinates
+		void translateGlobal(float x, float y, float z);
+		void rotateGlobal( float angle_in_rad, const Vector3& axis  );
 
 		//create a transformation matrix from scratch
 		void setTranslation(float x, float y, float z);
@@ -185,6 +188,10 @@ class Matrix44
 		void ortho(float left, float right, float bottom, float top, float near_plane, float far_plane);
 
 		Vector3 project(const Vector3& v);
+
+		//old fixed pipeline (do not used if possible)
+		void multGL();
+		void loadGL();
 
 		Matrix44 operator * (const Matrix44& matrix) const;
 };
@@ -273,18 +280,33 @@ Quaternion Qexp(const Quaternion &q);
 Quaternion Qlog(const Quaternion &q);
 Quaternion SimpleRotation(const Vector3 &a, const Vector3 &b);
 
-class AABB
+class BoundingBox
 {
 public:
 	Vector3 center;
 	Vector3 halfsize;
-	AABB() {}
-	AABB(Vector3 center, Vector3 halfsize) { this->center = center; this->halfsize = halfsize; };
+	BoundingBox() {}
+	BoundingBox(Vector3 center, Vector3 halfsize) { this->center = center; this->halfsize = halfsize; };
 };
 
+//applies a transform to a AABB so it is 
+BoundingBox transformBoundingBox(const Matrix44 m, const BoundingBox& box);
 
+enum {
+	CLIP_OUTSIDE = 0,
+	CLIP_OVERLAP,
+	CLIP_INSIDE
+};
+
+float signedDistanceToPlane(const Vector4& plane, const Vector3& point);
+int planeBoxOverlap( const Vector4& plane, const Vector3& center, const Vector3& halfsize );
 float ComputeSignedAngle( Vector2 a, Vector2 b);
 Vector3 RayPlaneCollision( const Vector3& plane_pos, const Vector3& plane_normal, const Vector3& ray_origin, const Vector3& ray_dir );
+
+
+
+inline float random(float range = 1.0f, int offset = 0) { return ((rand() % 1000) / (1000.0f)) * range + offset; }
+
 
 typedef Vector3 vec2;
 typedef Vector3 vec3;

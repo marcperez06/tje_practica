@@ -16,6 +16,7 @@ void Camera::enable()
 	current = this;
 	updateViewMatrix();
 	updateProjectionMatrix();
+	extractFrustum();
 
 	//old...
 	glMatrixMode(GL_PROJECTION);
@@ -117,8 +118,10 @@ void Camera::extractFrustum()
 	float   clip[16];
 	float   t;
 
+	Matrix44 v = view_matrix;
+
 	memcpy( proj, projection_matrix.m, sizeof(Matrix44) );
-	memcpy( modl, view_matrix.m, sizeof(Matrix44));
+	memcpy( modl, v.m, sizeof(Matrix44));
 
 	/* Combine the two matrices (multiply projection by modelview) */
 	clip[0] = modl[0] * proj[0] + modl[1] * proj[4] + modl[2] * proj[8] + modl[3] * proj[12];
@@ -238,35 +241,69 @@ Vector3 Camera::project( Vector3 pos3d, float window_width, float window_height)
 
 Vector3 Camera::unproject(Vector3 coord2d, float window_width, float window_height)
 {
-	coord2d.x = (coord2d.x * 2.0) / window_width - 1.0;
-	coord2d.y = (coord2d.y * 2.0) / window_height - 1.0;
-	coord2d.z = 2.0 * coord2d.z - 1.0;
+	coord2d.x = (coord2d.x * 2.0f) / window_width - 1.0f;
+	coord2d.y = (coord2d.y * 2.0f) / window_height - 1.0f;
+	coord2d.z = 2.0f * coord2d.z - 1.0f;
 	Matrix44 inv_vp = viewprojection_matrix;
 	inv_vp.inverse();
-	Vector4 r = inv_vp * Vector4(coord2d, 1.0 );
+	Vector4 r = inv_vp * Vector4(coord2d, 1.0f );
 	return Vector3(r.x / r.w, r.y / r.w, r.z / r.w );
 }
 
 Vector3 Camera::getRayDirection( int mouse_x, int mouse_y, float window_width, float window_height )
 {
-	Vector3 mouse_pos( mouse_x, window_height - mouse_y, 1.0);
+	Vector3 mouse_pos( (float)mouse_x, window_height - mouse_y, 1.0f);
 	Vector3 p = unproject(mouse_pos, window_width, window_height);
 	return (p - eye).normalize();
 }
 
-float Camera::getProjectScale(Vector3 pos3D, float radius) {
+float Camera::getProjectedScale(Vector3 pos3D, float radius) {
 	float dist = eye.distance(pos3D);
-	return (sin(fov*DEG2RAD) / dist) * radius * 200.0; //100 is to compensate width in pixels
+	return (sin(fov*DEG2RAD) / dist) * radius * 200.0f; //100 is to compensate width in pixels
 }
 
 
-bool Camera::testSphereInFrustum( Vector3 v, float radius)
+char Camera::testSphereInFrustum( const Vector3& v, float radius)
 {
 	int p;
 
 	for (p = 0; p < 6; p++)
-		if (frustum[p][0] * v.x + frustum[p][1] * v.y + frustum[p][2] * v.z + frustum[p][3] <= -radius)
-			return false;
-	return true;
+	{
+		float dist = frustum[p][0] * v.x + frustum[p][1] * v.y + frustum[p][2] * v.z + frustum[p][3];
+		if (dist <= -radius)
+			return CLIP_OUTSIDE;
+	}
+	return CLIP_INSIDE;
+}
+
+char Camera::testBoxInFrustum(const Vector3& center, const Vector3& halfsize)
+{
+	int flag = 0, o = 0;
+
+	flag = planeBoxOverlap( (Vector4&)frustum[0], center,halfsize );
+	if (flag == CLIP_OUTSIDE)
+		return CLIP_OUTSIDE;
+	o += flag;
+	flag = planeBoxOverlap((Vector4&)frustum[1], center, halfsize);
+	if (flag == CLIP_OUTSIDE)
+		return CLIP_OUTSIDE;
+	o += flag;
+	flag = planeBoxOverlap((Vector4&)frustum[2], center, halfsize);
+	if (flag == CLIP_OUTSIDE)
+		return CLIP_OUTSIDE;
+	o += flag;
+	flag = planeBoxOverlap((Vector4&)frustum[3], center, halfsize);
+	if (flag == CLIP_OUTSIDE)
+		return CLIP_OUTSIDE;
+	o += flag;
+	flag = planeBoxOverlap((Vector4&)frustum[4], center, halfsize);
+	if (flag == CLIP_OUTSIDE)
+		return CLIP_OUTSIDE;
+	o += flag;
+	flag = planeBoxOverlap((Vector4&)frustum[5], center, halfsize);
+	if (flag == CLIP_OUTSIDE)
+		return CLIP_OUTSIDE;
+	o += flag;
+	return o == 0 ? CLIP_INSIDE : CLIP_OVERLAP;
 }
 

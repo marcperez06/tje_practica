@@ -12,8 +12,10 @@ class Shader;
 class Mesh
 {
 public:
-	static std::map<std::string, Mesh*> Mesh::sMeshesLoaded;
-	static bool use_binary;
+	static std::map<std::string, Mesh*> sMeshesLoaded;
+	static bool use_binary; //always load the binary version of a mesh when possible
+	static bool interleave_meshes; //loaded meshes will me automatically interleaved
+	static bool auto_upload_to_vram; //loaded meshes will be stored in the VRAM
 	static long num_meshes_rendered;
 	static long num_triangles_rendered;
 
@@ -37,10 +39,9 @@ public:
 
 	Vector3 aabb_min;
 	Vector3	aabb_max;
-	Vector3	center;
-	Vector3	halfsize;
+	BoundingBox box;
+
 	float radius;
-	unsigned int primitive;
 
 	unsigned int vertices_vbo_id;
 	unsigned int uvs_vbo_id;
@@ -54,8 +55,13 @@ public:
 
 	void clear();
 
-	void render( unsigned int primitive, Shader* shader, int submesh_id = 0 );
-	void renderAABB( const Matrix44& model );
+	void render( unsigned int primitive, Shader* shader, int submesh_id = 0, int num_instances = 0 );
+	void renderInstanced(unsigned int primitive, Shader* shader, const Matrix44* instanced_models, int number);
+	void renderBounding( const Matrix44& model, bool world_bounding = true );
+	void renderFixedPipeline(int primitive); //sloooooooow
+
+	void enableBuffers(Shader* shader);
+	void disableBuffers(Shader* shader);
 
 	bool readBin(const char* filename);
 	bool writeBin(const char* filename);
@@ -72,7 +78,10 @@ public:
 	void createQuad(float center_x, float center_y, float w, float h, bool flip_uvs);
 	void createPlane(float size);
 	void createCube();
+	void createWireBox();
 	void createGrid(float dist);
+
+	unsigned int getNumVertices() { return interleaved.size() ? interleaved.size() : vertices.size(); }
 
 	static Mesh* getQuad();
 
