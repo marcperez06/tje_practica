@@ -220,11 +220,7 @@ void Matrix44::transpose()
 
 Vector3 Matrix44::rotateVector(const Vector3& v)
 {
-	Matrix44 temp = *this;
-	temp.m[12] = 0.0;
-	temp.m[13] = 0.0;
-	temp.m[14] = 0.0;
-	return temp * v;
+	return (*this * Vector4(v,0.0)).xyz;
 }
 
 void Matrix44::translateGlobal(float x, float y, float z)
@@ -1229,8 +1225,8 @@ const Vector3 corners[] = { {1,1,1},  {1,1,-1},  {1,-1,1},  {1,-1,-1},  {-1,1,1}
 
 BoundingBox transformBoundingBox(const Matrix44 m, const BoundingBox& box)
 {
-	Vector3 min;
-	Vector3 max;
+	Vector3 box_min(10000000.0f,1000000.0f, 1000000.0f);
+	Vector3 box_max(-10000000.0f, -1000000.0f, -1000000.0f);
 
 	for (int i = 0; i < 8; ++i)
 	{
@@ -1238,10 +1234,10 @@ BoundingBox transformBoundingBox(const Matrix44 m, const BoundingBox& box)
 		corner = box.halfsize * corner;
 		corner = corner + box.center;
 		corner = m * corner;
-		min.setMin(corner);
-		max.setMax(corner);
+		box_min.setMin(corner);
+		box_max.setMax(corner);
 	}
 
-	Vector3 halfsize = (max - min) * 0.5;
-	return BoundingBox( max - halfsize, halfsize );
+	Vector3 halfsize = (box_max - box_min) * 0.5;
+	return BoundingBox(box_max - halfsize, halfsize );
 }

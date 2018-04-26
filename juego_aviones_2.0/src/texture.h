@@ -25,8 +25,7 @@ class Texture
 	} TGAInfo;
 
 public:
-
-	static std::map<std::string, Texture*> Texture::sTexturesLoaded;
+	static std::map<std::string, Texture*> sTexturesLoaded;
 
 	GLuint texture_id; // GL id to identify the texture in opengl, every texture must have its own id
 	float width;
@@ -50,13 +49,15 @@ public:
 	void unbind();
 	static void UnbindAll();
 
+	//load without using the manager
 	bool load(const char* filename, bool mipmaps = true, bool upload_to_vram = true);
+
+	//load using the manager (caching loaded ones to avoid reloading them)
+	static Texture* Load(const char* filename, bool mipmaps = true);
 
 	void generateMipmaps();
 
 	void toViewport( Shader* shader = NULL );
-
-	static Texture* Load(const char* filename);
 
 protected:
 	ImageInfo* loadTGA(const char* filename);

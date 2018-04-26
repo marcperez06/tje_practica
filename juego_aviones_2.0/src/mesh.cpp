@@ -26,7 +26,7 @@ long Mesh::num_triangles_rendered = 0;
 Mesh::Mesh()
 {
 	radius = 0;
-	vertices_vbo_id = uvs_vbo_id = normals_vbo_id = colors_vbo_id = 0;
+	vertices_vbo_id = uvs_vbo_id = normals_vbo_id = colors_vbo_id = interleaved_vbo_id = 0; 
 	collision_model = NULL;
 	clear();
 }
@@ -35,7 +35,6 @@ Mesh::~Mesh()
 {
 	clear();
 }
-
 
 void Mesh::clear()
 {
@@ -157,6 +156,14 @@ void Mesh::render(unsigned int primitive, Shader* sh, int submesh_id, int num_in
 	//bind buffers to attribute locations
 	enableBuffers(sh);
 
+	drawCall(primitive, submesh_id, num_instances );
+
+	//unbind them
+	disableBuffers(sh);
+}
+
+void Mesh::drawCall( int primitive, int submesh_id, int num_instances )
+{
 	int start = 0;
 	int size = vertices.size();
 	if (interleaved.size())
@@ -177,9 +184,6 @@ void Mesh::render(unsigned int primitive, Shader* sh, int submesh_id, int num_in
 
 	num_triangles_rendered += (size / 3) * (num_instances ? num_instances : 1);
 	num_meshes_rendered++;
-
-	//unbind them
-	disableBuffers(sh);
 }
 
 void Mesh::disableBuffers(Shader* shader)

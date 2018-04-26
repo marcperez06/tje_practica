@@ -2,10 +2,10 @@
 #define MESH_H
 
 #include <vector>
-#include "framework.h"
-
 #include <map>
 #include <string>
+
+#include "framework.h"
 
 class Shader;
 
@@ -55,44 +55,49 @@ public:
 
 	void clear();
 
+	//render
 	void render( unsigned int primitive, Shader* shader, int submesh_id = 0, int num_instances = 0 );
 	void renderInstanced(unsigned int primitive, Shader* shader, const Matrix44* instanced_models, int number);
 	void renderBounding( const Matrix44& model, bool world_bounding = true );
 	void renderFixedPipeline(int primitive); //sloooooooow
 
+	//this help render stuff in batch
 	void enableBuffers(Shader* shader);
+	void drawCall(int primitive, int submesh_id = 0, int num_instances = 0);
 	void disableBuffers(Shader* shader);
 
+	//to store and load meshes from a binary file (way faster)
 	bool readBin(const char* filename);
 	bool writeBin(const char* filename);
 
+	//makes using meshes faster
+	bool interleaveBuffers();
+	void uploadToVRAM();
+
+	//retrieve useful info
+	unsigned int getNumVertices() { return interleaved.size() ? interleaved.size() : vertices.size(); }
 	unsigned int getNumSubmaterials() { return material_name.size(); }
 	unsigned int getNumSubmeshes() { return material_range.size(); }
 
+	//for ray collision and mesh intersection
 	void* collision_model;
 	void createCollisionModel();
 	bool testRayCollision( Matrix44 model, Vector3 ray_origin, Vector3 ray_direction, Vector3& collision, Vector3& normal );
 
-	static Mesh* Load(const char* filename);
-
+	//to create meshes
 	void createQuad(float center_x, float center_y, float w, float h, bool flip_uvs);
 	void createPlane(float size);
 	void createCube();
 	void createWireBox();
 	void createGrid(float dist);
-
-	unsigned int getNumVertices() { return interleaved.size() ? interleaved.size() : vertices.size(); }
-
 	static Mesh* getQuad();
 
-	void uploadToVRAM();
-	bool interleaveBuffers();
+	//manager of textures
+	static Mesh* Load(const char* filename);
 
 private:
 	bool loadASE(const char* filename);
 	bool loadOBJ(const char* filename);
 };
-
-bool testMeshesCollision(Mesh* a, Matrix44 model_a, Mesh* b, Matrix44 model_b);
 
 #endif
