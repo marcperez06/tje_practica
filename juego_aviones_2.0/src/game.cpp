@@ -45,17 +45,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
 
 	// Build a player
-	//player = Factory::buildAirplane(Vector3(0, 0, 0), 50);
-
-	Mesh* highMesh = Mesh::Load("data/spitfire/spitfire.ASE");
-	Mesh* lowMesh = Mesh::Load("data/spitfire/spitfire_low.ASE");
-	Texture* texture = Texture::Load("data/spitfire/spitfire_color_spec.tga");
-	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
-
-	Transform transform = Transform(Vector3(0, 0, 0), Quaternion());
-	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
-
-	player = new Airplane(5, transform, highMesh, lowMesh, material);
+	player = Factory::buildAirplane(Vector3(0, 0, 0), 20);
 
 	Vector3 cameraPosition = Vector3(player->transform.matrixModel.getTranslation().x, player->transform.matrixModel.getTranslation().y + 3, player->transform.matrixModel.getTranslation().z + 8);
 	Vector3 cameraCenter = player->highMesh->box.center;

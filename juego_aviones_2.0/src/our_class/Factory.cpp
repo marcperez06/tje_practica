@@ -9,7 +9,7 @@ Airplane* Factory::buildAirplane(const Vector3 initialPos, float speed) {
 	Transform transform = Transform(initialPos, Quaternion());
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
 
-	Airplane* airplane = new Airplane(speed, transform, highMesh, lowMesh, material);
+	static Airplane* airplane = new Airplane(speed, transform, highMesh, lowMesh, material);
 
 	return airplane;
 }
