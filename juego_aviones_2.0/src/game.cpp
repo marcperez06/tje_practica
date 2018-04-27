@@ -8,11 +8,21 @@
 
 #include <cmath>
 
+#include "our_class\Airplane.h"
+#include "our_class\Factory.h"
+
 //some globals
 Mesh* mesh = NULL;
 Texture* texture = NULL;
 Shader* shader = NULL;
 float angle = 0;
+
+Camera* freeCamera = NULL;
+Camera* playerCamera = NULL;
+Camera* currentCamera = NULL;
+
+Airplane* player = NULL;
+Factory factory;
 
 Game* Game::instance = NULL;
 
@@ -34,20 +44,45 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	glEnable( GL_CULL_FACE ); //render both sides of every triangle
 	glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
 
-	//create our camera
-	camera = new Camera();
-	camera->lookAt(Vector3(0.f,100.f, 100.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
-	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
+	// Build a player
+	//player = Factory::buildAirplane(Vector3(0, 0, 0), 50);
+
+	Mesh* highMesh = Mesh::Load("data/spitfire/spitfire.ASE");
+	Mesh* lowMesh = Mesh::Load("data/spitfire/spitfire_low.ASE");
+	Texture* texture = Texture::Load("data/spitfire/spitfire_color_spec.tga");
+	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
+
+	Transform transform = Transform(Vector3(0, 0, 0), Quaternion());
+	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
+
+	player = new Airplane(5, transform, highMesh, lowMesh, material);
+
+	Vector3 cameraPosition = Vector3(player->transform.matrixModel.getTranslation().x, player->transform.matrixModel.getTranslation().y + 3, player->transform.matrixModel.getTranslation().z + 8);
+	Vector3 cameraCenter = player->highMesh->box.center;
+	cameraCenter.z += 1;
+	Vector3 cameraUp = player->transform.matrixModel.rotateVector(player->transform.UP);
+
+	//create our free camera
+	freeCamera = new Camera();
+	freeCamera->lookAt(cameraPosition, cameraCenter, cameraUp); //position the camera and point to 0,0,0
+	freeCamera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
+
+	//create our player camera
+	playerCamera = new Camera();
+	playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp); //position the camera and point to 0,0,0
+	playerCamera->setPerspective(70.f, window_width / (float)window_height, 0.1f, 10000.f); //set the projection, we want to be perspective
+
+	currentCamera = playerCamera;
 
 	//create a plane mesh
-	mesh = Mesh::Load("data/box.ASE");
+	//mesh = Mesh::Load("data/box.ASE");
 
 	//load one texture
-	texture = new Texture();
- 	texture->load("data/texture.tga");
+	//texture = new Texture();
+ 	//texture->load("data/texture.tga");
 
 	// example of shader loading
-	shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
+	//shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -63,7 +98,7 @@ void Game::render(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//set the camera as default
-	camera->enable();
+	currentCamera->enable();
 
 	glDisable(GL_DEPTH_TEST);
 
@@ -71,6 +106,7 @@ void Game::render(void)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
    
+	/*
 	//create model matrix for cube
 	Matrix44 m;
 	m.rotate( (float)(angle * DEG2RAD), Vector3(0.0f,1.0f, 0.0f) ); //build a rotation matrix
@@ -84,7 +120,7 @@ void Game::render(void)
 
 		//upload uniforms
 		current_shader->setUniform("u_color", Vector4(1,1,1,1));
-		current_shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
+		current_shader->setUniform("u_viewprojection", freeCamera->viewprojection_matrix );
 		current_shader->setUniform("u_texture", texture);
 		current_shader->setUniform("u_model", m);
 		current_shader->setUniform("u_time", time);
@@ -96,6 +132,10 @@ void Game::render(void)
 		current_shader->disable();
 	}
    
+	*/
+
+	player->render(currentCamera);
+
 	//Draw out world
 	drawGrid();
 
@@ -108,6 +148,9 @@ void Game::render(void)
 
 void Game::update(double seconds_elapsed)
 {
+
+	std::cout << "--------- Player.... " + std::to_string(player->transform.matrixModel.getTranslation().z) << std::endl;
+
 	float speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
 
 	//example
@@ -116,16 +159,24 @@ void Game::update(double seconds_elapsed)
 	//mouse input to rotate the cam
 	if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked ) //is left button pressed?
 	{
-		camera->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f,-1.0f,0.0f));
-		camera->rotate(Input::mouse_delta.y * 0.005f, camera->getLocalVector( Vector3(-1.0f,0.0f,0.0f)));
+		freeCamera->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f,-1.0f,0.0f));
+		freeCamera->rotate(Input::mouse_delta.y * 0.005f, freeCamera->getLocalVector( Vector3(-1.0f,0.0f,0.0f)));
 	}
 
 	//async input to move the camera around
 	if(Input::isKeyPressed(SDL_SCANCODE_LSHIFT) ) speed *= 10; //move faster with left shift
-	if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
-	if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) camera->move(Vector3(0.0f, 0.0f,-1.0f) * speed);
-	if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
-	if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) camera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
+	if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) freeCamera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
+	if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) freeCamera->move(Vector3(0.0f, 0.0f,-1.0f) * speed);
+	if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) freeCamera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
+	if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) freeCamera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
+
+	player->update(seconds_elapsed);
+	
+	std::cout << "xxxxxxxxxxxxxx Player.... " + std::to_string(player->transform.matrixModel.getTranslation().z) << std::endl;
+
+	Vector3 cameraPosition = player->transform.position;
+	//Vector3 cameraCenter = player->highMesh->box.center;
+	playerCamera->eye = cameraPosition;
 
 	//to navigate with the mouse fixed in the middle
 	if (mouse_locked)
@@ -139,6 +190,10 @@ void Game::onKeyDown( SDL_KeyboardEvent event )
 	{
 		case SDLK_ESCAPE: must_exit = true; break; //ESC key, kill the app
 		case SDLK_F1: Shader::ReloadAll(); break; 
+		case SDLK_1:
+			currentCamera = (currentCamera == freeCamera) ? playerCamera : freeCamera;
+			freeCamera->eye = playerCamera->eye;
+			break;
 	}
 }
 
@@ -173,7 +228,8 @@ void Game::onResize(int width, int height)
 {
     std::cout << "window resized: " << width << "," << height << std::endl;
 	glViewport( 0,0, width, height );
-	camera->aspect =  width / (float)height;
+	freeCamera->aspect =  width / (float)height;
+	playerCamera->aspect = width / (float)height;
 	window_width = width;
 	window_height = height;
 }

@@ -1,11 +1,6 @@
-#include "BuildFactory.h"
-#include "Airplane.h"
-#include "../mesh.h"
-#include "../texture.h"
-#include "../shader.h"
+#include "Factory.h"
 
-Airplane* BuildFactory::buildPlayer(Vector3 const initialPos) {
-	float speed = 50;
+Airplane* Factory::buildAirplane(const Vector3 initialPos, float speed) {
 	Mesh* highMesh = Mesh::Load("data/spitfire/spitfire.ASE");
 	Mesh* lowMesh = Mesh::Load("data/spitfire/spitfire_low.ASE");
 	Texture* texture = Texture::Load("data/spitfire/spitfire_color_spec.tga");
@@ -14,7 +9,7 @@ Airplane* BuildFactory::buildPlayer(Vector3 const initialPos) {
 	Transform transform = Transform(initialPos, Quaternion());
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
 
-	Airplane* player = new Airplane(speed, transform, highMesh, lowMesh, material);
+	Airplane* airplane = new Airplane(speed, transform, highMesh, lowMesh, material);
 
-	return player;
+	return airplane;
 }

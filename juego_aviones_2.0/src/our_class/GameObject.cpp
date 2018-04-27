@@ -14,7 +14,7 @@ GameObject::GameObject(const Vector3 position, Mesh * highMesh) : Entity(positio
 	this->material = new Material();
 }
 
-GameObject::GameObject(const Vector3 position, Mesh * highMesh, const Quaternion rotation) : Entity(position, rotation) {
+GameObject::GameObject(const Vector3 position, const Quaternion rotation, Mesh * highMesh) : Entity(position, rotation) {
 	this->highMesh = highMesh;
 	this->lowMesh = NULL;
 	this->material = new Material();
@@ -54,7 +54,7 @@ GameObject::GameObject(const Vector3 position, Mesh * highMesh, Mesh * lowMesh) 
 	this->material = new Material();
 }
 
-GameObject::GameObject(const Vector3 position, Mesh * highMesh, Mesh * lowMesh, const Quaternion rotation) : Entity(position, rotation) {
+GameObject::GameObject(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh) : Entity(position, rotation) {
 	this->highMesh = highMesh;
 	this->lowMesh = lowMesh;
 	this->material = new Material();
@@ -98,7 +98,7 @@ void GameObject::render(Camera * camera) {
 	Mesh * mesh = this->highMesh;
 	Shader* shader = this->material->shader;
 
-	if (camera->eye.distance(this->transform.position) > 100) {
+	if (camera->eye.distance(this->transform.position) > 60) {
 		if (this->lowMesh != NULL) { mesh = this->lowMesh; }
 	}
 
@@ -106,7 +106,7 @@ void GameObject::render(Camera * camera) {
 
 		axisBoundingBox = transformBoundingBox(this->transform.matrixModel, mesh->box);
 
-		if (camera->testBoxInFrustum(axisBoundingBox.center, axisBoundingBox.halfsize) == CLIP_INSIDE) {
+		if (1) {//camera->testBoxInFrustum(axisBoundingBox.center, axisBoundingBox.halfsize) == CLIP_INSIDE) {
 
 			if (shader != NULL) {
 
@@ -124,7 +124,7 @@ void GameObject::render(Camera * camera) {
 				shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 				shader->setUniform("u_texture", this->material->texture);
 				shader->setUniform("u_model", this->transform.matrixModel);
-				shader->setUniform("u_camera_position", camera->eye);
+				//shader->setUniform("u_camera_position", camera->eye);
 				shader->setUniform("u_time", 1);
 
 				mesh->render(GL_TRIANGLES, shader);
@@ -144,3 +144,5 @@ void GameObject::render(Camera * camera) {
 	}
 
 }
+
+void GameObject::update(float deltaTime) {}

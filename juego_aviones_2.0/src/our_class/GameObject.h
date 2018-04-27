@@ -18,13 +18,13 @@ class GameObject : public Entity {
 
 		GameObject(const Vector3 position);
 		GameObject(const Vector3 position, Mesh * highMesh);
-		GameObject(const Vector3 position, Mesh * highMesh, const Quaternion rotation);
+		GameObject(const Vector3 position, const Quaternion rotation, Mesh * highMesh);
 		GameObject(const Vector3 position, Mesh * highMesh, Texture* texture, Shader* shader, Vector4 color);
 		GameObject(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Texture* texture, Shader* shader, Vector4 color);
 		GameObject(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Material * material);
 		GameObject(const Transform transform, Mesh * highMesh, Material * material);
 		GameObject(const Vector3 position, Mesh * highMesh, Mesh * lowMesh);
-		GameObject(const Vector3 position, Mesh * highMesh, Mesh * lowMesh, const Quaternion rotation);
+		GameObject(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh);
 		GameObject(const Vector3 position, Mesh * highMesh, Mesh * lowMesh, Texture* texture, Shader* shader, Vector4 color);
 		GameObject(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh, Texture* texture, Shader* shader, Vector4 color);
 		GameObject(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh, Material * material);
@@ -34,7 +34,7 @@ class GameObject : public Entity {
 
 		void render(Camera * camera);
 
-		virtual void uptade(float deltaTime);
+		virtual void update(float deltaTime);
 };
 
 #endif

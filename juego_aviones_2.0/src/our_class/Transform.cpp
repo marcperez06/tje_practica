@@ -18,6 +18,6 @@ Transform::Transform(Vector3 const position, Quaternion rotation) {
 }
 
 void Transform::translate(Vector3 const position) {
-	this->position = position;
-	this->matrixModel.translate(this->position.x, this->position.y, this->position.z);
+	this->matrixModel.translate(position.x, position.y, position.z);
+	this->position = this->matrixModel.getTranslation();
 }
