@@ -1,10 +1,10 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
-#include "mesh.h"
+#include "../mesh.h"
 #include "Material.h"
-#include "camera.h"
-#include "our_class/Entity.h"
+#include "../camera.h"
+#include "Entity.h"
 
 class GameObject : public Entity {
 

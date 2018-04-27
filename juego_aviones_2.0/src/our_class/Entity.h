@@ -1,8 +1,8 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "framework.h"
-#include "our_class/Transform.h"
+#include "../framework.h"
+#include "Transform.h"
 
 class Entity {
 
