@@ -48,6 +48,10 @@ class Material {
 		Shader* getShader() const { return this->shader; }
 		Vector4 getColor() const { return this->color; }
 
+		bool getBlendAlpha() const { return this->blendAlpha; }
+		bool getDepthTest() const { return this->depthTest; }
+		bool getCullFace() const { return this->cullFace; }
+
 		void setTexture(Texture* texture) { this->texture = texture; }
 		void setShader(Shader* shader) { this->shader = shader; }
 		void setColor(Vector4 color) { this->color = color; }
