@@ -84,7 +84,7 @@ void Airplane::update(float deltaTime) {
 	Vector3 up = this->transform.matrixModel.rotateVector(Vector3(0, 0, 1));
 	Vector3 right = this->transform.matrixModel.rotateVector(Vector3(1, 0, 0));
 
-	float deltaMove = deltaTime * this->speed * 0.3;
+	float deltaMove = deltaTime * this->speed * 0.1;
 
 	this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
 

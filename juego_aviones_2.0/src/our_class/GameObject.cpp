@@ -124,7 +124,7 @@ void GameObject::render(Camera * camera) {
 				shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 				shader->setUniform("u_texture", this->material->texture);
 				shader->setUniform("u_model", this->transform.matrixModel);
-				//shader->setUniform("u_camera_position", camera->eye);
+				shader->setUniform("u_camera_position", camera->eye);
 				shader->setUniform("u_time", 1);
 
 				mesh->render(GL_TRIANGLES, shader);

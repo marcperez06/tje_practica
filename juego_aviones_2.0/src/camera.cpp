@@ -3,6 +3,8 @@
 #include "includes.h"
 #include <iostream>
 
+#include "our_class\GameObject.h"
+
 Camera* Camera::current = NULL;
 
 Camera::Camera()

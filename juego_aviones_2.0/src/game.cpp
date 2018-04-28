@@ -47,10 +47,10 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	// Build a player
 	player = Factory::buildAirplane(Vector3(0, 0, 0), 20);
 
-	Vector3 cameraPosition = Vector3(player->transform.matrixModel.getTranslation().x, player->transform.matrixModel.getTranslation().y + 3, player->transform.matrixModel.getTranslation().z + 8);
-	Vector3 cameraCenter = player->highMesh->box.center;
+	Vector3 cameraPosition = player->transform.matrixModel * Vector3(0, 3, 9);
+	Vector3 cameraCenter = player->transform.matrixModel * player->highMesh->box.center;
 	cameraCenter.z += 1;
-	Vector3 cameraUp = player->transform.matrixModel.rotateVector(player->transform.UP);
+	Vector3 cameraUp = player->transform.matrixModel.rotateVector(Transform::UP);
 
 	//create our free camera
 	freeCamera = new Camera();
@@ -138,9 +138,6 @@ void Game::render(void)
 
 void Game::update(double seconds_elapsed)
 {
-
-	std::cout << "--------- Player.... " + std::to_string(player->transform.matrixModel.getTranslation().z) << std::endl;
-
 	float speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
 
 	//example
@@ -161,12 +158,12 @@ void Game::update(double seconds_elapsed)
 	if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) freeCamera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
 
 	player->update(seconds_elapsed);
-	
-	std::cout << "xxxxxxxxxxxxxx Player.... " + std::to_string(player->transform.matrixModel.getTranslation().z) << std::endl;
 
-	Vector3 cameraPosition = player->transform.position;
-	//Vector3 cameraCenter = player->highMesh->box.center;
-	playerCamera->eye = cameraPosition;
+	Vector3 cameraPosition = player->transform.matrixModel * Vector3(0, 3, 9);
+	Vector3 cameraCenter = player->transform.matrixModel * player->highMesh->box.center;
+	cameraCenter.z += 1;
+	Vector3 cameraUp = player->transform.matrixModel.rotateVector(Transform::UP);
+	playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp);
 
 	//to navigate with the mouse fixed in the middle
 	if (mouse_locked)
