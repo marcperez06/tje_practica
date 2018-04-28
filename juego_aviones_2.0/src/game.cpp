@@ -65,14 +65,14 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	currentCamera = playerCamera;
 
 	//create a plane mesh
-	//mesh = Mesh::Load("data/box.ASE");
+	mesh = Mesh::Load("data/island/island.ASE");
 
 	//load one texture
-	//texture = new Texture();
- 	//texture->load("data/texture.tga");
+	texture = new Texture();
+ 	texture->load("data/island/island_color.tga");
 
 	// example of shader loading
-	//shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
+	shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -96,7 +96,7 @@ void Game::render(void)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
    
-	/*
+	
 	//create model matrix for cube
 	Matrix44 m;
 	m.rotate( (float)(angle * DEG2RAD), Vector3(0.0f,1.0f, 0.0f) ); //build a rotation matrix
@@ -122,8 +122,7 @@ void Game::render(void)
 		current_shader->disable();
 	}
    
-	*/
-
+	
 	player->render(currentCamera);
 
 	//Draw out world
