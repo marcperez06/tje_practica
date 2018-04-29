@@ -1,9 +1,9 @@
 #ifndef AIRPLANE_H
 #define AIRPLANE_H
 
-#include "GameObject.h"
+#include "EntityMesh.h"
 
-class Airplane : public GameObject {
+class Airplane : public EntityMesh {
 
 	public:
 
@@ -29,7 +29,14 @@ class Airplane : public GameObject {
 		Airplane(const float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh, Material * material);
 		Airplane(const float speed, const Transform transform, Mesh * highMesh, Mesh * lowMesh, Material * material);
 
+		virtual ~Airplane();
+
+		virtual void render(Camera* camera);
+
 		virtual void update(float deltaTime);
+
+		void rotateAirplane(float deltaMove);
+
 };
 
 #endif
