@@ -1,6 +1,4 @@
 #include "CollisionHandler.h"
-#include "EntityMesh.h"
-#include "../extra/coldet/coldet.h"
 
 bool CollisionHandler::rayCollision(Vector3 origin, Vector3 direction, EntityMesh* mesh, Vector3 & collision, Vector3 & normal) {
 	bool haveCollision = false;

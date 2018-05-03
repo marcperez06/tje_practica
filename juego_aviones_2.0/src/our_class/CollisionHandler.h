@@ -1,6 +1,9 @@
 #ifndef COLLISION_HANDLER_H
 #define COLLISION_HANDLER_H
 
+#include "EntityMesh.h"
+#include "../extra/coldet/coldet.h"
+
 class CollisionHandler {
 	public:
 

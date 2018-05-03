@@ -1,6 +1,8 @@
 #ifndef BULLET_H
 #define BULLET_H
 
+#include "../framework.h"
+
 class Bullet {
 	public:
 		Vector3 position;

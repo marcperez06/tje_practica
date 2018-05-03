@@ -1,5 +1,4 @@
 #include "Bullet.h"
-#include "../framework.h"
 
 Bullet::Bullet() {
 	this->lastPosition = Vector3(0, 0, 0);
