@@ -81,7 +81,7 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mesh
 
 Airplane::~Airplane() {}
 
-void Airplane::render(Camera* camera) {}
+void Airplane::render(Camera* camera) { EntityMesh::render(camera); }
 
 void Airplane::update(float deltaTime) {
 	

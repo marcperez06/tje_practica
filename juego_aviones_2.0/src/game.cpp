@@ -9,7 +9,7 @@
 #include <cmath>
 
 #include "our_class\Airplane.h"
-#include "our_class\Factory.h"
+#include "our_class\World.h"
 
 //some globals
 Mesh* mesh = NULL;
@@ -22,7 +22,7 @@ Camera* playerCamera = NULL;
 Camera* currentCamera = NULL;
 
 Airplane* player = NULL;
-Factory factory;
+World* world = NULL;
 
 Game* Game::instance = NULL;
 
@@ -41,16 +41,16 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	mouse_locked = false;
 
 	//OpenGL flags
-	glEnable( GL_CULL_FACE ); //render both sides of every triangle
+	//glEnable( GL_CULL_FACE ); //render both sides of every triangle
 	glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
 
-	// Build a player
-	player = Factory::buildAirplane(Vector3(0, 0, 0), 20);
+	// Build world.
+	world = new World();
 
-	Vector3 cameraPosition = player->transform.matrixModel * Vector3(0, 3, 9);
-	Vector3 cameraCenter = player->transform.matrixModel * player->highMesh->box.center;
+	Vector3 cameraPosition = world->player->transform.matrixModel * Vector3(0, 3, 9);
+	Vector3 cameraCenter = world->player->transform.matrixModel * world->player->highMesh->box.center;
 	cameraCenter.z += 1;
-	Vector3 cameraUp = player->transform.matrixModel.rotateVector(Transform::UP);
+	Vector3 cameraUp = world->player->transform.matrixModel.rotateVector(Transform::UP);
 
 	//create our free camera
 	freeCamera = new Camera();
@@ -64,6 +64,8 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 	currentCamera = playerCamera;
 
+	/*
+
 	//create a plane mesh
 	mesh = Mesh::Load("data/island/island.ASE");
 
@@ -73,6 +75,8 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 	// example of shader loading
 	shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
+
+	*/
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -94,8 +98,12 @@ void Game::render(void)
 
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
    
+
+	world->render(currentCamera);
+
+	/*
 	
 	//create model matrix for cube
 	Matrix44 m;
@@ -124,6 +132,8 @@ void Game::render(void)
    
 	
 	player->render(currentCamera);
+
+	*/
 
 	//Draw out world
 	drawGrid();
@@ -156,12 +166,12 @@ void Game::update(double seconds_elapsed)
 	if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) freeCamera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
 	if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) freeCamera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
 
-	player->update(seconds_elapsed);
+	world->update(seconds_elapsed);
 
-	Vector3 cameraPosition = player->transform.matrixModel * Vector3(0, 3, 9);
-	Vector3 cameraCenter = player->transform.matrixModel * player->highMesh->box.center;
+	Vector3 cameraPosition = world->player->transform.matrixModel * Vector3(0, 3, 9);
+	Vector3 cameraCenter = world->player->transform.matrixModel * world->player->highMesh->box.center;
 	cameraCenter.z += 1;
-	Vector3 cameraUp = player->transform.matrixModel.rotateVector(Transform::UP);
+	Vector3 cameraUp = world->player->transform.matrixModel.rotateVector(Transform::UP);
 	playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp);
 
 	//to navigate with the mouse fixed in the middle

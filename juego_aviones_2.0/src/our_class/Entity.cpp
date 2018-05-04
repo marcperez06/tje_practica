@@ -51,8 +51,22 @@ Matrix44 Entity::getGlobalMatrix() {
 
 }
 
-void Entity::render(Camera* camera) {}
-void Entity::update(float deltaTime) {}
+void Entity::render(Camera* camera) {
+	for (int i = 0; i < this->children.size(); i++) {
+		if (this->children[i] != NULL) {
+			this->children[i]->render(camera);
+		}
+	}
+}
+
+void Entity::update(float deltaTime) {
+	for (int i = 0; i < this->children.size(); i++) {
+		if (this->children[i] != NULL) {
+			this->children[i]->update(deltaTime);
+		}
+	}
+}
+
 void Entity::renderMesh(Matrix44 globalMatrix) {}
 
 void Entity::addChild(Entity* entity) {
