@@ -58,6 +58,33 @@
     <ClCompile Include="..\..\src\input.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\our_class\Airplane.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\Bullet.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\CollisionHandler.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\Entity.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\EntityMesh.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\Factory.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\Material.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\Transform.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\World.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\camera.h" />
@@ -113,6 +140,33 @@
     <ClInclude Include="..\..\src\input.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\our_class\Airplane.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\Bullet.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\CollisionHandler.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\Entity.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\EntityMesh.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\Factory.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\Material.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\Transform.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\World.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="extra">
@@ -126,6 +180,9 @@
     </Filter>
     <Filter Include="utils">
       <UniqueIdentifier>{feb78646-9d96-43df-8d00-2397429ea3ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="our_class">
+      <UniqueIdentifier>{c295540f-dcdd-42d3-a0f4-a7a6bf06e2e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
