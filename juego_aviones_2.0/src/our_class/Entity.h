@@ -37,7 +37,7 @@ class Entity {
 
 	protected:
 
-		virtual void renderMesh(Matrix44 globalMatrix);
+		virtual void renderMesh(Camera* camera, Matrix44 globalMatrix);
 
 };
 

@@ -23,8 +23,8 @@ Entity::Entity(const Transform transform) {
 
 Entity::~Entity() {
 	if (this->parent != NULL) { this->parent->removeChild(this); }
+	for (int i = 0; i < this->children.size(); i++) { delete children[i]; }
 	this->children.clear();
-	delete this;
 }
 
 void Entity::moveTo(const Vector3 pos) {
@@ -43,7 +43,7 @@ Vector3 Entity::getGlobalPosition() {
 
 Matrix44 Entity::getGlobalMatrix() {
 	
-	if (this->parent != NULL) {
+	if (this->parent == NULL) {
 		return this->transform.matrixModel;
 	} else {
 		return this->transform.matrixModel * this->parent->getGlobalMatrix();
@@ -52,6 +52,11 @@ Matrix44 Entity::getGlobalMatrix() {
 }
 
 void Entity::render(Camera* camera) {
+
+	Matrix44 globalMatrix = this->getGlobalMatrix();
+
+	this->renderMesh(camera, globalMatrix);
+
 	for (int i = 0; i < this->children.size(); i++) {
 		if (this->children[i] != NULL) {
 			this->children[i]->render(camera);
@@ -67,11 +72,13 @@ void Entity::update(float deltaTime) {
 	}
 }
 
-void Entity::renderMesh(Matrix44 globalMatrix) {}
+void Entity::renderMesh(Camera* camera, Matrix44 globalMatrix) {}
 
 void Entity::addChild(Entity* entity) {
-	entity->parent = this;
-	this->children.push_back(entity);
+	if (entity != NULL) {
+		entity->parent = this;
+		this->children.push_back(entity);
+	}
 }
 
 void Entity::removeChild(Entity* entity) {

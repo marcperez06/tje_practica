@@ -30,6 +30,10 @@ class World
 		void initPlayer();
 		void initWorldMap();
 		void initEnemies();
+		void initSky();
+
+		void renderWorldMap(Camera* camera);
+		void renderEnemies(Camera* camera);
 
 };
 

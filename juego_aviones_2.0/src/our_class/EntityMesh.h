@@ -37,7 +37,7 @@ class EntityMesh : public Entity {
 
 		virtual void update(float deltaTime);
 
-		void renderMesh(Camera* camera, Matrix44 globalMatrix);
+		virtual void renderMesh(Camera* camera, Matrix44 globalMatrix);
 };
 
 #endif

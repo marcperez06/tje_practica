@@ -23,6 +23,7 @@ Camera* currentCamera = NULL;
 
 Airplane* player = NULL;
 World* world = NULL;
+float gameSpeed;
 
 Game* Game::instance = NULL;
 
@@ -42,7 +43,9 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 	//OpenGL flags
 	//glEnable( GL_CULL_FACE ); //render both sides of every triangle
-	glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
+	//glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
+	
+	gameSpeed = 1;
 
 	// Build world.
 	world = new World();
@@ -94,10 +97,10 @@ void Game::render(void)
 	//set the camera as default
 	currentCamera->enable();
 
-	glDisable(GL_DEPTH_TEST);
+	
 
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
+	//glDisable(GL_BLEND);
+	//glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_CULL_FACE);
    
 
@@ -141,6 +144,8 @@ void Game::render(void)
 	//render the FPS
 	drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
 
+	//glDisable(GL_DEPTH_TEST);
+
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
 }
@@ -166,7 +171,7 @@ void Game::update(double seconds_elapsed)
 	if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) freeCamera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
 	if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) freeCamera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
 
-	world->update(seconds_elapsed);
+	world->update(seconds_elapsed * gameSpeed);
 
 	Vector3 cameraPosition = world->player->transform.matrixModel * Vector3(0, 3, 9);
 	Vector3 cameraCenter = world->player->transform.matrixModel * world->player->highMesh->box.center;
@@ -189,6 +194,7 @@ void Game::onKeyDown( SDL_KeyboardEvent event )
 		case SDLK_1:
 			currentCamera = (currentCamera == freeCamera) ? playerCamera : freeCamera;
 			freeCamera->eye = playerCamera->eye;
+			gameSpeed = (currentCamera == playerCamera) ? 1 : 0.01;
 			break;
 	}
 }
@@ -229,4 +235,3 @@ void Game::onResize(int width, int height)
 	window_width = width;
 	window_height = height;
 }
-
