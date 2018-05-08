@@ -30,14 +30,14 @@ EntityMesh* Factory::buildIsland(const Vector3 initialPos) {
 	Mesh* highMesh = Mesh::Load("data/island/island.ASE");
 	//Mesh* lowMesh = Mesh::Load("data/spitfire/island_low.ASE");
 	Texture* texture = Texture::Load("data/island/island_color_luz.tga");
-	Shader* shader = Shader::Load("data/shaders/texture.vs", "data/shaders/texture.fs");
+	Shader* shader = Shader::Load("data/shaders/texture.vs", "data/shaders/fog.fs");
 
 	Transform transform = Transform(initialPos, Quaternion());
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
 
 	EntityMesh* island = new EntityMesh(transform, highMesh, material);
 
-	island->addChild(Factory::buildWater(island->getPosition()));
+	//island->addChild(Factory::buildWater(island->getPosition()));
 
 	return island;
 }

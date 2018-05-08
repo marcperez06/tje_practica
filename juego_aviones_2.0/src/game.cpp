@@ -97,12 +97,9 @@ void Game::render(void)
 	//set the camera as default
 	currentCamera->enable();
 
-	
-
-	//glDisable(GL_BLEND);
-	//glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
-   
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	world->render(currentCamera);
 
@@ -139,12 +136,12 @@ void Game::render(void)
 	*/
 
 	//Draw out world
-	drawGrid();
+	//drawGrid();
 
 	//render the FPS
 	drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
 
-	//glDisable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
 
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
@@ -172,12 +169,14 @@ void Game::update(double seconds_elapsed)
 	if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) freeCamera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
 
 	world->update(seconds_elapsed * gameSpeed);
-
+	
 	Vector3 cameraPosition = world->player->transform.matrixModel * Vector3(0, 3, 9);
 	Vector3 cameraCenter = world->player->transform.matrixModel * world->player->highMesh->box.center;
 	cameraCenter.z += 1;
 	Vector3 cameraUp = world->player->transform.matrixModel.rotateVector(Transform::UP);
 	playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp);
+
+	world->sky->transform.translate(cameraPosition);
 
 	//to navigate with the mouse fixed in the middle
 	if (mouse_locked)

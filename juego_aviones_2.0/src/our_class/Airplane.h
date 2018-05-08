@@ -37,6 +37,8 @@ class Airplane : public EntityMesh {
 
 		void rotateAirplane(float deltaMove);
 
+		void turbo(float deltaTime);
+
 };
 
 #endif

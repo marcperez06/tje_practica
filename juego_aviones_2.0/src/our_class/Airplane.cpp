@@ -85,37 +85,51 @@ void Airplane::render(Camera* camera) { EntityMesh::render(camera); }
 
 void Airplane::update(float deltaTime) {
 	
-	float deltaMove = deltaTime * this->speed * 0.1;
+	float deltaMove = deltaTime * this->speed * 0.05;
 
 	this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
 
-	this->rotateAirplane(deltaMove);
+	if (this->name.compare("player") == 0) {
+		this->rotateAirplane(deltaMove);
+		this->turbo(deltaTime);
+	}
 
 }
 
 void Airplane::rotateAirplane(float deltaMove) {
 	
-	Vector3 up = this->transform.matrixModel.rotateVector(Vector3(0, 0, 1)); // roll
-	Vector3 front = this->transform.matrixModel.rotateVector(Vector3(1, 0, 0));  // jaw
-
-	// up
-	if (Input::isKeyPressed(SDL_SCANCODE_W) == true) {
-		this->transform.matrixModel.rotate(1 * deltaMove, front);
-	}
+	Vector3 pitch = Vector3(1, 0, 0);
+	//Vector3 jaw = Vector3(0, 1, 0);
+	Vector3 roll = Vector3(0, 0, 1);
 
 	// down
+	if (Input::isKeyPressed(SDL_SCANCODE_W) == true) {
+		this->transform.matrixModel.rotate(1 * deltaMove, pitch);
+	}
+
+	// up
 	if (Input::isKeyPressed(SDL_SCANCODE_S) == true) {
-		this->transform.matrixModel.rotate(-1 * deltaMove, front);
+		this->transform.matrixModel.rotate(-1 * deltaMove, pitch);
 	}
 
-	// right
-	if (Input::isKeyPressed(SDL_SCANCODE_D) == true) {
-		this->transform.matrixModel.rotate(1 * deltaMove, up);
-	}
-
-	// left
+	// roll right
 	if (Input::isKeyPressed(SDL_SCANCODE_A) == true) {
-		this->transform.matrixModel.rotate(-1 * deltaMove, up);
+		this->transform.matrixModel.rotate(1 * deltaMove, roll);
 	}
 
+	// roll left
+	if (Input::isKeyPressed(SDL_SCANCODE_D) == true) {
+		this->transform.matrixModel.rotate(-1 * deltaMove, roll);
+	}
+
+}
+
+void Airplane::turbo(float deltaTime) {
+	if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT) == true) {
+		this->transform.translate(Vector3(0, 0, -10) * this->speed * deltaTime);
+	}
+
+	if (Input::isKeyPressed(SDL_SCANCODE_TAB) == true) {
+		this->transform.translate(Vector3(0, 0, 10) * this->speed * deltaTime);
+	}
 }

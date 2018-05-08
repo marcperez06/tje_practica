@@ -4,7 +4,7 @@
 
 World::World()
 {
-	this->numEnemies = 10;
+	this->numEnemies = 100;
 	this->initPlayer();
 	this->initEnemies();
 	this->initWorldMap();
@@ -19,7 +19,7 @@ World::~World() {
 }
 
 void World::initPlayer() {
-	this->player = Factory::buildAirplane(Vector3(300, 300, 100), 20);
+	this->player = Factory::buildAirplane(Vector3(300, 300, 100), 30);
 	this->player->name = "player";
 	this->player->uuid = 1;
 }
@@ -28,9 +28,9 @@ void World::initEnemies() {
 	assert(this->player);
 	if (this->player != NULL) {
 		for (int i = 0; i < this->numEnemies; i++) {
-			float x = (rand() % 200) + this->player->highMesh->aabb_max.x;
-			float y = (rand() % 100) + 300 + this->player->highMesh->aabb_max.y;
-			float z = (rand() % 10) + this->player->highMesh->aabb_max.z;
+			float x = (rand() % 300) + this->player->highMesh->aabb_max.x;
+			float y = (rand() % 200) + 300 + this->player->highMesh->aabb_max.y;
+			float z = (rand() % 20) + this->player->highMesh->aabb_max.z;
 			Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 15);
 			this->enemies.push_back(enemy);
 		}
@@ -74,6 +74,8 @@ void World::renderWorldMap(Camera* camera) {
 	EntityMesh* base = NULL;
 	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/fog.fs");
 	
+	Mesh * water = Mesh::Load("data/island/water_deep.ASE");
+
 	shader->enable();
 
 	if (this->worldMap->children.size() > 0) {
@@ -92,6 +94,7 @@ void World::renderWorldMap(Camera* camera) {
 		for (int i = 0; i < this->worldMap->children.size(); i++) {
 			shader->setUniform("u_model", this->worldMap->children[i]->getGlobalMatrix());
 			base->highMesh->drawCall(GL_TRIANGLES);
+			water->drawCall(GL_TRIANGLES);
 		}
 		
 		base->highMesh->disableBuffers(shader);
@@ -132,6 +135,10 @@ void World::renderEnemies(Camera* camera) {
 }
 
 void World::render(Camera* camera) {
+	if (this->sky != NULL) {
+		this->sky->render(camera);
+	}
+
 	if (this->worldMap != NULL) {
 		//this->worldMap->render(camera);
 		this->renderWorldMap(camera);
@@ -147,10 +154,6 @@ void World::render(Camera* camera) {
 			this->enemies[i]->render(camera);
 		}
 	}*/
-
-	if (this->sky != NULL) {
-		this->sky->render(camera);
-	}
 }
 
 void World::update(float deltaTime) {
@@ -171,7 +174,6 @@ void World::update(float deltaTime) {
 
 	if (this->sky != NULL) {
 		this->sky->update(deltaTime);
-		this->sky->transform.translate(this->player->getPosition());
 	}
 
 }
