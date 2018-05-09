@@ -22,6 +22,8 @@ void World::initPlayer() {
 	this->player = Factory::buildAirplane(Vector3(300, 300, 100), 30);
 	this->player->name = "player";
 	this->player->uuid = 1;
+	this->player->weapons.push_back(new Weapon(this->player->uuid, "Misil"));
+	this->player->currentWepon = 0;
 }
 
 void World::initEnemies() {

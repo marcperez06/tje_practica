@@ -2,6 +2,7 @@
 #define AIRPLANE_H
 
 #include "EntityMesh.h"
+#include "Weapon.h"
 
 class Airplane : public EntityMesh {
 
@@ -10,8 +11,8 @@ class Airplane : public EntityMesh {
 		float speed;
 		float health;
 	
-		// std::vector<Wepon*> wepons;
-		// int currentWepon;
+		std::vector<Weapon*> weapons;
+		int currentWepon;
 
 		// --- CONSTRUCTORES ---
 

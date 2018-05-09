@@ -23,8 +23,6 @@ Entity::Entity(const Transform transform) {
 
 Entity::~Entity() {
 	if (this->parent != NULL) { this->parent->removeChild(this); }
-	for (int i = 0; i < this->children.size(); i++) { delete children[i]; }
-	this->children.clear();
 }
 
 void Entity::moveTo(const Vector3 pos) {
@@ -85,9 +83,8 @@ void Entity::removeChild(Entity* entity) {
 
 	for (int i = 0; i < this->children.size(); i++) {
 		if (this->children[i] == entity) {
-			this->children[i]->parent = NULL;
 			this->children.erase(this->children.begin() + i);
+			this->children[i]->parent = NULL;
 		}
 	}
-
 }

@@ -176,7 +176,7 @@ void Game::update(double seconds_elapsed)
 	Vector3 cameraUp = world->player->transform.matrixModel.rotateVector(Transform::UP);
 	playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp);
 
-	world->sky->transform.translate(cameraPosition);
+	//world->sky->transform.translate(world->player->getPosition());
 
 	//to navigate with the mouse fixed in the middle
 	if (mouse_locked)

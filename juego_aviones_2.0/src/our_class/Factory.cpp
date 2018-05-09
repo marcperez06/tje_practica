@@ -14,15 +14,15 @@ Airplane* Factory::buildAirplane(const Vector3 initialPos, float speed) {
 	return airplane;
 }
 
-Bullet* Factory::buildBullet(const Vector3 pos, const Vector3 velocity, float power, float timeToLive, int author, std::string type) {
+Bullet* Factory::buildBullet(const Vector3 pos, const Vector3 velocity, float damage, float timeToLive, int owner, std::string type) {
 	Bullet* bullet = new Bullet();
 	bullet->lastPosition = pos;
 	bullet->position = pos;
 	bullet->velocity = velocity;
-	bullet->power = power;
+	bullet->damage = damage;
 	bullet->timeToLive = timeToLive;
 	bullet->type = type;
-	bullet->author = author;
+	bullet->owner = owner;
 	return bullet;
 }
 

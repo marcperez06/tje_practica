@@ -9,11 +9,14 @@ class Bullet {
 		Vector3 lastPosition;
 		Vector3 velocity;
 		float timeToLive;
-		float power;
-		int author; // uuid de la entidad que dispara.
+		float damage;
+		int owner; // uuid de la entidad que dispara.
 		std::string type;
 
 		Bullet();
+
+		void render();
+		void update();
 
 };
 
