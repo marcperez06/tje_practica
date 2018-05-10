@@ -2,6 +2,8 @@
 #include "Factory.h"
 #include <stdlib.h>
 
+World* World::instance = NULL;
+
 World::World()
 {
 	this->numEnemies = 100;
@@ -9,6 +11,7 @@ World::World()
 	this->initEnemies();
 	this->initWorldMap();
 	this->initSky();
+	World::instance = this;
 }
 
 World::~World() {
@@ -19,7 +22,7 @@ World::~World() {
 }
 
 void World::initPlayer() {
-	this->player = Factory::buildAirplane(Vector3(300, 300, 100), 30);
+	this->player = Factory::buildAirplane(Vector3(0, 500, 0), 50);
 	this->player->name = "player";
 	this->player->uuid = 1;
 	this->player->weapons.push_back(new Weapon(this->player->uuid, "Misil"));
@@ -88,6 +91,7 @@ void World::renderWorldMap(Camera* camera) {
 		shader->setUniform("u_color", base->material->color);
 		shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 		shader->setUniform("u_texture", base->material->texture);
+		//shader->setUniform("u_detail_texture", Texture::Load("data/island/rock.tga"));
 		shader->setUniform("u_camera_position", camera->eye);
 		shader->setUniform("u_time", 1);
 		

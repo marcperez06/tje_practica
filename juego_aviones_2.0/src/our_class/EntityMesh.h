@@ -38,6 +38,10 @@ class EntityMesh : public Entity {
 		virtual void update(float deltaTime);
 
 		virtual void renderMesh(Camera* camera, Matrix44 globalMatrix);
+
+	private:
+		void activeGlFlags();
+		void desactiveGlFlags();
 };
 
 #endif

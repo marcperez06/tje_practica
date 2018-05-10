@@ -12,6 +12,8 @@ class World
 		//Camera* freeCam;
 		//Camera* playerCam;
 
+		static World* instance;
+
 		Airplane* player;
 		int numEnemies;
 		std::vector<Airplane*> enemies;

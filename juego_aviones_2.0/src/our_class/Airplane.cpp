@@ -1,5 +1,7 @@
 #include "Airplane.h"
 #include "../input.h"
+//#include "CollisionHandler.h"
+#include "World.h";
 
 // --- CONSTRUCTORES ---
 
@@ -87,7 +89,10 @@ void Airplane::render(Camera* camera) {
 }
 
 void Airplane::update(float deltaTime) {
-	
+
+	Vector3 collision;
+	Vector3 normal;
+
 	float deltaMove = deltaTime * this->speed * 0.05;
 
 	this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
@@ -95,43 +100,25 @@ void Airplane::update(float deltaTime) {
 	if (this->name.compare("player") == 0) {
 		this->rotateAirplane(deltaMove);
 		this->turbo(deltaTime);
+		this->shoot();
+		this->weapons[currentWepon]->update(deltaTime);
 
-		this->weapons[currentWepon]->shoot(this->transform.matrixModel);
-
-		this->weapons[currentWepon]->update();
+		if (this->detectCollision(collision, normal) == true) {
+			this->speed = 0;
+		}
 
 	}
-
-	
 
 }
 
 void Airplane::rotateAirplane(float deltaMove) {
-	
-	Vector3 pitch = Vector3(1, 0, 0);
-	Vector3 jaw = Vector3(0, 1, 0);
+	this->rotateRollDirection(deltaMove);
+	this->rotatePitchDirection(deltaMove);
+	this->rotateJawDirection(deltaMove);
+}
+
+void Airplane::rotateRollDirection(float deltaMove) {
 	Vector3 roll = Vector3(0, 0, 1);
-
-	// down
-	if (Input::isKeyPressed(SDL_SCANCODE_W) == true) {
-		this->transform.matrixModel.rotate(1 * deltaMove, pitch);
-	}
-
-	// up
-	if (Input::isKeyPressed(SDL_SCANCODE_S) == true) {
-		this->transform.matrixModel.rotate(-1 * deltaMove, pitch);
-	}
-
-	// jaw right
-	if (Input::isKeyPressed(SDL_SCANCODE_D) == true) {
-		this->transform.matrixModel.rotate(1 * deltaMove, jaw);
-	}
-
-	// jaw left
-	if (Input::isKeyPressed(SDL_SCANCODE_A) == true) {
-		this->transform.matrixModel.rotate(-1 * deltaMove, jaw);
-	}
-
 	// roll right
 	if (Input::isKeyPressed(SDL_SCANCODE_Q) == true) {
 		this->transform.matrixModel.rotate(-1 * deltaMove, roll);
@@ -141,7 +128,32 @@ void Airplane::rotateAirplane(float deltaMove) {
 	if (Input::isKeyPressed(SDL_SCANCODE_E) == true) {
 		this->transform.matrixModel.rotate(1 * deltaMove, roll);
 	}
+}
 
+void Airplane::rotatePitchDirection(float deltaMove) {
+	Vector3 pitch = Vector3(1, 0, 0);
+	// down
+	if (Input::isKeyPressed(SDL_SCANCODE_W) == true) {
+		this->transform.matrixModel.rotate(1 * deltaMove, pitch);
+	}
+
+	// up
+	if (Input::isKeyPressed(SDL_SCANCODE_S) == true) {
+		this->transform.matrixModel.rotate(-1 * deltaMove, pitch);
+	}
+}
+
+void Airplane::rotateJawDirection(float deltaMove) {
+	Vector3 jaw = Vector3(0, 1, 0);
+	// jaw right
+	if (Input::isKeyPressed(SDL_SCANCODE_D) == true) {
+		this->transform.matrixModel.rotate(1 * deltaMove, jaw);
+	}
+
+	// jaw left
+	if (Input::isKeyPressed(SDL_SCANCODE_A) == true) {
+		this->transform.matrixModel.rotate(-1 * deltaMove, jaw);
+	}
 }
 
 void Airplane::turbo(float deltaTime) {
@@ -152,4 +164,18 @@ void Airplane::turbo(float deltaTime) {
 	if (Input::isKeyPressed(SDL_SCANCODE_TAB) == true) {
 		this->transform.translate(Vector3(0, 0, 10) * this->speed * deltaTime);
 	}
+}
+
+void Airplane::shoot() {
+	if (Input::isKeyPressed(SDL_SCANCODE_SPACE) == true) {
+		this->weapons[currentWepon]->shoot(this->transform.matrixModel);
+	}
+}
+
+bool Airplane::detectCollision(Vector3 & collisionPoint, Vector3 & normal) {
+	Vector3 origin = this->getGlobalPosition();
+	Vector3 direction = Vector3(0, 0, -1);
+	std::vector<Entity*> a = World::instance->worldMap->children;
+	return this->highMesh->testRayCollision(a[0]->transform.matrixModel, origin, direction, collisionPoint, normal);
+	//return CollisionHandler::haveAnyRayCollision(origin, direction, a, collisionPoint, normal);
 }

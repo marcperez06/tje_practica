@@ -85,6 +85,9 @@
     <ClCompile Include="..\..\src\our_class\World.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\our_class\Weapon.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\camera.h" />
@@ -165,6 +168,9 @@
       <Filter>our_class</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\our_class\World.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\Weapon.h">
       <Filter>our_class</Filter>
     </ClInclude>
   </ItemGroup>

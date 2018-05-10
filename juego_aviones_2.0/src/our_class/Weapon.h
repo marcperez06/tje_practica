@@ -21,7 +21,7 @@ class Weapon {
 
 		void shoot(Matrix44 parentTransform);
 		void render();
-		void update();
+		void update(float deltaTime);
 };
 
 #endif

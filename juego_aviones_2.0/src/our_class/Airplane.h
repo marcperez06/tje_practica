@@ -37,9 +37,15 @@ class Airplane : public EntityMesh {
 		virtual void update(float deltaTime);
 
 		void rotateAirplane(float deltaMove);
+		void rotateRollDirection(float deltaMove);
+		void rotatePitchDirection(float deltaMove);
+		void rotateJawDirection(float deltaMove);
 
 		void turbo(float deltaTime);
 
+		void shoot();
+
+		bool detectCollision(Vector3 & collisionPoint, Vector3 & normal);
 };
 
 #endif

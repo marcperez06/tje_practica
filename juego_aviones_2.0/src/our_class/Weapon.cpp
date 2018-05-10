@@ -16,23 +16,25 @@ Weapon::Weapon(int ownser, std::string type) {
 void Weapon::initMisil() {
 	this->damage = 100;
 	this->bulletSpeed = 10;
-	this->cooldown = 2;
+	this->cooldown = 5;
 	this->fireRate = 1;
 }
 
 void Weapon::initMachineGun() {
-	this->damage = 100;
-	this->bulletSpeed = 10;
+	this->damage = 60;
+	this->bulletSpeed = 7;
 	this->cooldown = 2;
-	this->fireRate = 1;
+	this->fireRate = 10;
 }
 
 void Weapon::shoot(Matrix44 parentTransform) {
 
 	Vector3 initialPos = parentTransform * Vector3(0, -3, 0);
 	Vector3 velocity = Vector3(0, 0, bulletSpeed * -1);
-	if (this->bullets.size() == 0)
+	if (this->cooldown < 0) {
 		this->bullets.push_back(Factory::buildBullet(initialPos, velocity, this->damage, 2, this->owner, this->type));
+		this->cooldown = 2;
+	}
 }
 
 void Weapon::render() {
@@ -41,7 +43,8 @@ void Weapon::render() {
 	}
 }
 
-void Weapon::update() {
+void Weapon::update(float deltaTime) {
+	this->cooldown -= deltaTime;
 	for (int i = 0; i < this->bullets.size(); i++) {
 		this->bullets[i]->update();
 	}

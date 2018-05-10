@@ -122,11 +122,7 @@ void EntityMesh::renderMesh(Camera * camera, Matrix44 globalMatrix) {
 
 			if (shader != NULL) {
 
-				// Activar falgs...
-
-				if (this->material->blendAlpha == true) { glEnable(GL_BLEND); }
-				if (this->material->depthTest == true) { glEnable(GL_DEPTH_TEST); }
-				if (this->material->cullFace == true) { glEnable(GL_CULL_FACE); }
+				//this->activeGlFlags();
 
 				//enable shader
 				shader->enable();
@@ -144,17 +140,25 @@ void EntityMesh::renderMesh(Camera * camera, Matrix44 globalMatrix) {
 				//disable shader
 				shader->disable();
 
-				// Desactivar falgs...
-
-				if (this->material->blendAlpha == true) { glDisable(GL_BLEND); }
-				if (this->material->depthTest == true) { glDisable(GL_DEPTH_TEST); }
-				if (this->material->cullFace == true) { glDisable(GL_CULL_FACE); }
+				//this->desactiveGlFlags();
 			}
 
 		}
 
 	}
 
+}
+
+void EntityMesh::activeGlFlags() {
+	if (this->material->blendAlpha == true) { glEnable(GL_BLEND); }
+	if (this->material->depthTest == true) { glEnable(GL_DEPTH_TEST); }
+	if (this->material->cullFace == true) { glEnable(GL_CULL_FACE); }
+}
+
+void EntityMesh::desactiveGlFlags() {
+	if (this->material->blendAlpha == true) { glDisable(GL_BLEND); }
+	if (this->material->depthTest == true) { glDisable(GL_DEPTH_TEST); }
+	if (this->material->cullFace == true) { glDisable(GL_CULL_FACE); }
 }
 
 void EntityMesh::update(float deltaTime) {}
