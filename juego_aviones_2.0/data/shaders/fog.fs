@@ -13,7 +13,11 @@ uniform vec3 u_camera_position;
 void main()
 {
 	float distance = length(u_camera_position - v_world_position);
-	float fogFactor = clamp((1000 / distance), 0, 1);
+	float fogMaxDistance = 1000;
+	float fogMinDistance = 100;
+	float fogDiferenceDistance = fogMaxDistance - distance;
+	float fogDiferenceMaxMin = fogMaxDistance - fogMinDistance;
+	float fogFactor = clamp(1.0 - (fogDiferenceDistance / fogDiferenceMaxMin) , 0.0, 1.0);
 	fogFactor = pow(fogFactor, 3);
 
 	vec4 fogColor = vec4(1, 1, 1, 1);
@@ -22,7 +26,7 @@ void main()
 	vec4 color = u_color * texture2D( u_texture, uv );
 
 	//color = color * (fogFactor) + fogColor * (1 - fogFactor);
-	color = mix(color, fogColor, 1-fogFactor);
+	color = mix(color, fogColor, fogFactor);
 
 	gl_FragColor = color;
 }

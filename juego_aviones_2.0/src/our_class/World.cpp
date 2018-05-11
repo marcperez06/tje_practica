@@ -98,7 +98,7 @@ void World::initSky() {
 
 void World::renderWorldMap(Camera* camera) {
 	EntityMesh* base = NULL;
-	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/fog.fs");
+	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/world.fs");
 	
 	Mesh * water = Mesh::Load("data/island/water_deep.ASE");
 
@@ -114,7 +114,7 @@ void World::renderWorldMap(Camera* camera) {
 		shader->setUniform("u_color", base->material->color);
 		shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 		shader->setUniform("u_texture", base->material->texture);
-		//shader->setUniform("u_detail_texture", Texture::Load("data/island/rock.tga"));
+		shader->setUniform("u_detail_texture", Texture::Load("data/island/rock.tga"));
 		shader->setUniform("u_camera_position", camera->eye);
 		shader->setUniform("u_time", 1);
 		
@@ -171,7 +171,9 @@ void World::renderAirplanes(Camera* camera) {
 void World::render(Camera* camera) {
 	if (this->sky != NULL) {
 		this->sky->transform.matrixModel.setTranslation(camera->eye.x, camera->eye.y, camera->eye.z);
+		glDisable(GL_DEPTH_TEST);
 		this->sky->render(camera);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	if (this->getWorldMap() != NULL) {
