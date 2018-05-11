@@ -8,6 +8,8 @@ class Airplane : public EntityMesh {
 
 	public:
 
+		static std::vector<Airplane*> airplanes;
+
 		float speed;
 		float health;
 	
@@ -46,6 +48,11 @@ class Airplane : public EntityMesh {
 		void shoot();
 
 		bool detectCollision(Vector3 & collisionPoint, Vector3 & normal);
+
+	private:
+
+		void removeAirplane(Airplane* airplane);
+
 };
 
 #endif

@@ -8,34 +8,38 @@ class World
 {
 	public:
 
-		// De fet les cameres no se si tindrien que anar aqui o no, de moment esta adaptat a que funcioni la camera rebentla per parametre.
-		//Camera* freeCam;
-		//Camera* playerCam;
-
 		static World* instance;
+
+		// De fet les cameres no se si tindrien que anar aqui o no, de moment esta adaptat a que funcioni la camera rebentla per parametre.
+		Camera* freeCamera;
+		Camera* playerCamera;
+		Camera* currentCamera;
+
+		Entity* root;
 
 		Airplane* player;
 		int numEnemies;
-		std::vector<Airplane*> enemies;
-		Entity* worldMap; // Entity que conté totes les illes (dins de la classe Entity hi ha un vector que s'utilitza per crear un arbre de Entitats)
+
 		EntityMesh* sky;
 
 		World();
 		~World();
+
+		Entity* getWorldMap();
 
 		void render(Camera * camera);
 		void update(float deltaTime);
 
 	private:
 		
-		//void initCameras();
+		void initCameras();
 		void initPlayer();
 		void initWorldMap();
 		void initEnemies();
 		void initSky();
 
 		void renderWorldMap(Camera* camera);
-		void renderEnemies(Camera* camera);
+		void renderAirplanes(Camera* camera);
 
 };
 

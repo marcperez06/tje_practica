@@ -1,13 +1,15 @@
 #include "World.h"
 #include "Factory.h"
 #include <stdlib.h>
+#include "../game.h";
 
 World* World::instance = NULL;
 
-World::World()
-{
+World::World() {
+	this->root = new Entity(Vector3(0, 0, 0));
 	this->numEnemies = 100;
 	this->initPlayer();
+	this->initCameras();
 	this->initEnemies();
 	this->initWorldMap();
 	this->initSky();
@@ -15,14 +17,33 @@ World::World()
 }
 
 World::~World() {
-	this->enemies.clear();
+	for (int i = 0; i < this->root->children.size(); i++) {
+		delete this->root->children[i];
+		this->root->children.erase(this->root->children.begin() + i);
+	}
 	delete this->player;
-	delete this->worldMap;
 	delete this->sky;
 }
 
+void World::initCameras() {
+	Vector3 cameraPosition = this->player->transform.matrixModel * Vector3(0, 3, 9);
+	Vector3 cameraCenter = this->player->transform.matrixModel * (this->player->highMesh->box.center + Vector3(0, 0, 1));
+	Vector3 cameraUp = this->player->transform.matrixModel.rotateVector(Transform::UP);
+
+	//create our free camera
+	this->freeCamera = new Camera();
+	this->freeCamera->lookAt(cameraPosition, cameraCenter, cameraUp); //position the camera and point to 0,0,0
+	this->freeCamera->setPerspective(70.f, Game::instance->window_width / (float) Game::instance->window_height, 0.1f, 30000.f); //set the projection, we want to be perspective
+
+	this->playerCamera = new Camera();
+	this->playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp); //position the camera and point to 0,0,0
+	this->playerCamera->setPerspective(70.f, Game::instance->window_width / (float) Game::instance->window_height, 0.1f, 10000.f); //set the projection, we want to be perspective
+
+	this->currentCamera = this->playerCamera;
+}
+
 void World::initPlayer() {
-	this->player = Factory::buildAirplane(Vector3(0, 500, 0), 50);
+	this->player = Factory::buildAirplane(Vector3(0, 500, 0), 200);
 	this->player->name = "player";
 	this->player->uuid = 1;
 	this->player->weapons.push_back(new Weapon(this->player->uuid, "Misil"));
@@ -37,15 +58,15 @@ void World::initEnemies() {
 			float y = (rand() % 200) + 300 + this->player->highMesh->aabb_max.y;
 			float z = (rand() % 20) + this->player->highMesh->aabb_max.z;
 			Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 15);
-			this->enemies.push_back(enemy);
+			this->root->addChild(enemy);
 		}
 	}
 }
 
 void World::initWorldMap() {
-	this->worldMap = new Entity(Vector3(0, 0, 0));
-	this->worldMap->name = "worldMap"; // Podem triar un nom..
-	this->worldMap->uuid = 2;
+	Entity* worldMap = new Entity(Vector3(0, 0, 0));
+	worldMap->name = "worldMap"; // Podem triar un nom..
+	worldMap->uuid = 2;
 
 	Mesh * meshIsland = Mesh::Load("data/island/island.ASE");
 	float maxX = (meshIsland->aabb_max.x * 2) - 10;
@@ -62,17 +83,17 @@ void World::initWorldMap() {
 			float z = maxZ * j;
 
 			EntityMesh* island = Factory::buildIsland(Vector3(x, y, z));
-			this->worldMap->addChild(island);
+			worldMap->addChild(island);
 
 		}
 	}
+
+	this->root->addChild(worldMap);
 }
 
 void World::initSky() {
-	assert(this->player);
-	if (this->player != NULL) {
-		this->sky = Factory::buildSky(this->player->getGlobalPosition());
-	}
+	assert(this->playerCamera);
+	this->sky = Factory::buildSky(this->playerCamera->eye);
 }
 
 void World::renderWorldMap(Camera* camera) {
@@ -83,8 +104,10 @@ void World::renderWorldMap(Camera* camera) {
 
 	shader->enable();
 
-	if (this->worldMap->children.size() > 0) {
-		base = (EntityMesh*) this->worldMap->children[0];
+	Entity* worldMap = this->getWorldMap();
+
+	if (worldMap->children.size() > 0) {
+		base = (EntityMesh*) worldMap->children[0];
 	}
 
 	if (base != NULL) {
@@ -97,8 +120,8 @@ void World::renderWorldMap(Camera* camera) {
 		
 		base->highMesh->enableBuffers(shader);
 
-		for (int i = 0; i < this->worldMap->children.size(); i++) {
-			shader->setUniform("u_model", this->worldMap->children[i]->getGlobalMatrix());
+		for (int i = 0; i < worldMap->children.size(); i++) {
+			shader->setUniform("u_model", worldMap->children[i]->getGlobalMatrix());
 			base->highMesh->drawCall(GL_TRIANGLES);
 			water->drawCall(GL_TRIANGLES);
 		}
@@ -111,17 +134,22 @@ void World::renderWorldMap(Camera* camera) {
 
 }
 
-void World::renderEnemies(Camera* camera) {
+void World::renderAirplanes(Camera* camera) {
 	Airplane* base;
 	std::vector<Matrix44> enemiesPos;
 	Mesh* enemyMesh = Mesh::Load("data/spitfire/spitfire.ASE");
 	Shader* shader = Shader::Load("data/shaders/instanced.vs", "data/shaders/texture.fs");
 
-	if (this->enemies.size() > 0) {
-		base = (Airplane*) this->enemies[0];
+	if (Airplane::airplanes.size() > 0) {
+		base = Airplane::airplanes[0];
 	}
 
-	for (int i = 0; i < this->enemies.size(); i++) { enemiesPos.push_back(this->enemies[i]->getGlobalMatrix()); }
+	for (int i = 0; i < Airplane::airplanes.size(); i++) {
+		Airplane* airplane = Airplane::airplanes[i];
+		//if (airplane->name.compare("player") != 0) {
+			enemiesPos.push_back(airplane->getGlobalMatrix());
+		//}
+	}
 
 	shader->enable();
 
@@ -142,19 +170,22 @@ void World::renderEnemies(Camera* camera) {
 
 void World::render(Camera* camera) {
 	if (this->sky != NULL) {
+		this->sky->transform.matrixModel.setTranslation(camera->eye.x, camera->eye.y, camera->eye.z);
 		this->sky->render(camera);
 	}
 
-	if (this->worldMap != NULL) {
+	if (this->getWorldMap() != NULL) {
 		//this->worldMap->render(camera);
 		this->renderWorldMap(camera);
 	}
-
+	
+	/*
 	if (this->player != NULL) {
 		this->player->render(camera);
 	}
+	*/
 
-	this->renderEnemies(camera);
+	this->renderAirplanes(camera);
 	/*for (int i = 0; i < this->enemies.size(); i++) {
 		if (this->enemies[i] != NULL) {
 			this->enemies[i]->render(camera);
@@ -164,22 +195,35 @@ void World::render(Camera* camera) {
 
 void World::update(float deltaTime) {
 
-	if (this->worldMap != NULL) {
-		this->worldMap->update(deltaTime);
+	if (this->root != NULL) {
+		this->root->update(deltaTime);
 	}
 
 	if (this->player != NULL) {
 		this->player->update(deltaTime);
-	}
 
-	for (int i = 0; i < this->enemies.size(); i++) {
-		if (this->enemies[i] != NULL) {
-			this->enemies[i]->update(deltaTime);
-		}
+		Vector3 cameraPosition = this->player->transform.matrixModel * Vector3(0, 3, 9);
+		Vector3 cameraCenter = this->player->transform.matrixModel * (this->player->highMesh->box.center + Vector3(0, 0, 1));
+		Vector3 cameraUp = this->player->transform.matrixModel.rotateVector(Transform::UP);
+		playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp);
+
 	}
 
 	if (this->sky != NULL) {
 		this->sky->update(deltaTime);
 	}
 
+}
+
+Entity* World::getWorldMap() {
+	bool founded = false;
+	Entity* worldMap = NULL;
+	for (int i = 0; (i < this->root->children.size()) && (founded == false); i++) {
+		Entity* child = this->root->children[i];
+		if (child->name.compare("worldMap") == 0) {
+			worldMap = child;
+			founded = true;
+		}
+	}
+	return worldMap;
 }

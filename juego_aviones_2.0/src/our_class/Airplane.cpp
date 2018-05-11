@@ -5,83 +5,24 @@
 
 // --- CONSTRUCTORES ---
 
-Airplane::Airplane(float speed, const Vector3 position) : EntityMesh(position) {
-	this->speed = speed;
-	this->health = 100;
-}
-
-Airplane::Airplane(float speed, const Vector3 position, Mesh * highMesh) : EntityMesh(position, highMesh) {
-	this->speed = speed;
-	this->health = 100;
-}
-
-Airplane::Airplane(float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh) : EntityMesh(position, rotation, highMesh) {
-	this->speed = speed;
-	this->health = 100;
-}
-
-Airplane::Airplane(float speed, const Vector3 position, Mesh * highMesh, Texture* texture, Shader* shader, Vector4 color) : EntityMesh(position, highMesh, texture, shader, color) {
-	this->speed = speed;
-	this->health = 100;
-}
-
-Airplane::Airplane(float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh,
-					Texture* texture, Shader* shader, Vector4 color) : EntityMesh(position, rotation, highMesh, texture, shader, color) {
-
-	this->speed = speed;
-	this->health = 100;
-}
-
-Airplane::Airplane(float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh,
-					Material * material) : EntityMesh(position, rotation, highMesh, material) {
-
-	this->speed = speed;
-	this->health = 100;
-}
+std::vector<Airplane*> Airplane::airplanes;
 
 Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Material * material) : EntityMesh(transform, highMesh, material) {
 	this->speed = speed;
 	this->health = 100;
-}
-
-Airplane::Airplane(float speed, const Vector3 position, Mesh * highMesh, Mesh * lowMesh) : EntityMesh(position, highMesh, lowMesh) {
-	this->speed = speed;
-	this->health = 100;
-}
-
-Airplane::Airplane(float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh)
-					: EntityMesh(position, rotation, highMesh, lowMesh) {
-	this->speed = speed;
-	this->health = 100;
-}
-
-Airplane::Airplane(float speed, const Vector3 position, Mesh * highMesh, Mesh * lowMesh, Texture* texture, Shader* shader, Vector4 color)
-					: EntityMesh(position, highMesh, lowMesh, texture, shader, color) {
-	this->speed = speed;
-	this->health = 100;
-}
-
-Airplane::Airplane(float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh,
-					Texture* texture, Shader* shader, Vector4 color) : EntityMesh(position, rotation, highMesh, lowMesh, texture, shader, color) {
-
-	this->speed = speed;
-	this->health = 100;
-}
-
-Airplane::Airplane(float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh,
-					Material * material) : EntityMesh(position, rotation, highMesh, lowMesh, material) {
-
-	this->speed = speed;
-	this->health = 100;
+	airplanes.push_back(this);
 }
 
 Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mesh * lowMesh, Material * material)
 					: EntityMesh(transform, highMesh, lowMesh, material) {
 	this->speed = speed;
 	this->health = 100;
+	airplanes.push_back(this);
 }
 
-Airplane::~Airplane() {}
+Airplane::~Airplane() {
+	this->removeAirplane(this);
+}
 
 void Airplane::render(Camera* camera) { 
 	EntityMesh::render(camera);
@@ -93,7 +34,7 @@ void Airplane::update(float deltaTime) {
 	Vector3 collision;
 	Vector3 normal;
 
-	float deltaMove = deltaTime * this->speed * 0.05;
+	float deltaMove = deltaTime * this->speed * 0.02;
 
 	this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
 
@@ -167,15 +108,31 @@ void Airplane::turbo(float deltaTime) {
 }
 
 void Airplane::shoot() {
-	if (Input::isKeyPressed(SDL_SCANCODE_SPACE) == true) {
-		this->weapons[currentWepon]->shoot(this->transform.matrixModel);
+	if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) == true) {
+		this->weapons[currentWepon]->shoot(this->getGlobalMatrix() );
 	}
 }
 
 bool Airplane::detectCollision(Vector3 & collisionPoint, Vector3 & normal) {
+	bool haveCollision = false;
 	Vector3 origin = this->getGlobalPosition();
 	Vector3 direction = Vector3(0, 0, -1);
-	std::vector<Entity*> a = World::instance->worldMap->children;
-	return this->highMesh->testRayCollision(a[0]->transform.matrixModel, origin, direction, collisionPoint, normal);
+	std::vector<Entity*> islands = World::instance->root->children;
+	for (int i = 0; (i < islands.size()) && (haveCollision == false); i++) {
+		EntityMesh* island = (EntityMesh*) islands[i];
+		//haveCollision = island->highMesh->testRayCollision(island->getGlobalMatrix(), origin, direction, collisionPoint, normal);
+	}
+	return haveCollision;
+	//return this->highMesh->testRayCollision(a[0]->transform.matrixModel, origin, direction, collisionPoint, normal);
 	//return CollisionHandler::haveAnyRayCollision(origin, direction, a, collisionPoint, normal);
+}
+
+void Airplane::removeAirplane(Airplane* airplane) {
+	bool founded = false;
+	for (int i = 0; (i < airplanes.size()) && (founded == false); i++) {
+		if (airplanes[i] == airplane) {
+			airplanes.erase(airplanes.begin() + i);
+			founded = true;
+		}
+	}
 }

@@ -15,18 +15,7 @@ class EntityMesh : public Entity {
 		
 		// --- CONSTRUCTORES ---
 
-		EntityMesh(const Vector3 position);
-		EntityMesh(const Vector3 position, Mesh * highMesh);
-		EntityMesh(const Vector3 position, const Quaternion rotation, Mesh * highMesh);
-		EntityMesh(const Vector3 position, Mesh * highMesh, Texture* texture, Shader* shader, Vector4 color);
-		EntityMesh(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Texture* texture, Shader* shader, Vector4 color);
-		EntityMesh(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Material * material);
 		EntityMesh(const Transform transform, Mesh * highMesh, Material * material);
-		EntityMesh(const Vector3 position, Mesh * highMesh, Mesh * lowMesh);
-		EntityMesh(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh);
-		EntityMesh(const Vector3 position, Mesh * highMesh, Mesh * lowMesh, Texture* texture, Shader* shader, Vector4 color);
-		EntityMesh(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh, Texture* texture, Shader* shader, Vector4 color);
-		EntityMesh(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh, Material * material);
 		EntityMesh(const Transform transform, Mesh * highMesh, Mesh * lowMesh, Material * material);
 
 		virtual ~EntityMesh();

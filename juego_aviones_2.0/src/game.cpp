@@ -17,11 +17,6 @@ Texture* texture = NULL;
 Shader* shader = NULL;
 float angle = 0;
 
-Camera* freeCamera = NULL;
-Camera* playerCamera = NULL;
-Camera* currentCamera = NULL;
-
-Airplane* player = NULL;
 World* world = NULL;
 float gameSpeed;
 
@@ -50,23 +45,6 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	// Build world.
 	world = new World();
 
-	Vector3 cameraPosition = world->player->transform.matrixModel * Vector3(0, 3, 9);
-	Vector3 cameraCenter = world->player->transform.matrixModel * world->player->highMesh->box.center;
-	cameraCenter.z += 1;
-	Vector3 cameraUp = world->player->transform.matrixModel.rotateVector(Transform::UP);
-
-	//create our free camera
-	freeCamera = new Camera();
-	freeCamera->lookAt(cameraPosition, cameraCenter, cameraUp); //position the camera and point to 0,0,0
-	freeCamera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
-
-	//create our player camera
-	playerCamera = new Camera();
-	playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp); //position the camera and point to 0,0,0
-	playerCamera->setPerspective(70.f, window_width / (float)window_height, 0.1f, 10000.f); //set the projection, we want to be perspective
-
-	currentCamera = playerCamera;
-
 	/*
 
 	//create a plane mesh
@@ -89,19 +67,22 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 void Game::render(void)
 {
 	//set the clear color (the background color)
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	float red = 161.0 / 255.0;
+	float green = 192.0 / 255.0;
+	float blue = 203.0 / 255.0;
+	glClearColor(red, green, blue, 1.0);
 
 	// Clear the window and the depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//set the camera as default
-	currentCamera->enable();
+	World::instance->currentCamera->enable();
 
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	world->render(currentCamera);
+	world->render(World::instance->currentCamera);
 
 	/*
 	
@@ -149,7 +130,7 @@ void Game::render(void)
 
 void Game::update(double seconds_elapsed)
 {
-	float speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
+	float speed = seconds_elapsed * 300; //the speed is defined by the seconds_elapsed so it goes constant
 
 	//example
 	angle += (float)seconds_elapsed * 10.0f;
@@ -157,27 +138,19 @@ void Game::update(double seconds_elapsed)
 	//mouse input to rotate the cam
 	if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked ) //is left button pressed?
 	{
-		freeCamera->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f,-1.0f,0.0f));
-		freeCamera->rotate(Input::mouse_delta.y * 0.005f, freeCamera->getLocalVector( Vector3(-1.0f,0.0f,0.0f)));
+		World::instance->freeCamera->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f,-1.0f,0.0f));
+		World::instance->freeCamera->rotate(Input::mouse_delta.y * 0.005f, World::instance->freeCamera->getLocalVector( Vector3(-1.0f,0.0f,0.0f)));
 	}
 
 	//async input to move the camera around
 	if(Input::isKeyPressed(SDL_SCANCODE_LSHIFT) ) speed *= 10; //move faster with left shift
-	if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) freeCamera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
-	if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) freeCamera->move(Vector3(0.0f, 0.0f,-1.0f) * speed);
-	if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) freeCamera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
-	if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) freeCamera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
+	if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) World::instance->freeCamera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
+	if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) World::instance->freeCamera->move(Vector3(0.0f, 0.0f,-1.0f) * speed);
+	if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) World::instance->freeCamera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
+	if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) World::instance->freeCamera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
 
 	world->update(seconds_elapsed * gameSpeed);
 	
-	Vector3 cameraPosition = world->player->transform.matrixModel * Vector3(0, 3, 9);
-	Vector3 cameraCenter = world->player->transform.matrixModel * world->player->highMesh->box.center;
-	cameraCenter.z += 1;
-	Vector3 cameraUp = world->player->transform.matrixModel.rotateVector(Transform::UP);
-	playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp);
-
-	//world->sky->transform.translate(world->player->getPosition());
-
 	//to navigate with the mouse fixed in the middle
 	if (mouse_locked)
 		Input::centerMouse();
@@ -191,9 +164,9 @@ void Game::onKeyDown( SDL_KeyboardEvent event )
 		case SDLK_ESCAPE: must_exit = true; break; //ESC key, kill the app
 		case SDLK_F1: Shader::ReloadAll(); break; 
 		case SDLK_1:
-			currentCamera = (currentCamera == freeCamera) ? playerCamera : freeCamera;
-			freeCamera->eye = playerCamera->eye;
-			gameSpeed = (currentCamera == playerCamera) ? 1 : 0.01;
+			World::instance->currentCamera = (World::instance->currentCamera == World::instance->freeCamera) ? World::instance->playerCamera : World::instance->freeCamera;
+			World::instance->freeCamera->eye = World::instance->playerCamera->eye;
+			gameSpeed = (World::instance->currentCamera == World::instance->playerCamera) ? 1 : 0.01;
 			break;
 	}
 }
@@ -229,8 +202,8 @@ void Game::onResize(int width, int height)
 {
     std::cout << "window resized: " << width << "," << height << std::endl;
 	glViewport( 0,0, width, height );
-	freeCamera->aspect =  width / (float)height;
-	playerCamera->aspect = width / (float)height;
+	World::instance->freeCamera->aspect =  width / (float)height;
+	World::instance->playerCamera->aspect = width / (float)height;
 	window_width = width;
 	window_height = height;
 }

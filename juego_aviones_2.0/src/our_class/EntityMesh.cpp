@@ -1,84 +1,9 @@
 #include "EntityMesh.h"
 
 // --- CONSTRUCTORES ---
-
-EntityMesh::EntityMesh(const Vector3 position) : Entity(position) {
-	this->highMesh = NULL;
-	this->lowMesh = NULL;
-	this->material = NULL;
-}
-
-EntityMesh::EntityMesh(const Vector3 position, Mesh * highMesh) : Entity(position) {
-	this->highMesh = highMesh;
-	this->lowMesh = NULL;
-	this->material = new Material();
-}
-
-EntityMesh::EntityMesh(const Vector3 position, const Quaternion rotation, Mesh * highMesh) : Entity(position, rotation) {
-	this->highMesh = highMesh;
-	this->lowMesh = NULL;
-	this->material = new Material();
-}
-
-EntityMesh::EntityMesh(const Vector3 position, Mesh * highMesh, Texture* texture, Shader* shader, Vector4 color) : Entity(position) {
-	this->highMesh = highMesh;
-	this->lowMesh = NULL;
-	this->material = new Material(texture, shader, color);
-}
-
-EntityMesh::EntityMesh(const Vector3 position, const Quaternion rotation, Mesh * highMesh,
-						Texture* texture, Shader* shader, Vector4 color) : Entity(position, rotation) {
-
-	this->highMesh = highMesh;
-	this->lowMesh = NULL;
-	this->material = new Material(texture, shader, color);
-}
-
-EntityMesh::EntityMesh(const Vector3 position, const Quaternion rotation, Mesh * highMesh,
-						Material * material) : Entity(position, rotation) {
-
-	this->highMesh = highMesh;
-	this->lowMesh = NULL;
-	this->material = material;
-}
-
 EntityMesh::EntityMesh(const Transform transform, Mesh * highMesh, Material * material) : Entity(transform) {
 	this->highMesh = highMesh;
 	this->lowMesh = NULL;
-	this->material = material;
-}
-
-EntityMesh::EntityMesh(const Vector3 position, Mesh * highMesh, Mesh * lowMesh) : Entity(position) {
-	this->highMesh = highMesh;
-	this->lowMesh = lowMesh;
-	this->material = new Material();
-}
-
-EntityMesh::EntityMesh(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh) : Entity(position, rotation) {
-	this->highMesh = highMesh;
-	this->lowMesh = lowMesh;
-	this->material = new Material();
-}
-
-EntityMesh::EntityMesh(const Vector3 position, Mesh * highMesh, Mesh * lowMesh, Texture* texture, Shader* shader, Vector4 color) : Entity(position) {
-	this->highMesh = highMesh;
-	this->lowMesh = lowMesh;
-	this->material = new Material(texture, shader, color);
-}
-
-EntityMesh::EntityMesh(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh,
-						Texture* texture, Shader* shader, Vector4 color) : Entity(position, rotation) {
-
-	this->highMesh = highMesh;
-	this->lowMesh = lowMesh;
-	this->material = new Material(texture, shader, color);
-}
-
-EntityMesh::EntityMesh(const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh,
-						Material * material) : Entity(position, rotation) {
-
-	this->highMesh = highMesh;
-	this->lowMesh = lowMesh;
 	this->material = material;
 }
 
