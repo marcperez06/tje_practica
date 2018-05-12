@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include "Transform.h"
+#include "Collision.h"
 #include "../camera.h"
 
 class Entity {
@@ -14,6 +15,8 @@ class Entity {
 		Transform transform;
 
 		std::vector<Entity*> children;
+
+		Collision collision;
 
 		Entity(const Vector3 position);
 		Entity(const Vector3 position, const Quaternion rotation);
@@ -34,6 +37,9 @@ class Entity {
 
 		void addChild(Entity* entity);
 		void removeChild(Entity* entity);
+
+		bool haveRayCollision(Vector3 origin, Vector3 direction);
+		virtual void detectRayCollision(Vector3 origin, Vector3 direction);
 
 	protected:
 

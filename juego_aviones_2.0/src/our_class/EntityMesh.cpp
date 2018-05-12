@@ -29,21 +29,25 @@ void EntityMesh::render(Camera* camera) {
 	}
 }
 
-void EntityMesh::renderMesh(Camera * camera, Matrix44 globalMatrix) {
-
-	BoundingBox axisBoundingBox;
+Mesh* EntityMesh::getCorrectMeshRespectCameraDistance(Camera* camera) {
 	Mesh * mesh = this->highMesh;
-	Shader* shader = this->material->shader;
-
 	if (camera->eye.distance(this->transform.position) > 60) {
 		if (this->lowMesh != NULL) { mesh = this->lowMesh; }
 	}
+	return mesh;
+}
+
+void EntityMesh::renderMesh(Camera * camera, Matrix44 globalMatrix) {
+
+	BoundingBox axisBoundingBox;
+	Shader* shader = this->material->shader;
+	Mesh* mesh = this->getCorrectMeshRespectCameraDistance(camera);
 
 	if (mesh != NULL) {
 
 		axisBoundingBox = transformBoundingBox(globalMatrix, mesh->box);
 
-		if (1) { //camera->testBoxInFrustum(axisBoundingBox.center, axisBoundingBox.halfsize) == CLIP_INSIDE) {
+		if (1) {//camera->testBoxInFrustum(axisBoundingBox.center, axisBoundingBox.halfsize) == CLIP_INSIDE) {
 
 			if (shader != NULL) {
 
@@ -86,4 +90,17 @@ void EntityMesh::desactiveGlFlags() {
 	if (this->material->cullFace == true) { glDisable(GL_CULL_FACE); }
 }
 
-void EntityMesh::update(float deltaTime) {}
+void EntityMesh::update(float deltaTime) { 
+	Entity::update(deltaTime);
+}
+
+void EntityMesh::detectRayCollision(Vector3 origin, Vector3 direction) {
+
+	this->collision.origin = origin;
+	this->collision.direction = direction;
+
+	Mesh* mesh = this->highMesh;
+	if (this->lowMesh != NULL) { mesh = this->lowMesh; }
+
+	this->collision.haveCollision = mesh->testRayCollision(this->getGlobalMatrix(), origin, direction, this->collision.collisionPoint, this->collision.normalPoint);
+}

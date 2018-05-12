@@ -31,9 +31,6 @@ void Airplane::render(Camera* camera) {
 
 void Airplane::update(float deltaTime) {
 
-	Vector3 collision;
-	Vector3 normal;
-
 	float deltaMove = deltaTime * this->speed * 0.02;
 
 	this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
@@ -44,7 +41,7 @@ void Airplane::update(float deltaTime) {
 		this->shoot();
 		this->weapons[currentWepon]->update(deltaTime);
 
-		if (this->detectCollision(collision, normal) == true) {
+		if (this->detectCollision() == true) {
 			this->speed = 0;
 		}
 
@@ -113,18 +110,24 @@ void Airplane::shoot() {
 	}
 }
 
-bool Airplane::detectCollision(Vector3 & collisionPoint, Vector3 & normal) {
+bool Airplane::detectCollision() {
 	bool haveCollision = false;
 	Vector3 origin = this->getGlobalPosition();
 	Vector3 direction = Vector3(0, 0, -1);
+
+	for (int i = 0; (i < World::instance->root->children.size()) && (haveCollision == false); i++) {
+		Entity* child = World::instance->root->children[i];
+		haveCollision = child->haveRayCollision(origin, direction);
+	}
+	
+	/*
 	std::vector<Entity*> islands = World::instance->root->children;
 	for (int i = 0; (i < islands.size()) && (haveCollision == false); i++) {
 		EntityMesh* island = (EntityMesh*) islands[i];
 		//haveCollision = island->highMesh->testRayCollision(island->getGlobalMatrix(), origin, direction, collisionPoint, normal);
 	}
+	*/
 	return haveCollision;
-	//return this->highMesh->testRayCollision(a[0]->transform.matrixModel, origin, direction, collisionPoint, normal);
-	//return CollisionHandler::haveAnyRayCollision(origin, direction, a, collisionPoint, normal);
 }
 
 void Airplane::removeAirplane(Airplane* airplane) {

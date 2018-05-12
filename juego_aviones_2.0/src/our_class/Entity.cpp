@@ -88,3 +88,25 @@ void Entity::removeChild(Entity* entity) {
 		}
 	}
 }
+
+bool Entity::haveRayCollision(Vector3 origin, Vector3 direction) {
+	this->detectRayCollision(origin, direction);
+	return this->collision.haveCollision;
+}
+
+void Entity::detectRayCollision(Vector3 origin, Vector3 direction) {
+	for (int i = 0; i < this->children.size(); i++) {
+		if (this->children[i] != NULL) {
+			this->children[i]->detectRayCollision(origin, direction);
+			if (this->children[i]->collision.haveCollision == true) {
+
+				this->children[i]->parent->collision.origin = origin;
+				this->children[i]->parent->collision.direction = direction;
+				this->children[i]->parent->collision.collisionPoint = this->children[i]->collision.collisionPoint;
+				this->children[i]->parent->collision.normalPoint = this->children[i]->collision.normalPoint;
+				this->children[i]->parent->collision.haveCollision = true;
+
+			}
+		}
+	}
+}

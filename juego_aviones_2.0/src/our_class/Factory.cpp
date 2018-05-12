@@ -9,7 +9,7 @@ Airplane* Factory::buildAirplane(const Vector3 initialPos, float speed) {
 	Transform transform = Transform(initialPos, Quaternion());
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
 
-	Airplane* airplane = new Airplane(speed, transform, highMesh, NULL, material);
+	Airplane* airplane = new Airplane(speed, transform, highMesh, lowMesh, material);
 
 	return airplane;
 }
@@ -30,7 +30,7 @@ EntityMesh* Factory::buildIsland(const Vector3 initialPos) {
 	Mesh* highMesh = Mesh::Load("data/island/island.ASE");
 	//Mesh* lowMesh = Mesh::Load("data/spitfire/island_low.ASE");
 	Texture* texture = Texture::Load("data/island/island_color_luz.tga");
-	Shader* shader = Shader::Load("data/shaders/texture.vs", "data/shaders/fog.fs");
+	Shader* shader = Shader::Load("data/shaders/texture.vs", "data/shaders/world.fs");
 
 	Transform transform = Transform(initialPos, Quaternion());
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);

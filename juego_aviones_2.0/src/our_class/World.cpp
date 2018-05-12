@@ -134,14 +134,58 @@ void World::renderWorldMap(Camera* camera) {
 
 }
 
+/* No acabar de funcionar correctament pintar el mapa utilitzant instancing per reduir el nombre de drawCalls
+void World::renderWorldMap(Camera* camera) {
+	EntityMesh* base;
+	std::vector<Matrix44> islandsPos;
+	Mesh* islandMesh = Mesh::Load("data/island/island.ASE");
+	Mesh* waterMesh = Mesh::Load("data/island/water_deep.ASE");
+	Shader* shader = Shader::Load("data/shaders/instanced.vs", "data/shaders/world.fs");
+
+	if (this->getWorldMap()->children.size() > 0) {
+		base = (EntityMesh*) this->getWorldMap()->children[0];
+		//islandMesh = base->getCorrectMeshRespectCameraDistance(camera);
+	}
+
+	for (int i = 0; i < this->getWorldMap()->children.size(); i++) {
+		EntityMesh* island = (EntityMesh*) this->getWorldMap()->children[i];
+		islandsPos.push_back(island->getGlobalMatrix());
+	}
+
+	if (shader != NULL) {
+		shader->enable();
+
+		if (islandMesh != NULL) {
+			shader->setUniform("u_color", base->material->color);
+			shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+			shader->setUniform("u_texture", base->material->texture);
+			shader->setUniform("u_camera_position", camera->eye);
+			shader->setUniform("u_time", 1);
+
+			islandMesh->renderInstanced(GL_TRIANGLES, shader, &islandsPos[0], islandsPos.size());
+
+			shader->setUniform("u_texture", Texture::Load("data/island/water_deep.tga"));
+
+			waterMesh->renderInstanced(GL_TRIANGLES, shader, &islandsPos[0], islandsPos.size());
+
+		}
+
+		shader->disable();
+	}
+
+}
+
+*/
+
 void World::renderAirplanes(Camera* camera) {
 	Airplane* base;
 	std::vector<Matrix44> enemiesPos;
-	Mesh* enemyMesh = Mesh::Load("data/spitfire/spitfire.ASE");
+	Mesh* airplaneMesh = NULL;
 	Shader* shader = Shader::Load("data/shaders/instanced.vs", "data/shaders/texture.fs");
 
 	if (Airplane::airplanes.size() > 0) {
 		base = Airplane::airplanes[0];
+		airplaneMesh = base->getCorrectMeshRespectCameraDistance(camera);
 	}
 
 	for (int i = 0; i < Airplane::airplanes.size(); i++) {
@@ -151,20 +195,22 @@ void World::renderAirplanes(Camera* camera) {
 		//}
 	}
 
-	shader->enable();
+	if (shader != NULL) {
+		shader->enable();
 
-	if (enemyMesh != NULL) {
-		shader->setUniform("u_color", base->material->color);
-		shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
-		shader->setUniform("u_texture", base->material->texture);
-		shader->setUniform("u_camera_position", camera->eye);
-		shader->setUniform("u_time", 1);
+		if (airplaneMesh != NULL) {
+			shader->setUniform("u_color", base->material->color);
+			shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+			shader->setUniform("u_texture", base->material->texture);
+			shader->setUniform("u_camera_position", camera->eye);
+			shader->setUniform("u_time", 1);
 
-		enemyMesh->renderInstanced(GL_TRIANGLES, shader, &enemiesPos[0], enemiesPos.size());
+			airplaneMesh->renderInstanced(GL_TRIANGLES, shader, &enemiesPos[0], enemiesPos.size());
 
+		}
+
+		shader->disable();
 	}
-
-	shader->disable();
 
 }
 
@@ -177,22 +223,9 @@ void World::render(Camera* camera) {
 	}
 
 	if (this->getWorldMap() != NULL) {
-		//this->worldMap->render(camera);
 		this->renderWorldMap(camera);
 	}
-	
-	/*
-	if (this->player != NULL) {
-		this->player->render(camera);
-	}
-	*/
-
 	this->renderAirplanes(camera);
-	/*for (int i = 0; i < this->enemies.size(); i++) {
-		if (this->enemies[i] != NULL) {
-			this->enemies[i]->render(camera);
-		}
-	}*/
 }
 
 void World::update(float deltaTime) {

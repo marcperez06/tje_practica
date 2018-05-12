@@ -47,7 +47,7 @@ class Airplane : public EntityMesh {
 
 		void shoot();
 
-		bool detectCollision(Vector3 & collisionPoint, Vector3 & normal);
+		bool detectCollision();
 
 	private:
 

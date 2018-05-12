@@ -15,7 +15,7 @@ void main()
 {
 	const float detailRepeat = 1;	
 	float distance = length(u_camera_position - v_world_position);
-	float fogMaxDistance = 30000;
+	float fogMaxDistance = 9000;
 	float fogMinDistance = 100;
 	float fogDiferenceDistance = fogMaxDistance - distance;
 	float fogDiferenceMaxMin = fogMaxDistance - fogMinDistance;
