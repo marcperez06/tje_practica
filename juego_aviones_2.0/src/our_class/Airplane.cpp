@@ -42,7 +42,7 @@ void Airplane::update(float deltaTime) {
 		this->weapons[currentWepon]->update(deltaTime);
 
 		if (this->detectCollision() == true) {
-			this->speed = 0;
+			this->speed = 5;
 		}
 
 	}

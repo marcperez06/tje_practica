@@ -13,6 +13,7 @@ class Shader;
 // TEXTURE CLASS
 class Texture
 {
+public:
 	//a general struct to store all the information about a TGA file
 	typedef struct ImageInfo 
 	{
