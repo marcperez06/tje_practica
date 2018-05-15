@@ -30,8 +30,6 @@ class EntityMesh : public Entity {
 
 		virtual void renderMesh(Camera* camera, Matrix44 globalMatrix);
 
-		virtual void detectRayCollision(Vector3 origin, Vector3 direction);
-
 	private:
 		void activeGlFlags();
 		void desactiveGlFlags();

@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "Bullet.h"
-#include "EntityMesh.h"
+//#include "EntityMesh.h"
 
 class Weapon {
 
@@ -15,7 +15,7 @@ class Weapon {
 		float fireRate;
 		float cooldown;
 		std::string type;
-		EntityMesh* mesh;
+		//EntityMesh* mesh;
 
 		Weapon(int owner, std::string type);
 		void initMisil();

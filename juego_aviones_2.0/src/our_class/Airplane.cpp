@@ -45,6 +45,11 @@ void Airplane::update(float deltaTime) {
 
 		if (this->detectCollision() == true) {
 			//this->speed = 5;
+			glDisable(GL_DEPTH_TEST);
+			Mesh* m = new Mesh();
+			m->vertices.push_back(this->collision.collisionPoint);
+			m->renderFixedPipeline(GL_TRIANGLES);
+			glEnable(GL_DEPTH_TEST);
 			std::cout << "Collision !!" << std::endl;
 		}
 
@@ -116,15 +121,16 @@ void Airplane::shoot() {
 bool Airplane::detectCollision() {
 	bool haveCollision = false;
 	Vector3 origin = this->lastPosition;
-	Vector3 direction = this->getGlobalPosition() - origin;
+	Vector3 direction = this->getPosition() - origin;
 
+	/*
 	for (int i = 0; (i < World::instance->root->children.size()) && (haveCollision == false); i++) {
 		Entity* child = World::instance->root->children[i];
 		if (this != child) {
 			haveCollision = child->haveRayCollision(origin, direction);
 		}
 	}
-	
+	*/
 	/*
 	std::vector<Entity*> islands = World::instance->root->children;
 	for (int i = 0; (i < islands.size()) && (haveCollision == false); i++) {
@@ -132,7 +138,7 @@ bool Airplane::detectCollision() {
 		//haveCollision = island->highMesh->testRayCollision(island->getGlobalMatrix(), origin, direction, collisionPoint, normal);
 	}
 	*/
-	return haveCollision;
+	return EntityCollider::haveCollisionAgainstStaticObjects(origin, direction);
 }
 
 void Airplane::removeAirplane(Airplane* airplane) {

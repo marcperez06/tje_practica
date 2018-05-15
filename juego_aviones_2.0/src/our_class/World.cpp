@@ -83,12 +83,11 @@ void World::initWorldMap() {
 
 			EntityMesh* island = Factory::buildIsland(Vector3(x, y, z));
 			worldMap->addChild(island);
-
+			this->staticObjects.push_back(island);
 		}
 	}
 
 	this->root->addChild(worldMap);
-	this->staticObjects.push_back(worldMap);
 }
 
 void World::initSky() {

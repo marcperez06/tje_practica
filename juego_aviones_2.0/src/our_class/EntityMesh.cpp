@@ -93,16 +93,3 @@ void EntityMesh::desactiveGlFlags() {
 void EntityMesh::update(float deltaTime) { 
 	Entity::update(deltaTime);
 }
-
-void EntityMesh::detectRayCollision(Vector3 origin, Vector3 direction) {
-
-	this->collision.origin = origin;
-	this->collision.direction = direction;
-
-	Mesh* mesh = this->highMesh;
-	if (this->lowMesh != NULL) { mesh = this->lowMesh; }
-
-	float maxRayDistance = direction.length();
-
-	this->collision.haveCollision = mesh->testRayCollision(this->getGlobalMatrix(), origin, direction, this->collision.collisionPoint, this->collision.normalPoint, maxRayDistance);
-}

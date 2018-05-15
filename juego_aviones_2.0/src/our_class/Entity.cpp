@@ -89,6 +89,7 @@ void Entity::removeChild(Entity* entity) {
 	}
 }
 
+/*
 bool Entity::haveRayCollision(Vector3 origin, Vector3 direction) {
 	this->detectRayCollision(origin, direction);
 	return this->collision.haveCollision;
@@ -110,3 +111,4 @@ void Entity::detectRayCollision(Vector3 origin, Vector3 direction) {
 		}
 	}
 }
+*/
