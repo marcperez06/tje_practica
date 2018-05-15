@@ -14,6 +14,7 @@ class Factory {
 		static EntityMesh* buildIsland(const Vector3 initialPos);
 		static EntityMesh* buildWater(const Vector3 initialPos);
 		static EntityMesh* buildSky(const Vector3 initialPos);
+		static EntityMesh* buildMisil(const Vector3 initialPos);
 
 };
 

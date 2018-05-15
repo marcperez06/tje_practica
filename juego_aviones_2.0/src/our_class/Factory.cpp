@@ -68,3 +68,16 @@ EntityMesh* Factory::buildSky(const Vector3 initialPos) {
 
 	return sky;
 }
+
+EntityMesh* Factory::buildMisil(const Vector3 initialPos) {
+	Mesh* highMesh = Mesh::Load("data/weapons/torpedo.ASE");
+	Texture* texture = Texture::Load("data/weapons/torpedo.tga");
+	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
+
+	Transform transform = Transform(initialPos, Quaternion());
+	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
+
+	EntityMesh* misil = new EntityMesh(transform, highMesh, material);
+
+	return misil;
+}
