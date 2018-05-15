@@ -102,7 +102,7 @@ void EntityMesh::detectRayCollision(Vector3 origin, Vector3 direction) {
 	Mesh* mesh = this->highMesh;
 	if (this->lowMesh != NULL) { mesh = this->lowMesh; }
 
-	float maxRayDistance = 45;
+	float maxRayDistance = direction.length();
 
 	this->collision.haveCollision = mesh->testRayCollision(this->getGlobalMatrix(), origin, direction, this->collision.collisionPoint, this->collision.normalPoint, maxRayDistance);
 }

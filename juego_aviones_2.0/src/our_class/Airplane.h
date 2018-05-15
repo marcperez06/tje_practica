@@ -1,10 +1,10 @@
 #ifndef AIRPLANE_H
 #define AIRPLANE_H
 
-#include "EntityMesh.h"
+#include "EntityCollider.h"
 #include "Weapon.h"
 
-class Airplane : public EntityMesh {
+class Airplane : public EntityCollider {
 
 	public:
 
@@ -18,18 +18,7 @@ class Airplane : public EntityMesh {
 
 		// --- CONSTRUCTORES ---
 
-		Airplane(const float speed, const Vector3 position);
-		Airplane(const float speed, const Vector3 position, Mesh * highMesh);
-		Airplane(const float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh);
-		Airplane(const float speed, const Vector3 position, Mesh * highMesh, Texture* texture, Shader* shader, Vector4 color);
-		Airplane(const float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh, Texture* texture, Shader* shader, Vector4 color);
-		Airplane(const float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh, Material * material);
 		Airplane(const float speed, const Transform transform, Mesh * highMesh, Material * material);
-		Airplane(const float speed, const Vector3 position, Mesh * highMesh, Mesh * lowMesh);
-		Airplane(const float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh);
-		Airplane(const float speed, const Vector3 position, Mesh * highMesh, Mesh * lowMesh, Texture* texture, Shader* shader, Vector4 color);
-		Airplane(const float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh, Texture* texture, Shader* shader, Vector4 color);
-		Airplane(const float speed, const Vector3 position, const Quaternion rotation, Mesh * highMesh, Mesh * lowMesh, Material * material);
 		Airplane(const float speed, const Transform transform, Mesh * highMesh, Mesh * lowMesh, Material * material);
 
 		virtual ~Airplane();

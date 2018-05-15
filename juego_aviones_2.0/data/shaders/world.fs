@@ -13,7 +13,7 @@ uniform vec3 u_camera_position;
 
 void main()
 {
-	const float detailRepeat = 1;	
+	const float detailRepeat = 300;	
 	float distance = length(u_camera_position - v_world_position);
 	float fogMaxDistance = 9000;
 	float fogMinDistance = 100;
@@ -25,7 +25,7 @@ void main()
 	vec4 fogColor = vec4(1, 1, 1, 1);
 
 	vec2 uv = v_uv;
-	vec4 detailColor = u_color * texture2D(u_detail_texture, uv * detailRepeat);
+	vec4 detailColor = texture2D(u_detail_texture, uv * detailRepeat);
 	vec4 color = u_color * texture2D( u_texture, uv );
 
 	//color = color * (fogFactor) + fogColor * (1 - fogFactor);

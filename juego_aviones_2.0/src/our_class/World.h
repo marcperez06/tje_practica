@@ -22,6 +22,10 @@ class World
 
 		EntityMesh* sky;
 
+		// Vectores para almacenar las entidades, para comprobar collisiones.
+		std::vector<Entity*> staticObjects;
+		std::vector<Entity*> dinamicObjects;
+
 		World();
 		~World();
 

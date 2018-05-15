@@ -59,6 +59,7 @@ void World::initEnemies() {
 			float z = (rand() % 20) + this->player->highMesh->aabb_max.z;
 			Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 15);
 			this->root->addChild(enemy);
+			this->dinamicObjects.push_back(enemy);
 		}
 	}
 }
@@ -72,8 +73,6 @@ void World::initWorldMap() {
 	float maxX = (meshIsland->aabb_max.x * 2) - 10;
 	float maxZ = (meshIsland->aabb_max.z * 2) - 10;
 	//delete meshIsland;
-
-	//this->worldMap->addChild(island);
 
 	for (int i = -2; i < 1; i++) {
 
@@ -89,6 +88,7 @@ void World::initWorldMap() {
 	}
 
 	this->root->addChild(worldMap);
+	this->staticObjects.push_back(worldMap);
 }
 
 void World::initSky() {

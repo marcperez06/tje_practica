@@ -7,14 +7,14 @@
 
 std::vector<Airplane*> Airplane::airplanes;
 
-Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Material * material) : EntityMesh(transform, highMesh, material) {
+Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Material * material) : EntityCollider(transform, highMesh, material) {
 	this->speed = speed;
 	this->health = 100;
 	airplanes.push_back(this);
 }
 
 Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mesh * lowMesh, Material * material)
-					: EntityMesh(transform, highMesh, lowMesh, material) {
+					: EntityCollider(transform, highMesh, lowMesh, material) {
 	this->speed = speed;
 	this->health = 100;
 	airplanes.push_back(this);
@@ -31,6 +31,8 @@ void Airplane::render(Camera* camera) {
 
 void Airplane::update(float deltaTime) {
 
+	EntityCollider::update(deltaTime);
+
 	float deltaMove = deltaTime * this->speed * 0.02;
 
 	this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
@@ -42,7 +44,8 @@ void Airplane::update(float deltaTime) {
 		this->weapons[currentWepon]->update(deltaTime);
 
 		if (this->detectCollision() == true) {
-			this->speed = 5;
+			//this->speed = 5;
+			std::cout << "Collision !!" << std::endl;
 		}
 
 	}
@@ -112,12 +115,14 @@ void Airplane::shoot() {
 
 bool Airplane::detectCollision() {
 	bool haveCollision = false;
-	Vector3 origin = this->getGlobalPosition();
-	Vector3 direction = Vector3(0, 0, -1);
+	Vector3 origin = this->lastPosition;
+	Vector3 direction = this->getGlobalPosition() - origin;
 
 	for (int i = 0; (i < World::instance->root->children.size()) && (haveCollision == false); i++) {
 		Entity* child = World::instance->root->children[i];
-		haveCollision = child->haveRayCollision(origin, direction);
+		if (this != child) {
+			haveCollision = child->haveRayCollision(origin, direction);
+		}
 	}
 	
 	/*
