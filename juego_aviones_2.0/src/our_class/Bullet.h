@@ -2,6 +2,9 @@
 #define BULLET_H
 
 #include "../framework.h"
+//#include "Airplane.h"
+
+class Airplane;
 
 class Bullet {
 	public:
@@ -9,8 +12,7 @@ class Bullet {
 		Vector3 lastPosition;
 		Vector3 velocity;
 		float timeToLive;
-		float damage;
-		int owner; // uuid de la entidad que dispara.
+		Airplane* owner;
 		std::string type;
 
 		Bullet();

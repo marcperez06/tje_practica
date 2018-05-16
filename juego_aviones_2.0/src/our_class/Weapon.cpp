@@ -35,7 +35,7 @@ void Weapon::shoot(Matrix44 parentTransform) {
 	Vector3 initialPos = parentTransform * Vector3(0, -3, 0);
 	Vector3 velocity = Vector3(0, 0, bulletSpeed * -1);
 	if (this->cooldown < 0) {
-		this->bullets.push_back(Factory::buildBullet(initialPos, velocity, this->damage, 2, this->owner, this->type));
+		//this->bullets.push_back(Factory::buildBullet(initialPos, velocity, this->damage, 2, this->owner, this->type));
 		this->cooldown = 2;
 	}
 }

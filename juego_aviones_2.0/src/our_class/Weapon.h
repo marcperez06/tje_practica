@@ -2,13 +2,14 @@
 #define WEAPON_H
 
 #include <vector>
+
 #include "Bullet.h"
 //#include "EntityMesh.h"
 
 class Weapon {
 
 	public:
-		std::vector<Bullet*> bullets;
+		//std::vector<Bullet*> bullets;
 		float bulletSpeed;
 		float damage;
 		int owner;
