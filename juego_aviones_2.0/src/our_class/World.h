@@ -2,8 +2,11 @@
 #define WORLD_H
 
 #include "../framework.h"
+class Entity;
+class EntityMesh;
+class Airplane;
+class Camera;
 
-#include "Airplane.h"
 class World
 {
 	public:

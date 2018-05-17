@@ -38,7 +38,9 @@ void BulletManager::render() {
 	}
 
 	glPointSize(2);
-	mesh.renderFixedPipeline(GL_POINTS);
+	if (mesh.vertices.size() > 0) {
+		mesh.renderFixedPipeline(GL_POINTS);
+	}
 }
 
 void BulletManager::update(float deltaTime) {

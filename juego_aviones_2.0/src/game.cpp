@@ -10,6 +10,7 @@
 
 #include "our_class\Airplane.h"
 #include "our_class\World.h"
+#include "our_class\BulletManager.h"
 
 //some globals
 Mesh* mesh = NULL;
@@ -18,6 +19,8 @@ Shader* shader = NULL;
 float angle = 0;
 
 World* world = NULL;
+BulletManager* bulletManager = NULL;
+
 float gameSpeed;
 
 Game* Game::instance = NULL;
@@ -44,6 +47,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 	// Build world.
 	world = new World();
+	bulletManager = new BulletManager();
 
 	/*
 

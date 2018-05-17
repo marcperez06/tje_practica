@@ -47,7 +47,7 @@ void EntityMesh::renderMesh(Camera * camera, Matrix44 globalMatrix) {
 
 		axisBoundingBox = transformBoundingBox(globalMatrix, mesh->box);
 
-		if (1) {//camera->testBoxInFrustum(axisBoundingBox.center, axisBoundingBox.halfsize) == CLIP_INSIDE) {
+		if (1) { //camera->testBoxInFrustum(axisBoundingBox.center, axisBoundingBox.halfsize) == CLIP_INSIDE) {
 
 			if (shader != NULL) {
 

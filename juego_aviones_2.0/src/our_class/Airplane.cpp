@@ -120,7 +120,7 @@ void Airplane::shoot() {
 		/* Disparar Balas, Aixo s'hauria de moure on li correspongues....*/
 		Matrix44 modelMatrix = this->getGlobalMatrix();
 		Vector3 pos = modelMatrix * Vector3(0, 0, -3);
-		Vector3 velocity = modelMatrix.rotateVector(Vector3(0, 0, -1)) * (this->speed + 100);
+		Vector3 velocity = modelMatrix.rotateVector(Vector3(0, 0, -1)) * (this->speed + 300);
 		BulletManager::instance->createBullet(pos, velocity, "-", this);
 
 	}
