@@ -8,9 +8,15 @@
 
 std::vector<Airplane*> Airplane::airplanes;
 
+enum {
+	AIRPLANE_FLYING,
+	AIRPLANE_CRHASED,
+};
+
 Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Material * material) : EntityCollider(transform, highMesh, material) {
 	this->speed = speed;
 	this->health = 100;
+	this->state = AIRPLANE_FLYING;
 	airplanes.push_back(this);
 }
 
@@ -18,6 +24,7 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mesh
 					: EntityCollider(transform, highMesh, lowMesh, material) {
 	this->speed = speed;
 	this->health = 100;
+	this->state = AIRPLANE_FLYING;
 	airplanes.push_back(this);
 }
 
@@ -25,33 +32,33 @@ Airplane::~Airplane() {
 	this->removeAirplane(this);
 }
 
-void Airplane::render(Camera* camera) { 
+void Airplane::render(Camera* camera) {
 	EntityMesh::render(camera);
 	this->weapons[currentWepon]->render();
 }
 
 void Airplane::update(float deltaTime) {
 
-	EntityCollider::update(deltaTime);
+	if (this->state != AIRPLANE_CRHASED) {
 
-	float deltaMove = deltaTime * this->speed * 0.02;
+		EntityCollider::update(deltaTime);
 
-	this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
+		float deltaMove = deltaTime * this->speed * 0.02;
 
-	if (this->name.compare("player") == 0) {
-		this->rotateAirplane(deltaMove);
-		this->turbo(deltaTime);
-		this->shoot();
-		this->weapons[currentWepon]->update(deltaTime);
+		this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
 
-		if (this->detectCollision() == true) {
-			//this->speed = 5;
-			glDisable(GL_DEPTH_TEST);
-			Mesh* m = new Mesh();
-			m->vertices.push_back(this->collision.collisionPoint);
-			m->renderFixedPipeline(GL_TRIANGLES);
-			glEnable(GL_DEPTH_TEST);
-			std::cout << "Collision !!" << std::endl;
+		if (this->name.compare("player") == 0) {
+			this->rotateAirplane(deltaMove);
+			this->turbo(deltaTime);
+			this->shoot();
+			this->weapons[currentWepon]->update(deltaTime);
+
+			if (this->detectCollision() == true) {
+				//this->speed = 5;
+				std::cout << "Collision !!" << std::endl;
+				this->state = AIRPLANE_CRHASED;
+			}
+
 		}
 
 	}
@@ -118,9 +125,11 @@ void Airplane::shoot() {
 		//this->weapons[currentWepon]->shoot(this->getGlobalMatrix() );
 
 		/* Disparar Balas, Aixo s'hauria de moure on li correspongues....*/
+		// Preguntar al Javi porque al disparar, se me aumenta la matriz y la distancia de la colision es más grande..
 		Matrix44 modelMatrix = this->getGlobalMatrix();
 		Vector3 pos = modelMatrix * Vector3(0, 0, -3);
-		Vector3 velocity = modelMatrix.rotateVector(Vector3(0, 0, -1)) * (this->speed + 300);
+		Vector3 velocity = modelMatrix.rotateVector(Vector3(0, 0, -1));
+		velocity = velocity * this->speed * 1.5;
 		BulletManager::instance->createBullet(pos, velocity, "-", this);
 
 	}
@@ -131,21 +140,8 @@ bool Airplane::detectCollision() {
 	Vector3 origin = this->lastPosition;
 	Vector3 direction = this->getPosition() - origin;
 
-	/*
-	for (int i = 0; (i < World::instance->root->children.size()) && (haveCollision == false); i++) {
-		Entity* child = World::instance->root->children[i];
-		if (this != child) {
-			haveCollision = child->haveRayCollision(origin, direction);
-		}
-	}
-	*/
-	/*
-	std::vector<Entity*> islands = World::instance->root->children;
-	for (int i = 0; (i < islands.size()) && (haveCollision == false); i++) {
-		EntityMesh* island = (EntityMesh*) islands[i];
-		//haveCollision = island->highMesh->testRayCollision(island->getGlobalMatrix(), origin, direction, collisionPoint, normal);
-	}
-	*/
+	//std::cout << "Ray Length ......... " << direction.length() << std::endl;
+
 	return EntityCollider::haveCollisionAgainstStaticObjects(origin, direction);
 }
 

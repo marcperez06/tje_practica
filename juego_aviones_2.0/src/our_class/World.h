@@ -46,6 +46,7 @@ class World
 		void initSky();
 
 		void renderWorldMap(Camera* camera);
+		void renderWater(Camera* camera);
 		void renderAirplanes(Camera* camera);
 
 };

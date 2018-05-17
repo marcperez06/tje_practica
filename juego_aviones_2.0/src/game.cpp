@@ -134,7 +134,7 @@ void Game::render(void)
 
 void Game::update(double seconds_elapsed)
 {
-	float speed = seconds_elapsed * 300; //the speed is defined by the seconds_elapsed so it goes constant
+	float speed = seconds_elapsed * 10; //the speed is defined by the seconds_elapsed so it goes constant
 
 	//example
 	angle += (float)seconds_elapsed * 10.0f;
@@ -147,7 +147,7 @@ void Game::update(double seconds_elapsed)
 	}
 
 	//async input to move the camera around
-	if(Input::isKeyPressed(SDL_SCANCODE_LSHIFT) ) speed *= 10; //move faster with left shift
+	if(Input::isKeyPressed(SDL_SCANCODE_LSHIFT) ) speed *= 50; //move faster with left shift
 	if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) World::instance->freeCamera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
 	if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) World::instance->freeCamera->move(Vector3(0.0f, 0.0f,-1.0f) * speed);
 	if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) World::instance->freeCamera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
@@ -172,6 +172,7 @@ void Game::onKeyDown( SDL_KeyboardEvent event )
 			World::instance->freeCamera->eye = World::instance->playerCamera->eye;
 			gameSpeed = (World::instance->currentCamera == World::instance->playerCamera) ? 1 : 0.01;
 			break;
+		case SDLK_2: World::instance->player->state = 0;
 	}
 }
 

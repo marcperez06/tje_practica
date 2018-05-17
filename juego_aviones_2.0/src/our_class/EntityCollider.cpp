@@ -30,6 +30,7 @@ bool EntityCollider::testRayCollisionAgainstEntity(const Vector3 origin, const V
 bool EntityCollider::haveCollisionAgainstStaticObjects(const Vector3 origin, const Vector3 direction) {
 	bool haveCollision = false;
 	float maxRayDistance = direction.length();
+
 	std::vector<Entity*> staticEntities = World::instance->staticObjects;
 	for (int i = 0; (i < staticEntities.size()) && (haveCollision == false); i++) {
 		haveCollision = this->testRayCollisionAgainstEntity(origin, direction, maxRayDistance, (EntityMesh*) staticEntities[i]);

@@ -33,13 +33,13 @@ void BulletManager::render() {
 	for (int i = 0; i < maxBullets; i++) {
 		Bullet& bullet = this->bullets[i];
 		if (bullet.timeToLive > 0) {
+			mesh.vertices.push_back(bullet.lastPosition);
 			mesh.vertices.push_back(bullet.position);
 		}
 	}
 
-	glPointSize(2);
 	if (mesh.vertices.size() > 0) {
-		mesh.renderFixedPipeline(GL_POINTS);
+		mesh.renderFixedPipeline(GL_LINES);
 	}
 }
 
@@ -88,6 +88,8 @@ void BulletManager::testStaticCollisions() {
 
 		collision_model->setTransform(modelMatrix.m);
 		
+		// TODO: Algo falla... Revisar..
+
 		for (int j = 0; j < maxBullets; j++) {
 
 			Bullet& bullet = this->bullets[i];
@@ -101,6 +103,7 @@ void BulletManager::testStaticCollisions() {
 				if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
 
 					bullet.timeToLive = 0;
+					std::cout << "BUllet Destroy ..... " << std::endl;
 					//staticEntity.onBulletCollision(bullet, collisionPoint); // LLamar desde testDynamicCollision, para idicarle al avion de que una bala a colisionado con el.
 
 				}

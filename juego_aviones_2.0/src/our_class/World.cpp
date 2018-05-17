@@ -171,7 +171,44 @@ void World::renderWorldMap(Camera* camera) {
 
 			shader->setUniform("u_texture", Texture::Load("data/island/water_deep.tga"));
 
-			waterMesh->renderInstanced(GL_TRIANGLES, shader, &islandsPos[0], islandsPos.size());
+			//waterMesh->renderInstanced(GL_TRIANGLES, shader, &islandsPos[0], islandsPos.size());
+
+		}
+
+		shader->disable();
+	}
+
+	//renderWater(camera);
+
+}
+
+void World::renderWater(Camera* camera) {
+	EntityMesh* base;
+	std::vector<Matrix44> waterPos;
+	Mesh* waterMesh = Mesh::Load("data/island/water_deep.ASE");
+	Shader* shader = Shader::Load("data/shaders/instanced.vs", "data/shaders/texture.fs");
+	Texture* waterTexture = Texture::Load("data/island/water_deep.tga");
+
+	if (this->getWorldMap()->children.size() > 0) {
+		base = (EntityMesh*) this->getWorldMap()->children[0];
+	}
+
+	for (int i = 0; i < this->getWorldMap()->children.size(); i++) {
+		EntityMesh* island = (EntityMesh*) this->getWorldMap()->children[i];
+		waterPos.push_back(island->getGlobalMatrix());
+	}
+
+	if (shader != NULL) {
+		shader->enable();
+
+		if (waterMesh != NULL) {
+			shader->setUniform("u_color", base->material->color);
+			shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+			shader->setUniform("u_camera_position", camera->eye);
+			shader->setUniform("u_time", 1);
+			shader->setUniform("u_texture", waterTexture);
+
+			waterMesh->renderInstanced(GL_TRIANGLES, shader, &waterPos[0], waterPos.size());
 
 		}
 
@@ -186,12 +223,12 @@ void World::renderAirplanes(Camera* camera) {
 	Mesh* airplaneMesh = NULL;
 	Shader* shader = Shader::Load("data/shaders/instanced.vs", "data/shaders/texture.fs");
 
-	if (Airplane::airplanes.size() > 0) {
-		base = Airplane::airplanes[0];
+	if (Airplane::airplanes.size() > 1) {
+		base = Airplane::airplanes[1];
 		airplaneMesh = base->getCorrectMeshRespectCameraDistance(camera);
 	}
 
-	for (int i = 0; i < Airplane::airplanes.size(); i++) {
+	for (int i = 1; i < Airplane::airplanes.size(); i++) {
 		Airplane* airplane = Airplane::airplanes[i];
 		//if (airplane->name.compare("player") != 0) {
 			enemiesPos.push_back(airplane->getGlobalMatrix());
@@ -228,6 +265,11 @@ void World::render(Camera* camera) {
 	if (this->getWorldMap() != NULL) {
 		this->renderWorldMap(camera);
 	}
+
+	if (this->player != NULL) {
+		this->player->render(camera);
+	}
+
 	this->renderAirplanes(camera);
 	BulletManager::instance->render();
 }
@@ -239,6 +281,7 @@ void World::update(float deltaTime) {
 	}
 
 	if (this->player != NULL) {
+
 		this->player->update(deltaTime);
 
 		Vector3 cameraPosition = this->player->transform.matrixModel * Vector3(0, 3, 9);

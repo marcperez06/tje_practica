@@ -12,6 +12,7 @@ class Airplane : public EntityCollider {
 
 		float speed;
 		float health;
+		char state;
 	
 		std::vector<Weapon*> weapons;
 		int currentWepon;
