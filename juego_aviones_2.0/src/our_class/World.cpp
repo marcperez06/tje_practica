@@ -49,6 +49,8 @@ void World::initPlayer() {
 	this->player->uuid = 1;
 	this->player->weapons.push_back(new Weapon(this->player->uuid, "Misil"));
 	this->player->currentWepon = 0;
+	this->root->addChild(this->player);
+	this->dynamicObjects.push_back(this->player);
 }
 
 void World::initEnemies() {
@@ -58,9 +60,9 @@ void World::initEnemies() {
 			float x = (rand() % 300) + this->player->highMesh->aabb_max.x;
 			float y = (rand() % 200) + 300 + this->player->highMesh->aabb_max.y;
 			float z = (rand() % 20) + this->player->highMesh->aabb_max.z;
-			Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 15);
+			Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 150);
 			this->root->addChild(enemy);
-			this->dinamicObjects.push_back(enemy);
+			this->dynamicObjects.push_back(enemy);
 		}
 	}
 }
@@ -255,6 +257,7 @@ void World::renderAirplanes(Camera* camera) {
 }
 
 void World::render(Camera* camera) {
+
 	if (this->sky != NULL) {
 		this->sky->transform.matrixModel.setTranslation(camera->eye.x, camera->eye.y, camera->eye.z);
 		glDisable(GL_DEPTH_TEST);

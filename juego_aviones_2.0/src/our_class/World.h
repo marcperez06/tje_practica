@@ -7,8 +7,7 @@ class EntityMesh;
 class Airplane;
 class Camera;
 
-class World
-{
+class World {
 	public:
 
 		static World* instance;
@@ -27,7 +26,7 @@ class World
 
 		// Vectores para almacenar las entidades, para comprobar collisiones.
 		std::vector<Entity*> staticObjects;
-		std::vector<Entity*> dinamicObjects;
+		std::vector<Entity*> dynamicObjects;
 
 		World();
 		~World();

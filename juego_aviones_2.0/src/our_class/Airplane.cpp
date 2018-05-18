@@ -50,17 +50,26 @@ void Airplane::update(float deltaTime) {
 		if (this->name.compare("player") == 0) {
 			this->rotateAirplane(deltaMove);
 			this->turbo(deltaTime);
-			this->shoot();
+			
+			if (Input::isKeyPressed(SDL_SCANCODE_SPACE) == true) {
+				this->shoot();
+			}
+			
 			this->weapons[currentWepon]->update(deltaTime);
-
-			if (this->detectCollision() == true) {
-				//this->speed = 5;
+			
+			if (this->detectStaticCollision() == true) {
 				std::cout << "Collision !!" << std::endl;
 				this->state = AIRPLANE_CRHASED;
 			}
-
 		}
 
+		/* Reduce demasiado el rendimiento... */
+		/*
+		if (this->detectStaticCollision() == true) {
+			std::cout << "Collision !!" << std::endl;
+			this->state = AIRPLANE_CRHASED;
+		}
+		*/
 	}
 
 }
@@ -120,28 +129,21 @@ void Airplane::turbo(float deltaTime) {
 	}
 }
 
-void Airplane::shoot() {
-	if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) == true) {
-		//this->weapons[currentWepon]->shoot(this->getGlobalMatrix() );
+void Airplane::shoot() {	
+	//this->weapons[currentWepon]->shoot(this->getGlobalMatrix() );
 
-		/* Disparar Balas, Aixo s'hauria de moure on li correspongues....*/
-		// Preguntar al Javi porque al disparar, se me aumenta la matriz y la distancia de la colision es más grande..
-		Matrix44 modelMatrix = this->getGlobalMatrix();
-		Vector3 pos = modelMatrix * Vector3(0, 0, -3);
-		Vector3 velocity = modelMatrix.rotateVector(Vector3(0, 0, -1));
-		velocity = velocity * this->speed * 1.5;
-		BulletManager::instance->createBullet(pos, velocity, "-", this);
-
-	}
+	/* Disparar Balas, Aixo s'hauria de moure on li correspongues....*/
+	Matrix44 modelMatrix = this->getGlobalMatrix();
+	Vector3 pos = modelMatrix * Vector3(0, 0, -3);
+	Vector3 velocity = modelMatrix.rotateVector(Vector3(0, 0, -1));
+	velocity = velocity * this->speed * 1.5;
+	BulletManager::instance->createBullet(pos, velocity, "-", this);
 }
 
-bool Airplane::detectCollision() {
+bool Airplane::detectStaticCollision() {
 	bool haveCollision = false;
 	Vector3 origin = this->lastPosition;
 	Vector3 direction = this->getPosition() - origin;
-
-	//std::cout << "Ray Length ......... " << direction.length() << std::endl;
-
 	return EntityCollider::haveCollisionAgainstStaticObjects(origin, direction);
 }
 

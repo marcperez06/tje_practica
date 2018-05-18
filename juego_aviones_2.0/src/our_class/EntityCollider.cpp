@@ -41,7 +41,7 @@ bool EntityCollider::haveCollisionAgainstStaticObjects(const Vector3 origin, con
 bool EntityCollider::haveCollisionAgainstDynamicObjects(const Vector3 origin, const Vector3 direction) {
 	bool haveCollision = false;
 	float maxRayDistance = direction.length();
-	std::vector<Entity*> dynamicEntities = World::instance->dinamicObjects;
+	std::vector<Entity*> dynamicEntities = World::instance->dynamicObjects;
 	for (int i = 0; (i < dynamicEntities.size()) && (haveCollision == false); i++) {
 		haveCollision = this->testRayCollisionAgainstEntity(origin, direction, maxRayDistance, (EntityMesh*) dynamicEntities[i]);
 	}

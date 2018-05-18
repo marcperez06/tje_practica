@@ -1,4 +1,6 @@
 #include "CollisionHandler.h"
+#include "World.h"
+#include "EntityCollider.h"
 
 bool CollisionHandler::rayCollision(Vector3 origin, Vector3 direction, EntityMesh* entityMesh, Vector3 & collision, Vector3 & normal) {
 	bool haveCollision = false;
@@ -68,4 +70,50 @@ bool CollisionHandler::meshCollision(EntityMesh* meshA, EntityMesh* meshB) {
 		haveCollision = collisionModelA->collision(collisionModelB, -1, 0, meshB->getGlobalMatrix().m);
 	}
 	return haveCollision;
+}
+
+void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
+
+	std::vector<Entity*> staticEntities = World::instance->staticObjects;
+	std::vector<Entity*> dynamicEntities = World::instance->dynamicObjects;
+
+	for (int i = 0; i < staticEntities.size(); i++) {
+
+		EntityMesh* staticEntity = (EntityMesh*)staticEntities[i];
+		Matrix44 modelMatrix = staticEntity->getGlobalMatrix();
+		Mesh* mesh = staticEntity->highMesh;
+
+		if (staticEntity->lowMesh != NULL) {
+			mesh = staticEntity->lowMesh;
+		}
+
+		if (!mesh->collision_model) {
+			if (!mesh->createCollisionModel()) {
+				break;
+			}
+		}
+
+		CollisionModel3D* collision_model = (CollisionModel3D*) mesh->collision_model;
+		assert(collision_model && "CollisionModel3D must be created before using it, call createCollisionModel");
+
+		collision_model->setTransform(modelMatrix.m);
+
+		for (int j = 0; j < dynamicEntities.size(); j++) {
+
+			EntityCollider* dynamicEntity = (EntityCollider*) dynamicEntities[j];
+
+			Vector3 origin = dynamicEntity->getGlobalMatrix() * dynamicEntity->lastPosition;
+			Vector3 direction = dynamicEntity->getGlobalPosition() - origin;
+			float maxRayDistance = direction.length();
+
+			if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
+
+				std::cout << "Airplane Destroy ..... " << std::endl;
+
+			}
+
+		}
+
+	}
+
 }

@@ -37,7 +37,7 @@ class Airplane : public EntityCollider {
 
 		void shoot();
 
-		bool detectCollision();
+		bool detectStaticCollision();
 
 	private:
 

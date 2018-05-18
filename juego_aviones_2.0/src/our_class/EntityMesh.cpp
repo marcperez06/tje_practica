@@ -43,36 +43,33 @@ void EntityMesh::renderMesh(Camera * camera, Matrix44 globalMatrix) {
 	Shader* shader = this->material->shader;
 	Mesh* mesh = this->getCorrectMeshRespectCameraDistance(camera);
 
-	if (mesh != NULL) {
+	if (mesh == NULL || shader == NULL) {
+		return;
+	}
 
-		axisBoundingBox = transformBoundingBox(globalMatrix, mesh->box);
+	axisBoundingBox = transformBoundingBox(globalMatrix, mesh->box);
 
-		if (1) { //camera->testBoxInFrustum(axisBoundingBox.center, axisBoundingBox.halfsize) == CLIP_INSIDE) {
+	if (camera->testBoxInFrustum(axisBoundingBox.center, axisBoundingBox.halfsize) != CLIP_OUTSIDE) {
 
-			if (shader != NULL) {
+		//this->activeGlFlags();
 
-				//this->activeGlFlags();
+		//enable shader
+		shader->enable();
 
-				//enable shader
-				shader->enable();
+		//upload uniforms
+		shader->setUniform("u_color", this->material->color);
+		shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+		shader->setUniform("u_texture", this->material->texture);
+		shader->setUniform("u_model", globalMatrix);
+		shader->setUniform("u_camera_position", camera->eye);
+		shader->setUniform("u_time", 1);
 
-				//upload uniforms
-				shader->setUniform("u_color", this->material->color);
-				shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
-				shader->setUniform("u_texture", this->material->texture);
-				shader->setUniform("u_model", globalMatrix);
-				shader->setUniform("u_camera_position", camera->eye);
-				shader->setUniform("u_time", 1);
+		mesh->render(GL_TRIANGLES, shader);
 
-				mesh->render(GL_TRIANGLES, shader);
+		//disable shader
+		shader->disable();
 
-				//disable shader
-				shader->disable();
-
-				//this->desactiveGlFlags();
-			}
-
-		}
+		//this->desactiveGlFlags();
 
 	}
 

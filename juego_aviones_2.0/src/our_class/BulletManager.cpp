@@ -12,7 +12,7 @@ BulletManager::BulletManager() {
 
 void BulletManager::createBullet(Vector3 pos, Vector3 velocity, std::string type, Airplane* owner) {
 
-	Bullet bullet = *(Factory::buildBullet(pos, velocity, 10, type, owner));
+	Bullet bullet = Factory::buildBullet(pos, velocity, 10, type, owner);
 
 	for (int i = 0; i < maxBullets; i++) {
 		Bullet& auxBullet = this->bullets[i];
@@ -48,13 +48,15 @@ void BulletManager::update(float deltaTime) {
 	for (int i = 0; i < maxBullets; i++) {
 		Bullet& bullet = this->bullets[i];
 		
-		if (bullet.timeToLive > 0) {
-			bullet.lastPosition = bullet.position;
-			bullet.position = bullet.position + bullet.velocity * deltaTime;
-			bullet.velocity = bullet.velocity + Vector3(0, -4, 0) * deltaTime; // aplicar gravedad
-			bullet.velocity = bullet.velocity * 0.9999; // reducir velocidad
-			bullet.timeToLive -= deltaTime;
+		if (bullet.timeToLive < 0) {
+			continue;
 		}
+
+		bullet.lastPosition = bullet.position;
+		bullet.position = bullet.position + bullet.velocity * deltaTime;
+		bullet.velocity = bullet.velocity + Vector3(0, -4, 0) * deltaTime; // aplicar gravedad
+		bullet.velocity = bullet.velocity * 0.9999; // reducir velocidad
+		bullet.timeToLive -= deltaTime;
 
 	}
 
@@ -87,26 +89,24 @@ void BulletManager::testStaticCollisions() {
 		assert(collision_model && "CollisionModel3D must be created before using it, call createCollisionModel");
 
 		collision_model->setTransform(modelMatrix.m);
-		
-		// TODO: Algo falla... Revisar..
 
 		for (int j = 0; j < maxBullets; j++) {
 
-			Bullet& bullet = this->bullets[i];
+			Bullet& bullet = this->bullets[j];
 
-			if (bullet.timeToLive > 0) {
+			if (bullet.timeToLive < 0) {
+				continue;
+			}
 
-				Vector3 origin = bullet.lastPosition;
-				Vector3 direction = bullet.position - bullet.lastPosition;
-				float maxRayDistance = direction.length();
+			Vector3 origin = bullet.lastPosition;
+			Vector3 direction = bullet.position - bullet.lastPosition;
+			float maxRayDistance = direction.length();
 
-				if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
+			if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
 
-					bullet.timeToLive = 0;
-					std::cout << "BUllet Destroy ..... " << std::endl;
-					//staticEntity.onBulletCollision(bullet, collisionPoint); // LLamar desde testDynamicCollision, para idicarle al avion de que una bala a colisionado con el.
-
-				}
+				bullet.timeToLive = 0;
+				std::cout << "BUllet Destroy ..... " << std::endl;
+				//staticEntity.onBulletCollision(bullet, collisionPoint); // LLamar desde testDynamicCollision, para idicarle al avion de que una bala a colisionado con el.
 
 			}
 

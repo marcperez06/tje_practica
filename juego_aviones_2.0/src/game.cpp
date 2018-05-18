@@ -80,13 +80,24 @@ void Game::render(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//set the camera as default
-	World::instance->currentCamera->enable();
+	world->currentCamera->enable();
 
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	world->render(World::instance->currentCamera);
+	world->render(world->currentCamera);
+
+	//Draw out world
+	drawGrid();
+
+	//render the FPS
+	drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
+
+	glDisable(GL_DEPTH_TEST);
+
+	//swap between front buffer and back buffer
+	SDL_GL_SwapWindow(this->window);
 
 	/*
 	
@@ -120,16 +131,6 @@ void Game::render(void)
 
 	*/
 
-	//Draw out world
-	//drawGrid();
-
-	//render the FPS
-	drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
-
-	glDisable(GL_DEPTH_TEST);
-
-	//swap between front buffer and back buffer
-	SDL_GL_SwapWindow(this->window);
 }
 
 void Game::update(double seconds_elapsed)
