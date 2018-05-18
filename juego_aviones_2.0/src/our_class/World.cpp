@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "../game.h";
 #include "BulletManager.h"
+#include "CollisionHandler.h"
 
 World* World::instance = NULL;
 
@@ -144,9 +145,14 @@ void World::renderWorldMap(Camera* camera) {
 void World::renderWorldMap(Camera* camera) {
 	EntityMesh* base;
 	std::vector<Matrix44> islandsPos;
+
 	Mesh* islandMesh = Mesh::Load("data/island/island.ASE");
-	Mesh* waterMesh = Mesh::Load("data/island/water_deep.ASE");
+	//Mesh* waterMesh = Mesh::Load("data/island/water_deep.ASE");
 	Shader* shader = Shader::Load("data/shaders/instanced.vs", "data/shaders/world.fs");
+
+	if (islandMesh == NULL || shader == NULL) {
+		return;
+	}
 
 	if (this->getWorldMap()->children.size() > 0) {
 		base = (EntityMesh*) this->getWorldMap()->children[0];
@@ -158,27 +164,21 @@ void World::renderWorldMap(Camera* camera) {
 		islandsPos.push_back(island->getGlobalMatrix());
 	}
 
-	if (shader != NULL) {
-		shader->enable();
+	shader->enable();
+	shader->setUniform("u_color", base->material->color);
+	shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+	shader->setUniform("u_texture", base->material->texture);
+	shader->setUniform("u_detail_texture", Texture::Load("data/island/rock.tga"));
+	shader->setUniform("u_camera_position", camera->eye);
+	shader->setUniform("u_time", 1);
 
-		if (islandMesh != NULL) {
-			shader->setUniform("u_color", base->material->color);
-			shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
-			shader->setUniform("u_texture", base->material->texture);
-			shader->setUniform("u_detail_texture", Texture::Load("data/island/rock.tga"));
-			shader->setUniform("u_camera_position", camera->eye);
-			shader->setUniform("u_time", 1);
+	islandMesh->renderInstanced(GL_TRIANGLES, shader, &islandsPos[0], islandsPos.size());
 
-			islandMesh->renderInstanced(GL_TRIANGLES, shader, &islandsPos[0], islandsPos.size());
+	shader->setUniform("u_texture", Texture::Load("data/island/water_deep.tga"));
 
-			shader->setUniform("u_texture", Texture::Load("data/island/water_deep.tga"));
-
-			//waterMesh->renderInstanced(GL_TRIANGLES, shader, &islandsPos[0], islandsPos.size());
-
-		}
-
-		shader->disable();
-	}
+	//waterMesh->renderInstanced(GL_TRIANGLES, shader, &islandsPos[0], islandsPos.size());
+	
+	shader->disable();
 
 	//renderWater(camera);
 
@@ -299,7 +299,7 @@ void World::update(float deltaTime) {
 	}
 
 	BulletManager::instance->update(deltaTime);
-
+	//CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis();
 }
 
 Entity* World::getWorldMap() {

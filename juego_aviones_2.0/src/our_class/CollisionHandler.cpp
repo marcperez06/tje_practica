@@ -102,13 +102,14 @@ void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
 
 			EntityCollider* dynamicEntity = (EntityCollider*) dynamicEntities[j];
 
-			Vector3 origin = dynamicEntity->getGlobalMatrix() * dynamicEntity->lastPosition;
-			Vector3 direction = dynamicEntity->getGlobalPosition() - origin;
+			Vector3 origin = dynamicEntity->lastPosition;
+			Vector3 direction = dynamicEntity->getPosition() - origin;
 			float maxRayDistance = direction.length();
 
 			if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
 
 				std::cout << "Airplane Destroy ..... " << std::endl;
+				dynamicEntity->collisionEffect();
 
 			}
 

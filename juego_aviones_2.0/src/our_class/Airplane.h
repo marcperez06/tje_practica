@@ -39,6 +39,8 @@ class Airplane : public EntityCollider {
 
 		bool detectStaticCollision();
 
+		virtual void collisionEffect();
+
 	private:
 
 		void removeAirplane(Airplane* airplane);

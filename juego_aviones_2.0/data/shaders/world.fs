@@ -26,8 +26,8 @@ void main()
 
 	vec2 uv = v_uv;
 	vec4 detailColor = texture2D(u_detail_texture, uv * detailRepeat);
-	if (v_world_position.y < -1) {
-		detailColor = vec4(1, 1, 1, 1);
+	if (v_world_position.y < -100) {
+		detailColor = vec4(0.80, 0.80, 0.80, 1);
 	}
 	
 	vec4 color = u_color * texture2D( u_texture, uv );

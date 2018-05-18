@@ -89,7 +89,7 @@ void Game::render(void)
 	world->render(world->currentCamera);
 
 	//Draw out world
-	drawGrid();
+	//drawGrid();
 
 	//render the FPS
 	drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);

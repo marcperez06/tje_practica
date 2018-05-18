@@ -51,7 +51,7 @@ void Airplane::update(float deltaTime) {
 			this->rotateAirplane(deltaMove);
 			this->turbo(deltaTime);
 			
-			if (Input::isKeyPressed(SDL_SCANCODE_SPACE) == true) {
+			if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) == true) {
 				this->shoot();
 			}
 			
@@ -136,7 +136,7 @@ void Airplane::shoot() {
 	Matrix44 modelMatrix = this->getGlobalMatrix();
 	Vector3 pos = modelMatrix * Vector3(0, 0, -3);
 	Vector3 velocity = modelMatrix.rotateVector(Vector3(0, 0, -1));
-	velocity = velocity * this->speed * 1.5;
+	velocity = velocity * this->speed * 2.5;
 	BulletManager::instance->createBullet(pos, velocity, "-", this);
 }
 
@@ -155,4 +155,8 @@ void Airplane::removeAirplane(Airplane* airplane) {
 			founded = true;
 		}
 	}
+}
+
+void Airplane::collisionEffect() {
+	this->state = AIRPLANE_CRHASED;
 }

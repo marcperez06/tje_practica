@@ -4,6 +4,8 @@
 #include "EntityMesh.h"
 #include "Collision.h"
 
+class Bullet;
+
 class EntityCollider : public EntityMesh {
 	public:
 		Vector3 lastPosition;
@@ -19,7 +21,8 @@ class EntityCollider : public EntityMesh {
 		bool haveCollisionAgainstStaticObjects(const Vector3 origin, const Vector3 direction);
 		bool haveCollisionAgainstDynamicObjects(const Vector3 origin, const Vector3 direction);
 
-		//void onBulletCollision(const Bullet & bullet, Vector3 collision) {}
+		virtual void onBulletCollision(const Bullet & bullet, Vector3 collision) {}
+		virtual void collisionEffect() {}
 
 };
 
