@@ -2,7 +2,8 @@
 #define AIRPLANE_H
 
 #include "EntityCollider.h"
-#include "Weapon.h"
+
+class Weapon;
 
 class Airplane : public EntityCollider {
 

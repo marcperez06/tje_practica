@@ -1,16 +1,14 @@
 #include "Weapon.h"
-#include "Factory.h"
-#include "World.h"
+#include "Airplane.h"
+//#include "Factory.h"
 
-Weapon::Weapon(int ownser, std::string type) {
+Weapon::Weapon(Airplane* owner, std::string type) {
 
 	this->owner = owner;
 	this->type = type;
 
 	if (type.compare("Misil") == 0) {
 		initMisil();
-	} else if (type.compare("MachineGun") == 0) {
-		initMachineGun();
 	}
 }
 
@@ -22,23 +20,7 @@ void Weapon::initMisil() {
 	//this->mesh = Factory::buildMisil(World::instance->player->getGlobalMatrix() * Vector3(0, -1, 0));
 }
 
-void Weapon::initMachineGun() {
-	this->damage = 60;
-	this->bulletSpeed = 7;
-	this->cooldown = 2;
-	this->fireRate = 10;
-	//this->mesh = Factory::buildMisil(World::instance->player->getGlobalMatrix() * Vector3(0, -1, 0));
-}
-
-void Weapon::shoot(Matrix44 parentTransform) {
-
-	Vector3 initialPos = parentTransform * Vector3(0, -3, 0);
-	Vector3 velocity = Vector3(0, 0, bulletSpeed * -1);
-	if (this->cooldown < 0) {
-		//this->bullets.push_back(Factory::buildBullet(initialPos, velocity, this->damage, 2, this->owner, this->type));
-		this->cooldown = 2;
-	}
-}
+void Weapon::shoot() {}
 
 void Weapon::render() {
 	/*for (int i = 0; i < this->bullets.size(); i++) {
@@ -49,7 +31,4 @@ void Weapon::render() {
 
 void Weapon::update(float deltaTime) {
 	this->cooldown -= deltaTime;
-	/*for (int i = 0; i < this->bullets.size(); i++) {
-		this->bullets[i]->update();
-	}*/
 }

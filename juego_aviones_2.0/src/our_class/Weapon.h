@@ -6,25 +6,27 @@
 #include "Bullet.h"
 //#include "EntityMesh.h"
 
+class Entity;
+class Airplane;
+
 class Weapon {
 
 	public:
-		//std::vector<Bullet*> bullets;
+		std::vector<Bullet> bullets;
 		float bulletSpeed;
 		float damage;
-		int owner;
+		Airplane* owner;
 		float fireRate;
 		float cooldown;
 		std::string type;
 		//EntityMesh* mesh;
 
-		Weapon(int owner, std::string type);
+		Weapon(Airplane* owner, std::string type);
 		void initMisil();
-		void initMachineGun();
 
-		void shoot(Matrix44 parentTransform);
-		void render();
-		void update(float deltaTime);
+		virtual void shoot();
+		virtual void render();
+		virtual void update(float deltaTime);
 };
 
 #endif

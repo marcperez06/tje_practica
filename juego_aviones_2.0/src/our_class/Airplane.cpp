@@ -3,6 +3,7 @@
 //#include "CollisionHandler.h"
 #include "World.h"
 #include "BulletManager.h"
+#include "Weapon.h"
 
 // --- CONSTRUCTORES ---
 
@@ -51,7 +52,7 @@ void Airplane::update(float deltaTime) {
 			this->rotateAirplane(deltaMove);
 			this->turbo(deltaTime);
 			
-			if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) == true) {
+			if (Input::isKeyPressed(SDL_SCANCODE_SPACE) == true) {
 				this->shoot();
 			}
 			
@@ -130,14 +131,7 @@ void Airplane::turbo(float deltaTime) {
 }
 
 void Airplane::shoot() {	
-	//this->weapons[currentWepon]->shoot(this->getGlobalMatrix() );
-
-	/* Disparar Balas, Aixo s'hauria de moure on li correspongues....*/
-	Matrix44 modelMatrix = this->getGlobalMatrix();
-	Vector3 pos = modelMatrix * Vector3(0, 0, -3);
-	Vector3 velocity = modelMatrix.rotateVector(Vector3(0, 0, -1));
-	velocity = velocity * this->speed * 2.5;
-	BulletManager::instance->createBullet(pos, velocity, "-", this);
+	this->weapons[currentWepon]->shoot();
 }
 
 bool Airplane::detectStaticCollision() {

@@ -1,9 +1,13 @@
 #ifndef FACTORY_H
 #define FACTORY_H
 
-#include "Airplane.h"
 #include "Bullet.h"
 #include "../framework.h"
+
+class Airplane;
+class EntityMesh;
+class MachineGun;
+class DropBomb;
 
 class Factory {
 
@@ -15,6 +19,8 @@ class Factory {
 		static EntityMesh* buildWater(const Vector3 initialPos);
 		static EntityMesh* buildSky(const Vector3 initialPos);
 		static EntityMesh* buildMisil(const Vector3 initialPos);
+		static MachineGun* buildMachineGun(Airplane* owner);
+		static DropBomb* buildDropBomb(Airplane* owner);
 
 };
 

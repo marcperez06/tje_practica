@@ -1,82 +1,77 @@
-#include "BulletManager.h"
+#include "DropBomb.h"
+#include "Airplane.h"
 #include "Factory.h"
 #include "World.h"
 #include "../extra/coldet/coldet.h"
-#include "EntityCollider.h"
 
-BulletManager* BulletManager::instance = NULL;
+DropBomb::DropBomb(Airplane* owner, std::string type) : Weapon(owner, type) {}
 
-BulletManager::BulletManager() {
-	memset(&this->bullets, 0, sizeof(bullets));
-	this->instance = this;
-}
+void DropBomb::shoot() {
+	if (this->cooldown < 0) {
 
-void BulletManager::createBullet(Vector3 pos, Vector3 velocity, std::string type, Airplane* owner) {
+		Matrix44 modelMatrix = this->owner->getGlobalMatrix();
+		Vector3 pos = modelMatrix * Vector3(0, -2, 1);
+		Vector3 velocity = modelMatrix.rotateVector(Vector3(0, -1, 0));
+		velocity = velocity * this->owner->speed * this->bulletSpeed;
 
-	Bullet bullet = Factory::buildBullet(pos, velocity, 10, type, owner);
+		Bullet bomb = Factory::buildBullet(pos, velocity, 50, this->type, this->owner);
+		this->bullets.push_back(bomb);
 
-	for (int i = 0; i < maxBullets; i++) {
-		Bullet& auxBullet = this->bullets[i];
-		if (auxBullet.timeToLive > 0) {
-			continue;
-		}
-
-		auxBullet = bullet;
-		break;
+		this->cooldown = 10;
 	}
-
 }
 
-void BulletManager::render() {
+void DropBomb::update(float deltaTime) {
+	Weapon::update(deltaTime);
 
-	Mesh mesh;
-
-	for (int i = 0; i < maxBullets; i++) {
+	for (int i = 0; i < this->bullets.size(); i++) {
 		Bullet& bullet = this->bullets[i];
-		if (bullet.timeToLive > 0) {
-			mesh.vertices.push_back(bullet.lastPosition);
-			mesh.vertices.push_back(bullet.position);
-		}
-	}
 
-	if (mesh.vertices.size() > 0) {
-		mesh.renderFixedPipeline(GL_LINES);
-	}
-	 
-}
-
-void BulletManager::update(float deltaTime) {
-
-	for (int i = 0; i < maxBullets; i++) {
-		Bullet& bullet = this->bullets[i];
-		
 		if (bullet.timeToLive < 0) {
 			continue;
 		}
 
 		bullet.lastPosition = bullet.position;
 		bullet.position = bullet.position + bullet.velocity * deltaTime;
-		bullet.velocity = bullet.velocity + Vector3(0, -4, 0) * deltaTime; // aplicar gravedad
-		bullet.velocity = bullet.velocity * 0.9999; // reducir velocidad
+		bullet.velocity = bullet.velocity + Vector3(0, -9.8, 0) * deltaTime; // aplicar gravedad
+		bullet.velocity = bullet.velocity * 1; // reducir velocidad
 		bullet.timeToLive -= deltaTime;
 
 	}
 
 	this->testStaticCollisions();
-	//this->testDynamicCollisions();
 
 }
 
-void BulletManager::testStaticCollisions() {
+void DropBomb::render() {
+
+	Mesh mesh;
+
+	for (int i = 0; i < bullets.size(); i++) {
+		Bullet& bullet = this->bullets[i];
+		if (bullet.timeToLive > 0) {
+			mesh.vertices.push_back(bullet.position);
+			mesh.colors.push_back(Vector4(0, 1, 0, 1));
+		}
+	}
+
+	if (mesh.vertices.size() > 0) {
+		glPointSize(30);
+		mesh.renderFixedPipeline(GL_POINTS);
+	}
+	
+}
+
+void DropBomb::testStaticCollisions() {
 
 	std::vector<Entity*> staticEntities = World::instance->staticObjects;
 
 	for (int i = 0; i < staticEntities.size(); i++) {
 
-		EntityMesh* staticEntity = (EntityMesh*) staticEntities[i];
+		EntityMesh* staticEntity = (EntityMesh*)staticEntities[i];
 		Matrix44 modelMatrix = staticEntity->getGlobalMatrix();
 		Mesh* mesh = staticEntity->highMesh;
-		
+
 		if (staticEntity->lowMesh != NULL) {
 			mesh = staticEntity->lowMesh;
 		}
@@ -92,7 +87,7 @@ void BulletManager::testStaticCollisions() {
 
 		collision_model->setTransform(modelMatrix.m);
 
-		for (int j = 0; j < maxBullets; j++) {
+		for (int j = 0; j < bullets.size(); j++) {
 
 			Bullet& bullet = this->bullets[j];
 

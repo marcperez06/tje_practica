@@ -4,6 +4,9 @@
 #include "../game.h";
 #include "BulletManager.h"
 #include "CollisionHandler.h"
+#include "Airplane.h"
+#include "MachineGun.h"
+#include "DropBomb.h"
 
 World* World::instance = NULL;
 
@@ -48,7 +51,9 @@ void World::initPlayer() {
 	this->player = Factory::buildAirplane(Vector3(0, 500, 0), 200);
 	this->player->name = "player";
 	this->player->uuid = 1;
-	this->player->weapons.push_back(new Weapon(this->player->uuid, "Misil"));
+	//MachineGun* machineGun = Factory::buildMachineGun(this->player);
+	DropBomb* machineGun = Factory::buildDropBomb(this->player);
+	this->player->weapons.push_back(machineGun);
 	this->player->currentWepon = 0;
 	this->root->addChild(this->player);
 	this->dynamicObjects.push_back(this->player);
