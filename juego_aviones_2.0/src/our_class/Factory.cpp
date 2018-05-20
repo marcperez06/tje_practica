@@ -85,7 +85,7 @@ EntityMesh* Factory::buildMisil(const Vector3 initialPos) {
 }
 
 MachineGun* Factory::buildMachineGun(Airplane* owner) {
-	MachineGun* machineGun = new MachineGun(owner, "basic");
+	MachineGun* machineGun = new MachineGun(owner, "bullet");
 	machineGun->damage = 60;
 	machineGun->bulletSpeed = 2.5;
 	machineGun->cooldown = 0.50;
@@ -94,9 +94,9 @@ MachineGun* Factory::buildMachineGun(Airplane* owner) {
 }
 
 DropBomb* Factory::buildDropBomb(Airplane* owner) {
-	DropBomb* weapon = new DropBomb(owner, "basic");
+	DropBomb* weapon = new DropBomb(owner, "bomb");
 	weapon->damage = 600;
-	weapon->bulletSpeed = 1.5;
+	weapon->bulletSpeed = 1;
 	weapon->cooldown = 10;
 	weapon->fireRate = 5;
 	return weapon;

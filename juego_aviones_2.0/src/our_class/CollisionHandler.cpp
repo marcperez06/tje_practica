@@ -1,6 +1,7 @@
 #include "CollisionHandler.h"
 #include "World.h"
 #include "EntityCollider.h"
+#include "Bullet.h"
 
 bool CollisionHandler::rayCollision(Vector3 origin, Vector3 direction, EntityMesh* entityMesh, Vector3 & collision, Vector3 & normal) {
 	bool haveCollision = false;
@@ -117,4 +118,101 @@ void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
 
 	}
 
+}
+
+void CollisionHandler::bulletsCollisionAgainstStaticEntities(Bullet bullets[], int bulletsSize) {
+	std::vector<Entity*> staticEntities = World::instance->staticObjects;
+
+	for (int i = 0; i < staticEntities.size(); i++) {
+
+		EntityMesh* staticEntity = (EntityMesh*)staticEntities[i];
+		Matrix44 modelMatrix = staticEntity->getGlobalMatrix();
+		Mesh* mesh = staticEntity->highMesh;
+
+		if (staticEntity->lowMesh != NULL) {
+			mesh = staticEntity->lowMesh;
+		}
+
+		if (!mesh->collision_model) {
+			if (!mesh->createCollisionModel()) {
+				break;
+			}
+		}
+
+		CollisionModel3D* collision_model = (CollisionModel3D*)mesh->collision_model;
+		assert(collision_model && "CollisionModel3D must be created before using it, call createCollisionModel");
+
+		collision_model->setTransform(modelMatrix.m);
+
+		for (int j = 0; j < bulletsSize; j++) {
+
+			Bullet& bullet = bullets[j];
+
+			if (bullet.timeToLive < 0) {
+				continue;
+			}
+
+			Vector3 origin = bullet.lastPosition;
+			Vector3 direction = bullet.position - bullet.lastPosition;
+			float maxRayDistance = direction.length();
+
+			if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
+
+				bullet.timeToLive = 0;
+				std::cout << "BUllet Destroy ..... " << std::endl;
+
+			}
+
+		}
+
+	}
+}
+
+void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], int bulletsSize) {
+	std::vector<Entity*> dynamicEntities = World::instance->staticObjects;
+
+	for (int i = 0; i < dynamicEntities.size(); i++) {
+
+		EntityCollider* dynamicEntity = (EntityCollider*) dynamicEntities[i];
+		Matrix44 modelMatrix = dynamicEntity->getGlobalMatrix();
+		Mesh* mesh = dynamicEntity->highMesh;
+
+		if (dynamicEntity->lowMesh != NULL) {
+			mesh = dynamicEntity->lowMesh;
+		}
+
+		if (!mesh->collision_model) {
+			if (!mesh->createCollisionModel()) {
+				break;
+			}
+		}
+
+		CollisionModel3D* collision_model = (CollisionModel3D*)mesh->collision_model;
+		assert(collision_model && "CollisionModel3D must be created before using it, call createCollisionModel");
+
+		collision_model->setTransform(modelMatrix.m);
+
+		for (int j = 0; j < bulletsSize; j++) {
+
+			Bullet& bullet = bullets[j];
+
+			if (bullet.timeToLive < 0) {
+				continue;
+			}
+
+			Vector3 origin = bullet.lastPosition;
+			Vector3 direction = bullet.position - bullet.lastPosition;
+			float maxRayDistance = direction.length();
+
+			if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
+
+				bullet.timeToLive = 0;
+				std::cout << "BUllet Destroy ..... " << std::endl;
+				//dynamicEntity.onBulletCollision(bullet, collisionPoint); // LLamar desde testDynamicCollision, para idicarle al avion de que una bala a colisionado con el.
+
+			}
+
+		}
+
+	}
 }

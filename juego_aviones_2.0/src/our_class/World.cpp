@@ -51,9 +51,10 @@ void World::initPlayer() {
 	this->player = Factory::buildAirplane(Vector3(0, 500, 0), 200);
 	this->player->name = "player";
 	this->player->uuid = 1;
-	//MachineGun* machineGun = Factory::buildMachineGun(this->player);
-	DropBomb* machineGun = Factory::buildDropBomb(this->player);
+	MachineGun* machineGun = Factory::buildMachineGun(this->player);
+	DropBomb* dropBomb = Factory::buildDropBomb(this->player);
 	this->player->weapons.push_back(machineGun);
+	this->player->weapons.push_back(dropBomb);
 	this->player->currentWepon = 0;
 	this->root->addChild(this->player);
 	this->dynamicObjects.push_back(this->player);
@@ -63,9 +64,9 @@ void World::initEnemies() {
 	assert(this->player);
 	if (this->player != NULL) {
 		for (int i = 0; i < this->numEnemies; i++) {
-			float x = (rand() % 300) + this->player->highMesh->aabb_max.x;
+			float x = (rand() % 900) + this->player->highMesh->aabb_max.x;
 			float y = (rand() % 200) + 300 + this->player->highMesh->aabb_max.y;
-			float z = (rand() % 20) + this->player->highMesh->aabb_max.z;
+			float z = (rand() % 100) + this->player->highMesh->aabb_max.z;
 			Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 150);
 			this->root->addChild(enemy);
 			this->dynamicObjects.push_back(enemy);

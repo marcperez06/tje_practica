@@ -16,8 +16,6 @@ class BulletManager {
 
 		void render();
 		void update(float deltaTime);
-		void testStaticCollisions();
-		void testDynamicCollisions();
 
 };
 
