@@ -97,12 +97,12 @@ void Airplane::rotateRollDirection(float deltaMove) {
 void Airplane::rotatePitchDirection(float deltaMove) {
 	Vector3 pitch = Vector3(1, 0, 0);
 	// down
-	if (Input::isKeyPressed(SDL_SCANCODE_W) == true) {
+	if (Input::isKeyPressed(SDL_SCANCODE_S) == true) {
 		this->transform.matrixModel.rotate(1 * deltaMove, pitch);
 	}
 
 	// up
-	if (Input::isKeyPressed(SDL_SCANCODE_S) == true) {
+	if (Input::isKeyPressed(SDL_SCANCODE_W) == true) {
 		this->transform.matrixModel.rotate(-1 * deltaMove, pitch);
 	}
 }

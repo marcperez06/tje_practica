@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Bullet.h"
-//#include "EntityMesh.h"
+
 
 class Entity;
 class Airplane;
@@ -19,10 +19,9 @@ class Weapon {
 		float fireRate;
 		float cooldown;
 		std::string type;
-		//EntityMesh* mesh;
+		
 
 		Weapon(Airplane* owner, std::string type);
-		void initMisil();
 
 		virtual void shoot();
 		virtual void render();

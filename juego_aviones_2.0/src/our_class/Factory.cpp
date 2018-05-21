@@ -2,6 +2,7 @@
 #include "Airplane.h"
 #include "MachineGun.h"
 #include "DropBomb.h"
+#include "Misil.h"
 
 Airplane* Factory::buildAirplane(const Vector3 initialPos, float speed) {
 	Mesh* highMesh = Mesh::Load("data/spitfire/spitfire.ASE");
@@ -71,17 +72,23 @@ EntityMesh* Factory::buildSky(const Vector3 initialPos) {
 	return sky;
 }
 
-EntityMesh* Factory::buildMisil(const Vector3 initialPos) {
+
+Misil* Factory::buildMisil(Airplane* owner) {
+	Misil* weapon = new Misil(owner, "misil");
+	weapon->damage = 400;
+	weapon->bulletSpeed = 110;
+	weapon->cooldown = 5;
+	weapon->fireRate = 5;
+	
 	Mesh* highMesh = Mesh::Load("data/weapons/torpedo.ASE");
 	Texture* texture = Texture::Load("data/weapons/torpedo.tga");
 	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
-
-	Transform transform = Transform(initialPos, Quaternion());
+	Transform transform = Transform(owner->getPosition(), Quaternion());
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
+	
+	weapon->meshMisil = new EntityMesh(transform, highMesh, material);
 
-	EntityMesh* misil = new EntityMesh(transform, highMesh, material);
-
-	return misil;
+	return weapon;
 }
 
 MachineGun* Factory::buildMachineGun(Airplane* owner) {

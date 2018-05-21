@@ -7,6 +7,7 @@
 #include "Airplane.h"
 #include "MachineGun.h"
 #include "DropBomb.h"
+#include "Misil.h"
 
 World* World::instance = NULL;
 
@@ -53,8 +54,10 @@ void World::initPlayer() {
 	this->player->uuid = 1;
 	MachineGun* machineGun = Factory::buildMachineGun(this->player);
 	DropBomb* dropBomb = Factory::buildDropBomb(this->player);
+	Misil* misil = Factory::buildMisil(this->player);
 	this->player->weapons.push_back(machineGun);
 	this->player->weapons.push_back(dropBomb);
+	this->player->weapons.push_back(misil);
 	this->player->currentWepon = 0;
 	this->root->addChild(this->player);
 	this->dynamicObjects.push_back(this->player);
