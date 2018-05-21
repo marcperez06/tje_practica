@@ -76,7 +76,7 @@ EntityMesh* Factory::buildSky(const Vector3 initialPos) {
 Misil* Factory::buildMisil(Airplane* owner) {
 	Misil* weapon = new Misil(owner, "misil");
 	weapon->damage = 400;
-	weapon->bulletSpeed = 110;
+	weapon->bulletSpeed = 5;
 	weapon->cooldown = 5;
 	weapon->fireRate = 5;
 	

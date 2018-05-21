@@ -176,7 +176,7 @@ void Game::onKeyDown( SDL_KeyboardEvent event )
 		case SDLK_2: World::instance->player->state = 0; break;
 		case SDLK_0: World::instance->player->currentWepon = 0; break;
 		case SDLK_9: World::instance->player->currentWepon = 1; break;
-		//case SDLK_8: World::instance->player->currentWepon = 2; break;
+		case SDLK_8: World::instance->player->currentWepon = 2; break;
 
 	}
 }
