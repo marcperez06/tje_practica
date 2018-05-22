@@ -148,7 +148,7 @@ void CollisionHandler::bulletsCollisionAgainstStaticEntities(Bullet bullets[], i
 
 			Bullet& bullet = bullets[j];
 
-			if (bullet.timeToLive < 0) {
+			if (bullet.timeToLive <= 0) {
 				continue;
 			}
 
@@ -196,7 +196,7 @@ void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], 
 
 			Bullet& bullet = bullets[j];
 
-			if (bullet.timeToLive < 0) {
+			if (bullet.timeToLive <= 0) {
 				continue;
 			}
 

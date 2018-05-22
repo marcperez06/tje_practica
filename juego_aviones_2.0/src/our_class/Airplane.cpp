@@ -35,7 +35,9 @@ Airplane::~Airplane() {
 
 void Airplane::render(Camera* camera) {
 	EntityMesh::render(camera);
-	this->weapons[currentWepon]->render();
+	for (int i = 0; i < this->weapons.size(); i++) {
+		this->weapons[i]->render();
+	}
 }
 
 void Airplane::update(float deltaTime) {
@@ -56,7 +58,9 @@ void Airplane::update(float deltaTime) {
 				this->shoot();
 			}
 			
-			this->weapons[currentWepon]->update(deltaTime);
+			for (int i = 0; i < this->weapons.size(); i++) {
+				this->weapons[i]->update(deltaTime);
+			}
 			
 			if (this->detectStaticCollision() == true) {
 				std::cout << "Collision !!" << std::endl;

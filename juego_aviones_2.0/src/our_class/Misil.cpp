@@ -15,11 +15,10 @@ void Misil::shoot() {
 
 		Matrix44 modelMatrix = this->owner->getGlobalMatrix();
 		Vector3 pos = modelMatrix * Vector3(0, -2, 0);
-		pos = modelMatrix.rotateVector(pos);
 		Vector3 velocity = modelMatrix.rotateVector(Vector3(0, 0, -1));
-		velocity = velocity * this->owner->speed * this->bulletSpeed;
+		velocity = velocity * this->bulletSpeed;
 
-		Bullet misil = Factory::buildBullet(pos, velocity, 10, this->type, this->owner);
+		Bullet misil = Factory::buildBullet(pos, velocity, 30, this->type, this->owner);
 
 		for (int i = 0; i < maxMisil; i++) {
 			Bullet& auxMisil = this->misils[i];
@@ -37,7 +36,6 @@ void Misil::shoot() {
 
 void Misil::render() {
 
-	/*
 	std::vector<Matrix44> misilPos;
 	Mesh* mesh = this->meshMisil->highMesh;
 	Shader* shader = Shader::Load("data/shaders/instanced.vs", "data/shaders/texture.fs");
@@ -53,8 +51,11 @@ void Misil::render() {
 	for (int i = 0; i < maxMisil; i++) {
 		Bullet& misil = this->misils[i];
 		if (misil.timeToLive > 0) {
+
 			Matrix44 modelMisil;
 			modelMisil.translate(misil.position.x, misil.position.y, misil.position.z);
+			modelMisil.rotate(1.57, Vector3(0, 1, 0));
+
 			misilPos.push_back(modelMisil);
 		}
 	}
@@ -72,9 +73,8 @@ void Misil::render() {
 
 		shader->disable();
 	}
-	*/
 
-
+	/*
 	Mesh mesh;
 	for (int i = 0; i < maxMisil; i++) {
 		Bullet& misil = this->misils[i];
@@ -88,6 +88,7 @@ void Misil::render() {
 		glPointSize(50);
 		mesh.renderFixedPipeline(GL_POINTS);
 	}
+	*/
 
 }
 
@@ -103,8 +104,8 @@ void Misil::update(float deltaTime) {
 
 		misil.lastPosition = misil.position;
 		misil.position = misil.position + misil.velocity * deltaTime;
-		misil.velocity = misil.velocity + Vector3(0, -6, 0) * deltaTime; // aplicar gravedad
-		misil.velocity = misil.velocity * 0.99995;
+		misil.velocity = misil.velocity + Vector3(0, -2, 0) * deltaTime; // aplicar gravedad
+		misil.velocity = misil.velocity * 0.99999995;
 		misil.timeToLive -= deltaTime;
 
 	}
