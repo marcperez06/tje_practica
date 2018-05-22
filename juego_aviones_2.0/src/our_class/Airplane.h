@@ -18,6 +18,8 @@ class Airplane : public EntityCollider {
 		std::vector<Weapon*> weapons;
 		int currentWepon;
 
+		Airplane* target;
+
 		// --- CONSTRUCTORES ---
 
 		Airplane(const float speed, const Transform transform, Mesh * highMesh, Material * material);
@@ -45,6 +47,8 @@ class Airplane : public EntityCollider {
 	private:
 
 		void removeAirplane(Airplane* airplane);
+		void AIBehaviour(float deltaTime);
+		void playerBehaviour(float deltaTime);
 
 };
 

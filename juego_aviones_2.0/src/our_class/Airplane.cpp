@@ -18,6 +18,7 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mate
 	this->speed = speed;
 	this->health = 100;
 	this->state = AIRPLANE_FLYING;
+	this->target = NULL;
 	airplanes.push_back(this);
 }
 
@@ -26,6 +27,7 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mesh
 	this->speed = speed;
 	this->health = 100;
 	this->state = AIRPLANE_FLYING;
+	this->target = NULL;
 	airplanes.push_back(this);
 }
 
@@ -46,26 +48,12 @@ void Airplane::update(float deltaTime) {
 
 		EntityCollider::update(deltaTime);
 
-		float deltaMove = deltaTime * this->speed * 0.02;
-
 		this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
 
 		if (this->name.compare("player") == 0) {
-			this->rotateAirplane(deltaMove);
-			this->turbo(deltaTime);
-			
-			if (Input::isKeyPressed(SDL_SCANCODE_SPACE) == true) {
-				this->shoot();
-			}
-			
-			for (int i = 0; i < this->weapons.size(); i++) {
-				this->weapons[i]->update(deltaTime);
-			}
-			
-			if (this->detectStaticCollision() == true) {
-				std::cout << "Collision !!" << std::endl;
-				this->state = AIRPLANE_CRHASED;
-			}
+			this->playerBehaviour(deltaTime);
+		} else {
+			this->AIBehaviour(deltaTime);
 		}
 
 		/* Reduce demasiado el rendimiento... */
@@ -76,6 +64,67 @@ void Airplane::update(float deltaTime) {
 		}
 		*/
 	}
+
+}
+
+void Airplane::playerBehaviour(float deltaTime) {
+
+	float deltaMove = deltaTime * this->speed * 0.02;
+	this->rotateAirplane(deltaMove);
+	
+	this->turbo(deltaTime);
+
+	if (Input::isKeyPressed(SDL_SCANCODE_SPACE) == true) {
+		this->shoot();
+	}
+
+	for (int i = 0; i < this->weapons.size(); i++) {
+		this->weapons[i]->update(deltaTime);
+	}
+
+	if (this->detectStaticCollision() == true) {
+		std::cout << "Collision !!" << std::endl;
+		this->state = AIRPLANE_CRHASED;
+	}
+}
+
+void Airplane::AIBehaviour(float deltaTime) {
+
+	if (this->target == NULL) {
+		return;
+	}
+
+	Matrix44 modelInverse = this->getGlobalMatrix();
+	modelInverse.inverse();
+
+	Vector3 pos = this->getGlobalPosition();
+	Vector3 targetPos = this->target->getGlobalPosition();
+
+	Vector3 toTarget = (targetPos - pos);
+
+	if (abs(toTarget.length()) >= 0.0001) {
+		return;
+	}
+
+	toTarget.normalize();
+
+	Vector3 front = this->getGlobalMatrix().rotateVector(Vector3(0, 0, -1));
+	front.normalize();
+	if (abs(front.length()) >= 1.01) {
+		return;
+	}
+
+	float angle = acos(front.dot(toTarget));
+
+	if (abs(angle) < 0.0000001) {
+		return;
+	}
+
+	Vector3 axis = front.cross(toTarget);
+	axis = modelInverse.rotateVector(axis);
+	axis.normalize();
+
+	this->transform.matrixModel.rotate(angle, axis * -1);
 
 }
 

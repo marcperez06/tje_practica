@@ -20,6 +20,8 @@ class World {
 		Entity* root;
 
 		Airplane* player;
+		std::vector<Airplane*> enemies;
+
 		int numEnemies;
 
 		EntityMesh* sky;

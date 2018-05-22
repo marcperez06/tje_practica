@@ -36,7 +36,7 @@ Vector3 Entity::getPosition() {
 }
 
 Vector3 Entity::getGlobalPosition() {
-	return this->getGlobalMatrix() * this->transform.position;
+	return this->getGlobalMatrix().getTranslation();
 }
 
 Matrix44 Entity::getGlobalMatrix() {

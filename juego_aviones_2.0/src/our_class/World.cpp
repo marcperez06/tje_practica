@@ -13,7 +13,7 @@ World* World::instance = NULL;
 
 World::World() {
 	this->root = new Entity(Vector3(0, 0, 0));
-	this->numEnemies = 100;
+	this->numEnemies = 1;
 	this->initPlayer();
 	this->initCameras();
 	this->initEnemies();
@@ -71,7 +71,11 @@ void World::initEnemies() {
 			float y = (rand() % 200) + 300 + this->player->highMesh->aabb_max.y;
 			float z = (rand() % 100) + this->player->highMesh->aabb_max.z;
 			Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 150);
+
+			enemy->target = this->player;
+
 			this->root->addChild(enemy);
+			this->enemies.push_back(enemy);
 			this->dynamicObjects.push_back(enemy);
 		}
 	}
@@ -292,6 +296,21 @@ void World::update(float deltaTime) {
 		this->root->update(deltaTime);
 	}
 
+	if (this->enemies.size() > 0) {
+		/*
+		Vector3 cameraPosition = this->enemies[0]->transform.matrixModel * Vector3(0, 3, 9);
+		Vector3 cameraCenter = this->enemies[0]->transform.matrixModel * (this->player->highMesh->box.center + Vector3(0, 0, 1));
+		Vector3 cameraUp = this->enemies[0]->transform.matrixModel.rotateVector(Transform::UP);
+		this->playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp);
+		*/
+	}
+
+	Vector3 cameraPosition = this->player->transform.matrixModel * Vector3(0, 3, 9);
+	Vector3 cameraCenter = this->player->transform.matrixModel * (this->player->highMesh->box.center + Vector3(0, 0, 1));
+	Vector3 cameraUp = this->player->transform.matrixModel.rotateVector(Transform::UP);
+	this->playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp);
+
+	/*
 	if (this->player != NULL) {
 
 		this->player->update(deltaTime);
@@ -299,13 +318,15 @@ void World::update(float deltaTime) {
 		Vector3 cameraPosition = this->player->transform.matrixModel * Vector3(0, 3, 9);
 		Vector3 cameraCenter = this->player->transform.matrixModel * (this->player->highMesh->box.center + Vector3(0, 0, 1));
 		Vector3 cameraUp = this->player->transform.matrixModel.rotateVector(Transform::UP);
-		playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp);
+		this->playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp);
+		
 
 	}
 
 	if (this->sky != NULL) {
 		this->sky->update(deltaTime);
 	}
+	*/
 
 	BulletManager::instance->update(deltaTime);
 	//CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis();
