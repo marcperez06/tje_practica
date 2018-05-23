@@ -13,7 +13,7 @@ World* World::instance = NULL;
 
 World::World() {
 	this->root = new Entity(Vector3(0, 0, 0));
-	this->numEnemies = 1;
+	this->numEnemies = 100;
 	this->initPlayer();
 	this->initCameras();
 	this->initEnemies();

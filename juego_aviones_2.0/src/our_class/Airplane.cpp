@@ -204,6 +204,23 @@ void Airplane::removeAirplane(Airplane* airplane) {
 	}
 }
 
+void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
+	
+	std::cout << "SOME ONE HIT ME!!!!!!!! " << std::endl;
+
+	this->health -= bullet.damage;
+	if (this->health <= 0) {
+		this->collisionEffect();
+	}
+
+	Mesh mesh;
+	mesh.vertices.push_back(collision);
+	mesh.colors.push_back(Vector4(0, 0, 1, 1));
+	glPointSize(5);
+	mesh.renderFixedPipeline(GL_POINTS);
+}
+
 void Airplane::collisionEffect() {
+	this->material->color = Vector4(0, 0, 0, 1);
 	this->state = AIRPLANE_CRHASED;
 }

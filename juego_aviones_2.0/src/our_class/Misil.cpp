@@ -18,7 +18,7 @@ void Misil::shoot() {
 		Vector3 velocity = modelMatrix.rotateVector(Vector3(0, 0, -1));
 		velocity = velocity * this->bulletSpeed;
 
-		Bullet misil = Factory::buildBullet(pos, velocity, 30, this->type, this->owner);
+		Bullet misil = Factory::buildBullet(pos, velocity, 30, this->type, this->owner, this->damage);
 
 		for (int i = 0; i < maxMisil; i++) {
 			Bullet& auxMisil = this->misils[i];

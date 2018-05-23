@@ -1,6 +1,6 @@
 #include "CollisionHandler.h"
 #include "World.h"
-#include "EntityCollider.h"
+#include "Airplane.h"
 #include "Bullet.h"
 
 bool CollisionHandler::rayCollision(Vector3 origin, Vector3 direction, EntityMesh* entityMesh, Vector3 & collision, Vector3 & normal) {
@@ -169,11 +169,11 @@ void CollisionHandler::bulletsCollisionAgainstStaticEntities(Bullet bullets[], i
 }
 
 void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], int bulletsSize) {
-	std::vector<Entity*> dynamicEntities = World::instance->staticObjects;
+	std::vector<Entity*> dynamicEntities = World::instance->dynamicObjects;
 
 	for (int i = 0; i < dynamicEntities.size(); i++) {
 
-		EntityCollider* dynamicEntity = (EntityCollider*) dynamicEntities[i];
+		Airplane* dynamicEntity = (Airplane*) dynamicEntities[i];
 		Matrix44 modelMatrix = dynamicEntity->getGlobalMatrix();
 		Mesh* mesh = dynamicEntity->highMesh;
 
@@ -206,9 +206,12 @@ void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], 
 
 			if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
 
+				Vector3 collisionPoint;
+				collision_model->getCollisionPoint(collisionPoint.v, true);
+
 				bullet.timeToLive = 0;
 				std::cout << "BUllet Destroy ..... " << std::endl;
-				//dynamicEntity.onBulletCollision(bullet, collisionPoint); // LLamar desde testDynamicCollision, para idicarle al avion de que una bala a colisionado con el.
+				dynamicEntity->onBulletCollision(bullet, collisionPoint); // LLamar desde testDynamicCollision, para idicarle al avion de que una bala a colisionado con el.
 
 			}
 

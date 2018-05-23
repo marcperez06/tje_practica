@@ -15,10 +15,9 @@ class Bullet {
 		Airplane* owner;
 		std::string type;
 
-		Bullet();
+		int damage;
 
-		void render();
-		void update();
+		Bullet();
 
 };
 

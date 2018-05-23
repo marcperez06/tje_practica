@@ -44,6 +44,8 @@ class Airplane : public EntityCollider {
 
 		virtual void collisionEffect();
 
+		virtual void onBulletCollision(Bullet &  bullet, Vector3 collision);
+
 	private:
 
 		void removeAirplane(Airplane* airplane);

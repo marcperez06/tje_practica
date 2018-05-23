@@ -16,7 +16,7 @@ void DropBomb::shoot() {
 		Vector3 velocity = Vector3(0, -1, 0);
 		velocity = velocity * this->bulletSpeed;
 
-		Bullet bomb = Factory::buildBullet(pos, velocity, 300, this->type, this->owner);
+		Bullet bomb = Factory::buildBullet(pos, velocity, 300, this->type, this->owner, this->damage);
 
 		for (int i = 0; i < maxBombs; i++) {
 			Bullet& auxBomb = this->bombs[i];

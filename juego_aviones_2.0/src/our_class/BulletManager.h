@@ -12,7 +12,7 @@ class BulletManager {
 
 		BulletManager();
 
-		void createBullet(Vector3 pos, Vector3 velocity, std::string type, Airplane* owner);
+		void createBullet(Vector3 pos, Vector3 velocity, std::string type, Airplane* owner, int damage);
 
 		void render();
 		void update(float deltaTime);
