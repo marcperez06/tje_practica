@@ -71,7 +71,9 @@ void World::initEnemies() {
 			float y = (rand() % 200) + 300 + this->player->highMesh->aabb_max.y;
 			float z = (rand() % 100) + this->player->highMesh->aabb_max.z;
 			Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 150);
-
+			MachineGun* machineGun = Factory::buildMachineGun(enemy);
+			enemy->weapons.push_back(machineGun);
+			enemy->currentWepon = 0;
 			enemy->target = this->player;
 
 			this->root->addChild(enemy);

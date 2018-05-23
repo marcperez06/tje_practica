@@ -196,7 +196,7 @@ void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], 
 
 			Bullet& bullet = bullets[j];
 
-			if (bullet.timeToLive <= 0) {
+			if ((bullet.timeToLive <= 0) || bullet.owner == dynamicEntity) {
 				continue;
 			}
 

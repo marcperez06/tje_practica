@@ -14,6 +14,13 @@ enum {
 	AIRPLANE_CRHASED,
 };
 
+enum {
+	TEAM_DELTA,
+	TEAM_ALFA,
+	TEAM_BETA,
+	TEAM_GAMMA,
+};
+
 Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Material * material) : EntityCollider(transform, highMesh, material) {
 	this->speed = speed;
 	this->health = 100;
@@ -90,7 +97,7 @@ void Airplane::playerBehaviour(float deltaTime) {
 
 void Airplane::AIBehaviour(float deltaTime) {
 
-	if (this->target == NULL) {
+	if (this->target == NULL || this->target->health <= 0) {
 		return;
 	}
 
@@ -100,23 +107,38 @@ void Airplane::AIBehaviour(float deltaTime) {
 	Vector3 pos = this->getGlobalPosition();
 	Vector3 targetPos = this->target->getGlobalPosition();
 
+	if (pos.y < 300) {
+		Vector3 newTargetPos = pos + Transform::UP * 10;
+		targetPos = newTargetPos;
+	}
+
+
+
 	Vector3 toTarget = (targetPos - pos);
 
-	if (abs(toTarget.length()) >= 0.0001) {
+	if (abs(toTarget.length()) < 0.0001) {
 		return;
 	}
 
 	toTarget.normalize();
 
 	Vector3 front = this->getGlobalMatrix().rotateVector(Vector3(0, 0, -1));
+	
+	if (abs(toTarget.length()) < 0.0001) {
+		return;
+	}
+	
 	front.normalize();
-	if (abs(front.length()) >= 1.01) {
+
+	float frontDotToTarget = front.dot(toTarget);
+	if (abs(frontDotToTarget) >= 1) {
 		return;
 	}
 
-	float angle = acos(front.dot(toTarget));
+	float angle = acos(frontDotToTarget);
 
-	if (abs(angle) < 0.0000001) {
+	if (abs(angle) < 0.01) {
+		shoot();
 		return;
 	}
 
