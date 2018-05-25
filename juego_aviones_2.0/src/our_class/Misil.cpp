@@ -7,15 +7,14 @@
 
 Misil::Misil(Airplane* owner, std::string type) : Weapon(owner, type) {
 	memset(&this->misils, 0, sizeof(misils));
-
 }
 
 void Misil::shoot() {
 	if (this->cooldown < 0) {
-		Matrix44 ownerMatrix = this->owner->getGlobalMatrix();
+
 		Matrix44 misilTransform = this->owner->getGlobalMatrix();
 		misilTransform.translate(0, -2, 0);
-
+		
 		Vector3 velocity = Vector3(0, 0, -1);
 		velocity = velocity * this->bulletSpeed;
 
@@ -37,7 +36,7 @@ void Misil::shoot() {
 
 void Misil::render() {
 
-	std::vector<Matrix44> misilTransform;
+	std::vector<Matrix44> misilsTransform;
 	Mesh* mesh = Mesh::Load("data/weapons/torpedo.ASE");
 	Shader* shader = Shader::Load("data/shaders/instanced.vs", "data/shaders/texture.fs");
 	//Shader* shader = this->meshMisil->material->shader;
@@ -52,11 +51,20 @@ void Misil::render() {
 		Projectile& misil = this->misils[i];
 
 		if (misil.timeToLive > 0) {
-			misilTransform.push_back(misil.transform);
+			misilsTransform.push_back(misil.transform);
+			std::cout << "Projectile X " << misil.position.x << std::endl;
+			std::cout << "Projectile XX " << misil.transform.getTranslation().x << std::endl;
+
+			std::cout << "Projectile Y " << misil.position.y << std::endl;
+			std::cout << "Projectile YY " << misil.transform.getTranslation().y << std::endl;
+
+			std::cout << "Projectile Z " << misil.position.z << std::endl;
+			std::cout << "Projectile ZZ " << misil.transform.getTranslation().z << std::endl;
+
 		}
 	}
 
-	if (misilTransform.size() > 0) {
+	if (misilsTransform.size() > 0) {
 		shader->enable();
 
 		shader->setUniform("u_color", Vector4(1, 1, 1, 1));
@@ -65,26 +73,27 @@ void Misil::render() {
 		shader->setUniform("u_time", 1);
 		shader->setUniform("u_texture", texture);
 
-		mesh->renderInstanced(GL_TRIANGLES, shader, &misilTransform[0], misilTransform.size());
+		mesh->renderInstanced(GL_TRIANGLES, shader, &misilsTransform[0], misilsTransform.size());
 
 		shader->disable();
 	}
 
 	/*
-	Mesh mesh;
+	Mesh mesh1;
 	for (int i = 0; i < maxMisil; i++) {
 		Bullet& misil = this->misils[i];
 		if (misil.timeToLive > 0) {
-			mesh.vertices.push_back(misil.position);
-			mesh.colors.push_back(Vector4(1, 0, 0, 1));
+			mesh1.vertices.push_back(misil.position);
+			mesh1.colors.push_back(Vector4(1, 0, 0, 1));
 		}
 	}
 
-	if (mesh.vertices.size() > 0) {
-		glPointSize(50);
-		mesh.renderFixedPipeline(GL_POINTS);
+	if (mesh1.vertices.size() > 0) {
+		glPointSize(10);
+		mesh1.renderFixedPipeline(GL_POINTS);
 	}
 	*/
+	
 
 }
 
@@ -97,7 +106,6 @@ void Misil::update(float deltaTime) {
 		if (misil.timeToLive <= 0) {
 			continue;
 		}
-
 		
 		Vector3 newPos = misil.velocity * deltaTime;
 		misil.lastPosition = misil.transform.getTranslation();
@@ -109,6 +117,6 @@ void Misil::update(float deltaTime) {
 
 	}
 
-	//CollisionHandler::bulletsCollisionAgainstStaticEntities(this->misils, maxMisil);
+	CollisionHandler::bulletsCollisionAgainstStaticEntities(this->misils, maxMisil);
 
 }
