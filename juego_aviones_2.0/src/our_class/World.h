@@ -38,6 +38,9 @@ class World {
 		void render(Camera * camera);
 		void update(float deltaTime);
 
+		bool entityACanSeeEntityB(Entity* entityA, Entity* entityB);
+		bool isEntityANearEntityB(Entity* entityA, Entity* entityB);
+
 	private:
 		
 		void initCameras();

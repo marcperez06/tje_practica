@@ -8,6 +8,9 @@
 #include "MachineGun.h"
 #include "DropBomb.h"
 #include "Misil.h"
+//#include "PlayerController.h"
+//#include "AIController.h"
+#include "AirplaneController.h"
 
 World* World::instance = NULL;
 
@@ -55,10 +58,15 @@ void World::initPlayer() {
 	MachineGun* machineGun = Factory::buildMachineGun(this->player);
 	DropBomb* dropBomb = Factory::buildDropBomb(this->player);
 	Misil* misil = Factory::buildMisil(this->player);
+	
 	this->player->weapons.push_back(machineGun);
 	this->player->weapons.push_back(dropBomb);
 	this->player->weapons.push_back(misil);
 	this->player->currentWepon = 0;
+	this->player->isPlayer = true;
+	this->player->team = TEAM_ALFA;
+	this->player->controller = new AirplaneController();
+
 	this->root->addChild(this->player);
 	this->dynamicObjects.push_back(this->player);
 }
@@ -345,4 +353,71 @@ Entity* World::getWorldMap() {
 		}
 	}
 	return worldMap;
+}
+
+// Funciones Utiles
+
+bool World::entityACanSeeEntityB(Entity* entityA, Entity* entityB) {
+	float angleOfview = 45 / 2.0;
+	bool canSee = false;
+	assert(entityA && entityB);
+
+	Matrix44 modelInverse = entityA->getGlobalMatrix();
+	modelInverse.inverse();
+
+	Vector3 entityAPos = entityA->getGlobalPosition();
+	Vector3 entityBPos = entityB->getGlobalPosition();
+
+	Vector3 toEntityB = (entityBPos - entityAPos);
+
+	if (abs(toEntityB.length()) < 0.0001) {
+		return false;
+	}
+
+	toEntityB.normalize();
+
+	Vector3 front = entityA->getGlobalMatrix().rotateVector(Vector3(0, 0, -1));
+
+	if (abs(front.length()) < 0.0001) {
+		return false;
+	}
+
+	front.normalize();
+
+	float frontDotToEntity = front.dot(toEntityB);
+	if (abs(frontDotToEntity) >= 1) {
+		return false;
+	}
+
+	float angle = acos(frontDotToEntity);
+
+	if (abs(angle) <= angleOfview) {
+		canSee = true;
+	}
+	else {
+		canSee = false;
+	}
+
+	return canSee;
+}
+
+bool World::isEntityANearEntityB(Entity* entityA, Entity* entityB) {
+	bool isEntityBNear = false;
+
+	assert(entityA && entityB);
+
+	Vector3 entityAPos = entityA->getGlobalPosition();
+	Vector3 entityBPos = entityB->getGlobalPosition();
+	float radius = 50;
+
+	Vector3 toEntityB = (entityAPos - entityBPos);
+	float distance = toEntityB.length();
+
+	if (abs(distance) < radius) {
+		isEntityBNear = true;
+	} else {
+		isEntityBNear = false;
+	}
+
+	return isEntityBNear;
 }

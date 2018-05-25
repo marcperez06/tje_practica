@@ -12,16 +12,17 @@ Misil::Misil(Airplane* owner, std::string type) : Weapon(owner, type) {
 
 void Misil::shoot() {
 	if (this->cooldown < 0) {
+		Matrix44 ownerMatrix = this->owner->getGlobalMatrix();
+		Matrix44 misilTransform = this->owner->getGlobalMatrix();
+		misilTransform.translate(0, -2, 0);
 
-		Matrix44 modelMatrix = this->owner->getGlobalMatrix();
-		Vector3 pos = modelMatrix * Vector3(0, -2, 0);
-		Vector3 velocity = modelMatrix.rotateVector(Vector3(0, 0, -1));
+		Vector3 velocity = Vector3(0, 0, -1);
 		velocity = velocity * this->bulletSpeed;
 
-		Bullet misil = Factory::buildBullet(pos, velocity, 30, this->type, this->owner, this->damage);
+		Projectile misil = Factory::buildProjectile(misilTransform, velocity, 30, this->type, this->owner, this->damage);
 
 		for (int i = 0; i < maxMisil; i++) {
-			Bullet& auxMisil = this->misils[i];
+			Projectile& auxMisil = this->misils[i];
 			if (auxMisil.timeToLive > 0) {
 				continue;
 			}
@@ -36,40 +37,35 @@ void Misil::shoot() {
 
 void Misil::render() {
 
-	std::vector<Matrix44> misilPos;
-	Mesh* mesh = this->meshMisil->highMesh;
+	std::vector<Matrix44> misilTransform;
+	Mesh* mesh = Mesh::Load("data/weapons/torpedo.ASE");
 	Shader* shader = Shader::Load("data/shaders/instanced.vs", "data/shaders/texture.fs");
 	//Shader* shader = this->meshMisil->material->shader;
-	Texture* texture = this->meshMisil->material->texture;
+	Texture* texture = Texture::Load("data/weapons/torpedo.tga");
 	Camera* camera = World::instance->currentCamera;
-	Matrix44 identity;
 
 	if (mesh == NULL || shader == NULL) {
 		return;
 	}
 
 	for (int i = 0; i < maxMisil; i++) {
-		Bullet& misil = this->misils[i];
+		Projectile& misil = this->misils[i];
+
 		if (misil.timeToLive > 0) {
-
-			Matrix44 modelMisil;
-			modelMisil.translate(misil.position.x, misil.position.y, misil.position.z);
-			modelMisil.rotate(1.57, Vector3(0, 1, 0));
-
-			misilPos.push_back(modelMisil);
+			misilTransform.push_back(misil.transform);
 		}
 	}
 
-	if (misilPos.size() > 0) {
+	if (misilTransform.size() > 0) {
 		shader->enable();
 
-		shader->setUniform("u_color", this->meshMisil->material->color);
+		shader->setUniform("u_color", Vector4(1, 1, 1, 1));
 		shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 		shader->setUniform("u_camera_position", camera->eye);
 		shader->setUniform("u_time", 1);
 		shader->setUniform("u_texture", texture);
 
-		mesh->renderInstanced(GL_TRIANGLES, shader, &misilPos[0], misilPos.size());
+		mesh->renderInstanced(GL_TRIANGLES, shader, &misilTransform[0], misilTransform.size());
 
 		shader->disable();
 	}
@@ -96,20 +92,23 @@ void Misil::update(float deltaTime) {
 	Weapon::update(deltaTime);
 
 	for (int i = 0; i < maxMisil; i++) {
-		Bullet& misil = this->misils[i];
+		Projectile& misil = this->misils[i];
 
 		if (misil.timeToLive <= 0) {
 			continue;
 		}
 
-		misil.lastPosition = misil.position;
-		misil.position = misil.position + misil.velocity * deltaTime;
-		misil.velocity = misil.velocity + Vector3(0, -2, 0) * deltaTime; // aplicar gravedad
-		misil.velocity = misil.velocity * 0.99999995;
+		
+		Vector3 newPos = misil.velocity * deltaTime;
+		misil.lastPosition = misil.transform.getTranslation();
+		misil.transform.translate(newPos.x, newPos.y, newPos.z);
+		misil.position = misil.transform.getTranslation();
+		//misil.velocity = misil.velocity + Vector3(0, -2, 0) * deltaTime; // aplicar gravedad
+		//misil.velocity = misil.velocity * 0.99999995;
 		misil.timeToLive -= deltaTime;
 
 	}
 
-	CollisionHandler::bulletsCollisionAgainstStaticEntities(this->misils, maxMisil);
+	//CollisionHandler::bulletsCollisionAgainstStaticEntities(this->misils, maxMisil);
 
 }

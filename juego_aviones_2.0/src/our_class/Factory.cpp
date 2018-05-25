@@ -18,7 +18,8 @@ Airplane* Factory::buildAirplane(const Vector3 initialPos, float speed) {
 	return airplane;
 }
 
-Bullet Factory::buildBullet(const Vector3 pos, const Vector3 velocity, float timeToLive, std::string type, Airplane* owner, int damage) {
+Bullet Factory::buildBullet(const Vector3 pos, const Vector3 velocity, float timeToLive, 
+											std::string type, Airplane* owner, int damage) {
 	Bullet bullet;
 	bullet.lastPosition = pos;
 	bullet.position = pos;
@@ -28,6 +29,18 @@ Bullet Factory::buildBullet(const Vector3 pos, const Vector3 velocity, float tim
 	bullet.owner = owner;
 	bullet.damage = damage;
 	return bullet;
+}
+
+Projectile Factory::buildProjectile(const Matrix44 transform, const Vector3 velocity, float timeToLive, 
+														std::string type, Airplane* owner, int damage) {
+	Projectile projectile;
+	projectile.transform = transform;
+	projectile.velocity = velocity;
+	projectile.timeToLive = timeToLive;
+	projectile.type = type;
+	projectile.owner = owner;
+	projectile.damage = damage;
+	return projectile;
 }
 
 EntityMesh* Factory::buildIsland(const Vector3 initialPos) {

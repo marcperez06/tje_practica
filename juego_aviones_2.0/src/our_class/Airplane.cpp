@@ -9,23 +9,13 @@
 
 std::vector<Airplane*> Airplane::airplanes;
 
-enum {
-	AIRPLANE_FLYING,
-	AIRPLANE_CRHASED,
-};
-
-enum {
-	TEAM_DELTA,
-	TEAM_ALFA,
-	TEAM_BETA,
-	TEAM_GAMMA,
-};
-
 Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Material * material) : EntityCollider(transform, highMesh, material) {
 	this->speed = speed;
 	this->health = 100;
 	this->state = AIRPLANE_FLYING;
 	this->target = NULL;
+	this->isPlayer = false;
+	this->team = TEAM_DELTA;
 	airplanes.push_back(this);
 }
 
@@ -35,6 +25,8 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mesh
 	this->health = 100;
 	this->state = AIRPLANE_FLYING;
 	this->target = NULL;
+	this->isPlayer = false;
+	this->team = TEAM_DELTA;
 	airplanes.push_back(this);
 }
 

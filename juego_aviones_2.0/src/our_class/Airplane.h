@@ -4,6 +4,19 @@
 #include "EntityCollider.h"
 
 class Weapon;
+class AirplaneController;
+
+enum {
+	AIRPLANE_FLYING,
+	AIRPLANE_CRHASED,
+};
+
+enum {
+	TEAM_DELTA,
+	TEAM_ALFA,
+	TEAM_BETA,
+	TEAM_GAMMA,
+};
 
 class Airplane : public EntityCollider {
 
@@ -11,14 +24,17 @@ class Airplane : public EntityCollider {
 
 		static std::vector<Airplane*> airplanes;
 
+		bool isPlayer;
 		float speed;
 		float health;
 		char state;
+		char team;
 	
 		std::vector<Weapon*> weapons;
 		int currentWepon;
 
 		Airplane* target;
+		AirplaneController* controller;
 
 		// --- CONSTRUCTORES ---
 

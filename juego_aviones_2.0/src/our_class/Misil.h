@@ -2,7 +2,7 @@
 #define MISIL_H
 
 #include "Weapon.h"
-#include "Bullet.h"
+#include "Projectile.h"
 
 const unsigned int maxMisil = 5;
 
@@ -13,7 +13,7 @@ class Misil : public Weapon {
 
 public:
 
-	Bullet misils[maxMisil];
+	Projectile misils[maxMisil];
 	EntityMesh* meshMisil;
 
 	Misil(Airplane* owner, std::string type);

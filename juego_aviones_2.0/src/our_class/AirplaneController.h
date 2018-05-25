@@ -12,9 +12,6 @@ class AirplaneController {
 		AirplaneController();
 		~AirplaneController();
 
-		bool canSeeEntity(Entity* entity);
-		bool haveAnyEntityNear(Entity* entity);
-		void render();
 		virtual void update();
 
 };
