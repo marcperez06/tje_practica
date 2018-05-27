@@ -1,7 +1,7 @@
 #ifndef AIRPLANE_CONTROLLER_H
 #define AIRPLNE_CONTROLLER_H
+#pragma once
 
-class Entity;
 class Airplane;
 
 class AirplaneController {
@@ -12,7 +12,7 @@ class AirplaneController {
 		AirplaneController();
 		~AirplaneController();
 
-		virtual void update();
+		virtual void update(float deltaTime);
 
 };
 

@@ -8,8 +8,8 @@
 #include "MachineGun.h"
 #include "DropBomb.h"
 #include "Misil.h"
-//#include "PlayerController.h"
-//#include "AIController.h"
+#include "PlayerController.h"
+#include "AIController.h"
 #include "AirplaneController.h"
 
 World* World::instance = NULL;
@@ -65,7 +65,8 @@ void World::initPlayer() {
 	this->player->currentWepon = 0;
 	this->player->isPlayer = true;
 	this->player->team = TEAM_ALFA;
-	this->player->controller = new AirplaneController();
+	this->player->controller = new PlayerController();
+	this->player->controller->airplane = this->player;
 
 	this->root->addChild(this->player);
 	this->dynamicObjects.push_back(this->player);
@@ -75,14 +76,19 @@ void World::initEnemies() {
 	assert(this->player);
 	if (this->player != NULL) {
 		for (int i = 0; i < this->numEnemies; i++) {
-			float x = (rand() % 900) + this->player->highMesh->aabb_max.x;
-			float y = (rand() % 200) + 300 + this->player->highMesh->aabb_max.y;
-			float z = (rand() % 100) + this->player->highMesh->aabb_max.z;
+			float x = (rand() % 1200) + this->player->highMesh->aabb_max.x;
+			float y = (rand() % 400) + 300 + this->player->highMesh->aabb_max.y;
+			float z = (rand() % 20) + this->player->highMesh->aabb_max.z;
 			Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 150);
 			MachineGun* machineGun = Factory::buildMachineGun(enemy);
 			enemy->weapons.push_back(machineGun);
 			enemy->currentWepon = 0;
 			enemy->target = this->player;
+
+			enemy->isPlayer = false;
+			enemy->team = TEAM_DELTA;
+			enemy->controller = new AIController();
+			enemy->controller->airplane = enemy;
 
 			this->root->addChild(enemy);
 			this->enemies.push_back(enemy);
@@ -244,7 +250,7 @@ void World::renderWater(Camera* camera) {
 
 void World::renderAirplanes(Camera* camera) {
 	Airplane* base;
-	std::vector<Matrix44> enemiesPos;
+	std::vector<Matrix44> airplanesTransform;
 	Mesh* airplaneMesh = NULL;
 	Shader* shader = Shader::Load("data/shaders/instanced.vs", "data/shaders/texture.fs");
 
@@ -255,9 +261,7 @@ void World::renderAirplanes(Camera* camera) {
 
 	for (int i = 1; i < Airplane::airplanes.size(); i++) {
 		Airplane* airplane = Airplane::airplanes[i];
-		//if (airplane->name.compare("player") != 0) {
-			enemiesPos.push_back(airplane->getGlobalMatrix());
-		//}
+		airplanesTransform.push_back(airplane->getGlobalMatrix());
 	}
 
 	if (shader != NULL) {
@@ -270,7 +274,7 @@ void World::renderAirplanes(Camera* camera) {
 			shader->setUniform("u_camera_position", camera->eye);
 			shader->setUniform("u_time", 1);
 
-			airplaneMesh->renderInstanced(GL_TRIANGLES, shader, &enemiesPos[0], enemiesPos.size());
+			airplaneMesh->renderInstanced(GL_TRIANGLES, shader, &airplanesTransform[0], airplanesTransform.size());
 
 		}
 

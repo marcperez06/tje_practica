@@ -4,6 +4,7 @@
 #include "World.h"
 #include "BulletManager.h"
 #include "Weapon.h"
+#include "AirplaneController.h"
 
 // --- CONSTRUCTORES ---
 
@@ -49,42 +50,18 @@ void Airplane::update(float deltaTime) {
 
 		this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
 
-		if (this->name.compare("player") == 0) {
-			this->playerBehaviour(deltaTime);
-		} else {
-			this->AIBehaviour(deltaTime);
+		this->controller->update(deltaTime);
+
+		for (int i = 0; i < this->weapons.size(); i++) {
+			this->weapons[i]->update(deltaTime);
 		}
 
-		/* Reduce demasiado el rendimiento... */
-		/*
 		if (this->detectStaticCollision() == true) {
 			std::cout << "Collision !!" << std::endl;
 			this->state = AIRPLANE_CRHASED;
 		}
-		*/
 	}
 
-}
-
-void Airplane::playerBehaviour(float deltaTime) {
-
-	float deltaMove = deltaTime * this->speed * 0.02;
-	this->rotateAirplane(deltaMove);
-	
-	this->turbo(deltaTime);
-
-	if (Input::isKeyPressed(SDL_SCANCODE_SPACE) == true) {
-		this->shoot();
-	}
-
-	for (int i = 0; i < this->weapons.size(); i++) {
-		this->weapons[i]->update(deltaTime);
-	}
-
-	if (this->detectStaticCollision() == true) {
-		std::cout << "Collision !!" << std::endl;
-		this->state = AIRPLANE_CRHASED;
-	}
 }
 
 void Airplane::AIBehaviour(float deltaTime) {
@@ -145,56 +122,26 @@ void Airplane::AIBehaviour(float deltaTime) {
 void Airplane::rotateAirplane(float deltaMove) {
 	this->rotateRollDirection(deltaMove);
 	this->rotatePitchDirection(deltaMove);
-	this->rotateJawDirection(deltaMove);
+	this->rotateYawDirection(deltaMove);
 }
 
 void Airplane::rotateRollDirection(float deltaMove) {
 	Vector3 roll = Vector3(0, 0, 1);
-	// roll right
-	if (Input::isKeyPressed(SDL_SCANCODE_Q) == true) {
-		this->transform.matrixModel.rotate(-1 * deltaMove, roll);
-	}
-
-	// roll left
-	if (Input::isKeyPressed(SDL_SCANCODE_E) == true) {
-		this->transform.matrixModel.rotate(1 * deltaMove, roll);
-	}
+	this->transform.matrixModel.rotate(deltaMove, roll);
 }
 
 void Airplane::rotatePitchDirection(float deltaMove) {
 	Vector3 pitch = Vector3(1, 0, 0);
-	// down
-	if (Input::isKeyPressed(SDL_SCANCODE_S) == true) {
-		this->transform.matrixModel.rotate(1 * deltaMove, pitch);
-	}
-
-	// up
-	if (Input::isKeyPressed(SDL_SCANCODE_W) == true) {
-		this->transform.matrixModel.rotate(-1 * deltaMove, pitch);
-	}
+	this->transform.matrixModel.rotate(deltaMove, pitch);
 }
 
-void Airplane::rotateJawDirection(float deltaMove) {
-	Vector3 jaw = Vector3(0, 1, 0);
-	// jaw right
-	if (Input::isKeyPressed(SDL_SCANCODE_D) == true) {
-		this->transform.matrixModel.rotate(1 * deltaMove, jaw);
-	}
-
-	// jaw left
-	if (Input::isKeyPressed(SDL_SCANCODE_A) == true) {
-		this->transform.matrixModel.rotate(-1 * deltaMove, jaw);
-	}
+void Airplane::rotateYawDirection(float deltaMove) {
+	Vector3 yaw = Vector3(0, 1, 0);
+	this->transform.matrixModel.rotate(deltaMove, yaw);
 }
 
 void Airplane::turbo(float deltaTime) {
-	if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT) == true) {
-		this->transform.translate(Vector3(0, 0, -10) * this->speed * deltaTime);
-	}
-
-	if (Input::isKeyPressed(SDL_SCANCODE_TAB) == true) {
-		this->transform.translate(Vector3(0, 0, 10) * this->speed * deltaTime);
-	}
+	this->transform.translate(Vector3(0, 0, 10) * this->speed * deltaTime);
 }
 
 void Airplane::shoot() {	
@@ -221,6 +168,7 @@ void Airplane::removeAirplane(Airplane* airplane) {
 void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 	
 	std::cout << "SOME ONE HIT ME!!!!!!!! " << std::endl;
+	std::cout << "Collision Y !!!!!!!! " << collision.y << std::endl;
 
 	this->health -= bullet.damage;
 	if (this->health <= 0) {
@@ -230,7 +178,7 @@ void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 	Mesh mesh;
 	mesh.vertices.push_back(collision);
 	mesh.colors.push_back(Vector4(0, 0, 1, 1));
-	glPointSize(5);
+	glPointSize(500);
 	mesh.renderFixedPipeline(GL_POINTS);
 }
 

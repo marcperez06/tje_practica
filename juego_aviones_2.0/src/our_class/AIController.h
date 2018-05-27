@@ -1,24 +1,30 @@
 #ifndef AICONTROLLER_H
 #define AICONTROLLER_H
+#pragma once
 
-enum {
-	AIRPLANE_FLYING,
-	AIRPLANE_CRHASED,
-	AIRPLANE_SHOOT,
-	AIRPLANE_FOLLOW,
+#include "AirplaneController.h"
+
+enum Beheaviour {
+	FLYING,
+	CRHASED,
+	SHOOT,
+	FOLLOW,
+	EVADE
 };
 
-class AIController {
-public:
+class AIController : public AirplaneController{
+	public:
 
-	char state;
+		char state;
 
-	AIController::AIController();
-	AIController::~AIController();
+		AIController();
+		~AIController();
 
-	virtual void AIController::render();
-	virtual void AIController::update(float deltaTime);
-	virtual void AIController::checkStateEnemy();
+		//virtual void render();
+		virtual void update(float deltaTime);
+		virtual void checkStateEnemy();
+		void checkBehaviour();
+
 
 };
 

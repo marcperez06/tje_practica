@@ -1,25 +1,29 @@
-#include "AirplaneController.h"
 #include "AIController.h"
-#include "EntityCollider.h"
 #include "World.h"
 #include "Airplane.h"
 
-AIController::AIController() {
-	this->state = AIRPLANE_FLYING;
+AIController::AIController() : AirplaneController() {
+	this->state = FLYING;
 }
+
 AIController::~AIController() {}
 
-
-void AIController::render() {}
+//void AIController::render() {}
 
 void AIController::update(float deltaTime) {
 
-	if (this->state != AIRPLANE_CRHASED) {
+	checkBehaviour();
+
+	if (this->state != CRHASED) {
 		checkStateEnemy();
 	}
-	else if (this->state == AIRPLANE_CRHASED) {
+	else if (this->state == CRHASED) {
 		//Eliminar mesh i cridar destructor de Airplane
 	}
+
+}
+
+void AIController::checkBehaviour() {
 
 }
 
@@ -30,10 +34,10 @@ void AIController::checkStateEnemy() {
 		Airplane* airplane = enemies[i];
 		Vector3 positionEnemi = airplane->getPosition();
 		if (positionEnemi.distance(player->getPosition())<150) {
-			this->state = AIRPLANE_SHOOT;
+			this->state = SHOOT;
 		}
 		else if (positionEnemi.distance(player->getPosition()) < 300) {
-			this->state = AIRPLANE_FOLLOW;
+			this->state = FOLLOW;
 		}
 	}
 }

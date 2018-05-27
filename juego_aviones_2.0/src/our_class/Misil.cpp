@@ -52,6 +52,9 @@ void Misil::render() {
 
 		if (misil.timeToLive > 0) {
 			misilsTransform.push_back(misil.transform);
+
+			std::cout << "Owner X " << this->owner->getGlobalPosition().x << std::endl;
+
 			std::cout << "Projectile X " << misil.position.x << std::endl;
 			std::cout << "Projectile XX " << misil.transform.getTranslation().x << std::endl;
 
@@ -78,7 +81,6 @@ void Misil::render() {
 		shader->disable();
 	}
 
-	/*
 	Mesh mesh1;
 	for (int i = 0; i < maxMisil; i++) {
 		Bullet& misil = this->misils[i];
@@ -92,7 +94,6 @@ void Misil::render() {
 		glPointSize(10);
 		mesh1.renderFixedPipeline(GL_POINTS);
 	}
-	*/
 	
 
 }
@@ -111,12 +112,12 @@ void Misil::update(float deltaTime) {
 		misil.lastPosition = misil.transform.getTranslation();
 		misil.transform.translate(newPos.x, newPos.y, newPos.z);
 		misil.position = misil.transform.getTranslation();
-		//misil.velocity = misil.velocity + Vector3(0, -2, 0) * deltaTime; // aplicar gravedad
-		//misil.velocity = misil.velocity * 0.99999995;
+		misil.velocity = misil.velocity + Vector3(0, -2, 0) * deltaTime; // aplicar gravedad
+		misil.velocity = misil.velocity * 0.99999995;
 		misil.timeToLive -= deltaTime;
 
 	}
 
 	CollisionHandler::bulletsCollisionAgainstStaticEntities(this->misils, maxMisil);
-
+	CollisionHandler::bulletsCollisionAgainstDynamicEntities(this->misils, maxMisil);
 }

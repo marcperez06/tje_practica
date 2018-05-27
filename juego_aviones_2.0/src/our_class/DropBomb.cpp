@@ -69,5 +69,6 @@ void DropBomb::update(float deltaTime) {
 	}
 
 	CollisionHandler::bulletsCollisionAgainstStaticEntities(this->bombs, maxBombs);
+	CollisionHandler::bulletsCollisionAgainstDynamicEntities(this->bombs, maxBombs);
 
 }

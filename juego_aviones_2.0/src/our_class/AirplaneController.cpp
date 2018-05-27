@@ -4,4 +4,4 @@
 AirplaneController::AirplaneController() {}
 AirplaneController::~AirplaneController() {}
 
-void AirplaneController::update() {}
+void AirplaneController::update(float deltaTime) {}

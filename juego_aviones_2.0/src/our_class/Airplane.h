@@ -6,16 +6,16 @@
 class Weapon;
 class AirplaneController;
 
-enum {
+enum States {
 	AIRPLANE_FLYING,
-	AIRPLANE_CRHASED,
+	AIRPLANE_CRHASED
 };
 
-enum {
+enum Team {
 	TEAM_DELTA,
 	TEAM_ALFA,
 	TEAM_BETA,
-	TEAM_GAMMA,
+	TEAM_GAMMA
 };
 
 class Airplane : public EntityCollider {
@@ -50,7 +50,7 @@ class Airplane : public EntityCollider {
 		void rotateAirplane(float deltaMove);
 		void rotateRollDirection(float deltaMove);
 		void rotatePitchDirection(float deltaMove);
-		void rotateJawDirection(float deltaMove);
+		void rotateYawDirection(float deltaMove);
 
 		void turbo(float deltaTime);
 
