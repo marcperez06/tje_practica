@@ -65,9 +65,6 @@ class Airplane : public EntityCollider {
 	private:
 
 		void removeAirplane(Airplane* airplane);
-		void AIBehaviour(float deltaTime);
-		void playerBehaviour(float deltaTime);
-
 };
 
 #endif

@@ -9,7 +9,8 @@ enum Beheaviour {
 	CRHASED,
 	SHOOT,
 	FOLLOW,
-	EVADE
+	EVADE,
+	ESCAPE
 };
 
 class AIController : public AirplaneController{
@@ -20,10 +21,13 @@ class AIController : public AirplaneController{
 		AIController();
 		~AIController();
 
-		//virtual void render();
+		virtual void render();
 		virtual void update(float deltaTime);
 		virtual void checkStateEnemy();
-		void checkBehaviour();
+		char checkBehaviour();
+
+		void selectTarget(Airplane* entity);
+		void followTarget();
 
 
 };

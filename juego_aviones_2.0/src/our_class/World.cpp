@@ -16,7 +16,7 @@ World* World::instance = NULL;
 
 World::World() {
 	this->root = new Entity(Vector3(0, 0, 0));
-	this->numEnemies = 100;
+	this->numEnemies = 10;
 	this->initPlayer();
 	this->initCameras();
 	this->initEnemies();
@@ -52,7 +52,7 @@ void World::initCameras() {
 }
 
 void World::initPlayer() {
-	this->player = Factory::buildAirplane(Vector3(0, 500, 0), 200);
+	this->player = Factory::buildAirplane(Vector3(0, 500, 0), 205);
 	this->player->name = "player";
 	this->player->uuid = 1;
 	MachineGun* machineGun = Factory::buildMachineGun(this->player);
@@ -79,7 +79,7 @@ void World::initEnemies() {
 			float x = (rand() % 1200) + this->player->highMesh->aabb_max.x;
 			float y = (rand() % 400) + 300 + this->player->highMesh->aabb_max.y;
 			float z = (rand() % 20) + this->player->highMesh->aabb_max.z;
-			Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 150);
+			Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 200);
 			MachineGun* machineGun = Factory::buildMachineGun(enemy);
 			enemy->weapons.push_back(machineGun);
 			enemy->currentWepon = 0;
@@ -410,12 +410,8 @@ bool World::isEntityANearEntityB(Entity* entityA, Entity* entityB) {
 
 	assert(entityA && entityB);
 
-	Vector3 entityAPos = entityA->getGlobalPosition();
-	Vector3 entityBPos = entityB->getGlobalPosition();
 	float radius = 50;
-
-	Vector3 toEntityB = (entityAPos - entityBPos);
-	float distance = toEntityB.length();
+	float distance = World::distanceBetween(entityA, entityB);
 
 	if (abs(distance) < radius) {
 		isEntityBNear = true;
@@ -424,4 +420,60 @@ bool World::isEntityANearEntityB(Entity* entityA, Entity* entityB) {
 	}
 
 	return isEntityBNear;
+}
+
+float World::distanceBetween(Entity* entityA, Entity* entityB) {
+	assert(entityA && entityB);
+
+	Vector3 entityAPos = entityA->getGlobalPosition();
+	Vector3 entityBPos = entityB->getGlobalPosition();
+
+	return entityAPos.distance(entityBPos);
+}
+
+Vector3 World::directionEntityAToEntityB(Entity* entityA, Entity* entityB) {
+	assert(entityA && entityB);
+
+	Vector3 entityAPos = entityA->getGlobalPosition();
+	Vector3 entityBPos = entityB->getGlobalPosition();
+
+	Vector3 toEntityB = (entityAPos - entityBPos);
+	return toEntityB;
+}
+
+
+float World::angleBetween(Entity* entityA, Entity* entityB) {
+	float angle = 0;
+	assert(entityA && entityB);
+
+	Matrix44 modelInverse = entityA->getGlobalMatrix();
+	modelInverse.inverse();
+
+	Vector3 entityAPos = entityA->getGlobalPosition();
+	Vector3 entityBPos = entityB->getGlobalPosition();
+
+	Vector3 toEntityB = (entityBPos - entityAPos);
+
+	if (abs(toEntityB.length()) < 0.0001) {
+		return angle;
+	}
+
+	toEntityB.normalize();
+
+	Vector3 front = entityA->getGlobalMatrix().rotateVector(Vector3(0, 0, -1));
+
+	if (abs(front.length()) < 0.0001) {
+		return angle;
+	}
+
+	front.normalize();
+
+	float frontDotToEntity = front.dot(toEntityB);
+	if (abs(frontDotToEntity) >= 1) {
+		return angle;
+	}
+
+	angle = acos(frontDotToEntity);
+
+	return angle;
 }

@@ -38,8 +38,11 @@ class World {
 		void render(Camera * camera);
 		void update(float deltaTime);
 
-		bool entityACanSeeEntityB(Entity* entityA, Entity* entityB);
-		bool isEntityANearEntityB(Entity* entityA, Entity* entityB);
+		static bool entityACanSeeEntityB(Entity* entityA, Entity* entityB);
+		static bool isEntityANearEntityB(Entity* entityA, Entity* entityB);
+		static Vector3 directionEntityAToEntityB(Entity* entityA, Entity* entityB);
+		static float distanceBetween(Entity* entityA, Entity* entityB);
+		static float angleBetween(Entity* entityA, Entity* entityB);
 
 	private:
 		

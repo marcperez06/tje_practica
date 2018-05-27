@@ -173,7 +173,10 @@ void Game::onKeyDown( SDL_KeyboardEvent event )
 			World::instance->freeCamera->eye = World::instance->playerCamera->eye;
 			gameSpeed = (World::instance->currentCamera == World::instance->playerCamera) ? 1 : 0.01;
 			break;
-		case SDLK_2: World::instance->player->state = 0; break;
+		case SDLK_2: 
+			World::instance->player->state = 0; 
+			World::instance->player->health = 100;
+			break;
 		case SDLK_0: World::instance->player->currentWepon = 0; break;
 		case SDLK_9: World::instance->player->currentWepon = 1; break;
 		case SDLK_8: World::instance->player->currentWepon = 2; break;

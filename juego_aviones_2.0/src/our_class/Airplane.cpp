@@ -56,66 +56,14 @@ void Airplane::update(float deltaTime) {
 			this->weapons[i]->update(deltaTime);
 		}
 
-		if (this->detectStaticCollision() == true) {
-			std::cout << "Collision !!" << std::endl;
-			this->state = AIRPLANE_CRHASED;
+		if (this->isPlayer == true) {
+			if (this->detectStaticCollision() == true) {
+				std::cout << "Collision !!" << std::endl;
+				this->state = AIRPLANE_CRHASED;
+			}
 		}
+
 	}
-
-}
-
-void Airplane::AIBehaviour(float deltaTime) {
-
-	if (this->target == NULL || this->target->health <= 0) {
-		return;
-	}
-
-	Matrix44 modelInverse = this->getGlobalMatrix();
-	modelInverse.inverse();
-
-	Vector3 pos = this->getGlobalPosition();
-	Vector3 targetPos = this->target->getGlobalPosition();
-
-	if (pos.y < 300) {
-		Vector3 newTargetPos = pos + Transform::UP * 10;
-		targetPos = newTargetPos;
-	}
-
-
-
-	Vector3 toTarget = (targetPos - pos);
-
-	if (abs(toTarget.length()) < 0.0001) {
-		return;
-	}
-
-	toTarget.normalize();
-
-	Vector3 front = this->getGlobalMatrix().rotateVector(Vector3(0, 0, -1));
-	
-	if (abs(toTarget.length()) < 0.0001) {
-		return;
-	}
-	
-	front.normalize();
-
-	float frontDotToTarget = front.dot(toTarget);
-	if (abs(frontDotToTarget) >= 1) {
-		return;
-	}
-
-	float angle = acos(frontDotToTarget);
-
-	if (abs(angle) < 0.01) {
-		shoot();
-		return;
-	}
-
-	Vector3 axis = front.cross(toTarget);
-	axis = modelInverse.rotateVector(axis);
-	axis.normalize();
-
-	this->transform.matrixModel.rotate(angle, axis * -1);
 
 }
 
