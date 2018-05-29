@@ -10,6 +10,8 @@ class Material {
 	public:
 
 		Texture* texture;
+		Texture* extraTexture;
+
 		Shader* shader;
 		Vector4 color;
 		bool blendAlpha;

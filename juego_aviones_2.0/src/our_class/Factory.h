@@ -21,6 +21,7 @@ class Factory {
 		static EntityMesh* buildIsland(const Vector3 initialPos);
 		static EntityMesh* buildWater(const Vector3 initialPos);
 		static EntityMesh* buildSky(const Vector3 initialPos);
+		static EntityMesh* buildSea(const Vector3 initialPos);
 		static Misil* buildMisil(Airplane* owner);
 		static MachineGun* buildMachineGun(Airplane* owner);
 		static DropBomb* buildDropBomb(Airplane* owner);

@@ -25,6 +25,7 @@ class World {
 		int numEnemies;
 
 		EntityMesh* sky;
+		EntityMesh* sea;
 
 		// Vectores para almacenar las entidades, para comprobar collisiones.
 		std::vector<Entity*> staticObjects;
@@ -51,6 +52,7 @@ class World {
 		void initWorldMap();
 		void initEnemies();
 		void initSky();
+		void initSea();
 
 		void renderWorldMap(Camera* camera);
 		void renderWater(Camera* camera);

@@ -2,7 +2,7 @@
 #define DROP_BOMB_H
 
 #include "Weapon.h"
-#include "Bullet.h"
+#include "Projectile.h"
 
 const unsigned int maxBombs = 5;
 
@@ -12,7 +12,7 @@ class DropBomb : public Weapon {
 
 public:
 
-	Bullet bombs[maxBombs];
+	Projectile bombs[maxBombs];
 
 	DropBomb(Airplane* owner, std::string type);
 

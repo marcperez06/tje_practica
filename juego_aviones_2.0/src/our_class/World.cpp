@@ -22,6 +22,7 @@ World::World() {
 	this->initEnemies();
 	this->initWorldMap();
 	this->initSky();
+	this->initSea();
 	World::instance = this;
 }
 
@@ -126,6 +127,13 @@ void World::initWorldMap() {
 void World::initSky() {
 	assert(this->playerCamera);
 	this->sky = Factory::buildSky(this->playerCamera->eye);
+}
+
+void World::initSea() {
+	assert(this->playerCamera);
+	Vector3 initialPos = this->playerCamera->eye;
+	initialPos.y = -198;
+	this->sea = Factory::buildSea(initialPos);
 }
 
 /*
@@ -290,6 +298,11 @@ void World::render(Camera* camera) {
 		glDisable(GL_DEPTH_TEST);
 		this->sky->render(camera);
 		glEnable(GL_DEPTH_TEST);
+	}
+
+	if (this->sea != NULL) {
+		this->sea->transform.matrixModel.setTranslation(camera->eye.x, -185, camera->eye.z);
+		this->sea->render(camera);
 	}
 
 	if (this->getWorldMap() != NULL) {

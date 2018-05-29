@@ -86,6 +86,23 @@ EntityMesh* Factory::buildSky(const Vector3 initialPos) {
 	return sky;
 }
 
+EntityMesh* Factory::buildSea(const Vector3 initialPos) {
+	Mesh* highMesh = new Mesh();
+	highMesh->createSubdividedPlane(5000, 300, true);
+	Texture* texture = Texture::Load("data/water/water_normalmap.tga");
+	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/water.fs");
+
+	Transform transform = Transform(initialPos, Quaternion());
+	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
+	material->extraTexture = Texture::Load("data/cielo/cielo.tga");
+
+	EntityMesh* sea = new EntityMesh(transform, highMesh, material);
+
+	sea->transform.matrixModel.scale(300, 300, 300);
+
+	return sea;
+}
+
 
 Misil* Factory::buildMisil(Airplane* owner) {
 	Misil* weapon = new Misil(owner, "misil");
