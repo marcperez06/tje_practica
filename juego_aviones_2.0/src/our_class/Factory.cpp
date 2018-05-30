@@ -123,7 +123,7 @@ Misil* Factory::buildMisil(Airplane* owner) {
 }
 
 MachineGun* Factory::buildMachineGun(Airplane* owner) {
-	MachineGun* machineGun = new MachineGun(owner, "bullet");
+	MachineGun* machineGun = new MachineGun(owner, "machineGun");
 	machineGun->damage = 60;
 	machineGun->bulletSpeed = 2.5;
 	machineGun->cooldown = 0.50;
@@ -139,3 +139,14 @@ DropBomb* Factory::buildDropBomb(Airplane* owner) {
 	weapon->fireRate = 5;
 	return weapon;
 }
+
+/*
+MachineGun* Factory::buildShootGun(Airplane* owner) {
+	MachineGun* machineGun = new MachineGun(owner, "machineGun");
+	machineGun->damage = 60;
+	machineGun->bulletSpeed = 2.5;
+	machineGun->cooldown = 0.50;
+	machineGun->fireRate = 10;
+	return machineGun;
+}
+*/
