@@ -132,7 +132,7 @@ void World::initSky() {
 void World::initSea() {
 	assert(this->playerCamera);
 	Vector3 initialPos = this->playerCamera->eye;
-	initialPos.y = -198;
+	initialPos.y = -185;
 	this->sea = Factory::buildSea(initialPos);
 }
 
@@ -301,7 +301,7 @@ void World::render(Camera* camera) {
 	}
 
 	if (this->sea != NULL) {
-		this->sea->transform.matrixModel.setTranslation(camera->eye.x, -185, camera->eye.z);
+		this->sea->transform.matrixModel.setTranslation(camera->eye.x, -180, camera->eye.z);
 		this->sea->render(camera);
 	}
 
