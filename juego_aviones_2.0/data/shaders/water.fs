@@ -49,7 +49,7 @@ void main()
 	vec2 uv_reflection = vec2(yaw, clamp(pitch, 0.0, 1.0) );
 
 	//read the sky texture (ignoring mipmaps to avoid problems)
-	vec3 sky_color = texture2DLod( u_extra_texture, uv_reflection, 0.0);
+	vec3 sky_color = texture2DLod(u_extra_texture, uv_reflection, 0.0);
 
 	vec4 s_color = vec4(sky_color.x, sky_color.y, sky_color.z, 1.0);
 	

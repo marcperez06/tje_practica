@@ -31,8 +31,8 @@ World::~World() {
 		delete this->root->children[i];
 		this->root->children.erase(this->root->children.begin() + i);
 	}
-	delete this->player;
 	delete this->sky;
+	delete this->root;
 }
 
 void World::initCameras() {

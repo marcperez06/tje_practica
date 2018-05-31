@@ -11,6 +11,7 @@
 #include "our_class\Airplane.h"
 #include "our_class\World.h"
 #include "our_class\BulletManager.h"
+#include "our_class\GUI.h"
 
 //some globals
 Mesh* mesh = NULL;
@@ -20,6 +21,7 @@ float angle = 0;
 
 World* world = NULL;
 BulletManager* bulletManager = NULL;
+GUI* gui = NULL;
 
 float gameSpeed;
 
@@ -48,6 +50,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	// Build world.
 	world = new World();
 	bulletManager = new BulletManager();
+	gui = new GUI(this->window_width, this->window_height);
 
 	/*
 
@@ -87,6 +90,7 @@ void Game::render(void)
 	glEnable(GL_CULL_FACE);
 
 	world->render(world->currentCamera);
+	gui->render();
 
 	//Draw out world
 	//drawGrid();

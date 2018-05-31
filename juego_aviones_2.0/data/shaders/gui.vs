@@ -27,5 +27,5 @@ void main()
 	v_uv = a_uv;
 
 	//calcule the position of the vertex using the matrices
-	gl_Position = v_position;
+	gl_Position = vec4(v_position, 1.0);
 }
