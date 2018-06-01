@@ -1,10 +1,25 @@
 #include "Path.h"
 
 Path::Path() {
-
+	
 }
 
 Path::~Path() {}
+
+
+void Path::createCircle(Vector3 center, int radius, int points) {
+
+	Entity* wayPoint;
+	for (int i = 0; i < points; i++)
+	{
+		//Vector3 wayPos = new Vector3(center.x+radius, 0, center.z);
+	}
+	this->wayPoints.push_back(wayPoint);
+
+}
+
+
+
 
 
 /*
