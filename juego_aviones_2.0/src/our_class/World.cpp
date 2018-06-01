@@ -16,7 +16,7 @@ World* World::instance = NULL;
 
 World::World() {
 	this->root = new Entity(Vector3(0, 0, 0));
-	this->numEnemies = 10;
+	this->numEnemies = 100;
 	this->initPlayer();
 	this->initCameras();
 	this->initEnemies();
@@ -75,27 +75,130 @@ void World::initPlayer() {
 
 void World::initEnemies() {
 	assert(this->player);
+	int limit = this->numEnemies / 4;
 	if (this->player != NULL) {
 		for (int i = 0; i < this->numEnemies; i++) {
-			float x = (rand() % 1200) + this->player->highMesh->aabb_max.x;
-			float y = (rand() % 400) + 300 + this->player->highMesh->aabb_max.y;
-			float z = (rand() % 20) + this->player->highMesh->aabb_max.z;
-			Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 200);
-			MachineGun* machineGun = Factory::buildMachineGun(enemy);
-			enemy->weapons.push_back(machineGun);
-			enemy->currentWepon = 0;
-			enemy->target = this->player;
 
-			enemy->isPlayer = false;
-			enemy->team = TEAM_DELTA;
-			enemy->controller = new AIController();
-			enemy->controller->airplane = enemy;
+			if (i < limit) {
+				initTeamAlfa();
+			} else if (i > limit && i < limit * 2) {
+				initTeamDelta();
+			} else if (i > limit * 2 && i < limit * 3) {
+				initTeamBeta();
+			} else {
+				initTeamGamma();
+			}
 
-			this->root->addChild(enemy);
-			this->enemies.push_back(enemy);
-			this->dynamicObjects.push_back(enemy);
+		}
+
+		for (int i = 0; i < this->numEnemies; i++) {
+
+			/*
+			if (i < limit) {
+				this->enemies[i]->target = this->enemies[rand() % (numEnemies - limit)];
+			} else if (i > limit && i < limit * 2) {
+				this->enemies[i]->target = this->enemies[rand() % (numEnemies - limit) + limit];
+			} else if (i > limit * 2 && i < limit * 3) {
+				this->enemies[i]->target = this->enemies[rand() % (numEnemies - limit) + limit * 2];
+			} else {
+				this->enemies[i]->target = this->enemies[rand() % (numEnemies - limit) + limit * 3];
+			}
+			*/
+			this->enemies[i]->target = this->player;
 		}
 	}
+}
+
+void World::initTeamAlfa() {
+	float x = (rand() % 1200) + this->player->highMesh->aabb_max.x;
+	float y = (rand() % 400) + 300 + this->player->highMesh->aabb_max.y;
+	float z = (rand() % 20) + this->player->highMesh->aabb_max.z;
+	Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 200);
+	MachineGun* machineGun = Factory::buildMachineGun(enemy);
+	enemy->weapons.push_back(machineGun);
+	enemy->currentWepon = 0;
+	//enemy->target = this->player;
+	Entity* auxEntity = new Entity(enemy->getGlobalPosition());
+	auxEntity->transform.translate(Vector3(0, 10, -20));
+	enemy->target = auxEntity;
+
+	enemy->isPlayer = false;
+	enemy->team = TEAM_ALFA;
+	enemy->controller = new AIController();
+	enemy->controller->airplane = enemy;
+
+	this->root->addChild(enemy);
+	this->enemies.push_back(enemy);
+	this->dynamicObjects.push_back(enemy);
+}
+
+void World::initTeamDelta() {
+	float x = (rand() % 1200) + this->player->highMesh->aabb_max.x;
+	float y = (rand() % 400) + 300 + this->player->highMesh->aabb_max.y;
+	float z = (rand() % 20) + this->player->highMesh->aabb_max.z;
+	Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 200);
+	MachineGun* machineGun = Factory::buildMachineGun(enemy);
+	enemy->weapons.push_back(machineGun);
+	enemy->currentWepon = 0;
+	//enemy->target = this->player;
+	Entity* auxEntity = new Entity(enemy->getGlobalPosition());
+	auxEntity->transform.translate(Vector3(0, 10, -20));
+	enemy->target = auxEntity;
+
+	enemy->isPlayer = false;
+	enemy->team = TEAM_DELTA;
+	enemy->controller = new AIController();
+	enemy->controller->airplane = enemy;
+
+	this->root->addChild(enemy);
+	this->enemies.push_back(enemy);
+	this->dynamicObjects.push_back(enemy);
+}
+
+void World::initTeamBeta() {
+	float x = (rand() % 1200) + this->player->highMesh->aabb_max.x;
+	float y = (rand() % 400) + 300 + this->player->highMesh->aabb_max.y;
+	float z = (rand() % 20) + this->player->highMesh->aabb_max.z;
+	Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 200);
+	MachineGun* machineGun = Factory::buildMachineGun(enemy);
+	enemy->weapons.push_back(machineGun);
+	enemy->currentWepon = 0;
+	//enemy->target = this->player;
+	Entity* auxEntity = new Entity(enemy->getGlobalPosition());
+	auxEntity->transform.translate(Vector3(0, 10, -20));
+	enemy->target = auxEntity;
+
+	enemy->isPlayer = false;
+	enemy->team = TEAM_BETA;
+	enemy->controller = new AIController();
+	enemy->controller->airplane = enemy;
+
+	this->root->addChild(enemy);
+	this->enemies.push_back(enemy);
+	this->dynamicObjects.push_back(enemy);
+}
+
+void World::initTeamGamma() {
+	float x = (rand() % 1200) + this->player->highMesh->aabb_max.x;
+	float y = (rand() % 400) + 300 + this->player->highMesh->aabb_max.y;
+	float z = (rand() % 20) + this->player->highMesh->aabb_max.z;
+	Airplane* enemy = Factory::buildAirplane(Vector3(x, y, z), 200);
+	MachineGun* machineGun = Factory::buildMachineGun(enemy);
+	enemy->weapons.push_back(machineGun);
+	enemy->currentWepon = 0;
+	//enemy->target = this->player;
+	Entity* auxEntity = new Entity(enemy->getGlobalPosition());
+	auxEntity->transform.translate(Vector3(0, 10, -20));
+	enemy->target = auxEntity;
+
+	enemy->isPlayer = false;
+	enemy->team = TEAM_GAMMA;
+	enemy->controller = new AIController();
+	enemy->controller->airplane = enemy;
+
+	this->root->addChild(enemy);
+	this->enemies.push_back(enemy);
+	this->dynamicObjects.push_back(enemy);
 }
 
 void World::initWorldMap() {
@@ -132,8 +235,9 @@ void World::initSky() {
 void World::initSea() {
 	assert(this->playerCamera);
 	Vector3 initialPos = this->playerCamera->eye;
-	initialPos.y = -140;
+	initialPos.y = -100;
 	this->sea = Factory::buildSea(initialPos);
+	this->staticObjects.push_back(this->sea);
 }
 
 /*
@@ -301,7 +405,7 @@ void World::render(Camera* camera) {
 	}
 
 	if (this->sea != NULL) {
-		this->sea->transform.matrixModel.setTranslation(camera->eye.x, -140, camera->eye.z);
+		this->sea->transform.matrixModel.setTranslation(camera->eye.x, -100, camera->eye.z);
 		this->sea->render(camera);
 	}
 

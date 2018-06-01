@@ -2,11 +2,12 @@
 #include "World.h"
 
 EntityCollider::EntityCollider(const Transform transform, Mesh * highMesh, Material * material) : EntityMesh(transform, highMesh, material) {
-
+	this->type = ENTITY_COLLIDER;
 }
 
 EntityCollider::EntityCollider(const Transform transform, Mesh * highMesh, Mesh * lowMesh, Material * material)
 								: EntityMesh(transform, highMesh, lowMesh, material) {
+	this->type = ENTITY_COLLIDER;
 }
 
 void EntityCollider::update(float deltaTime) {

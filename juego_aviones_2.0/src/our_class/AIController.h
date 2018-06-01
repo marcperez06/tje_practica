@@ -13,6 +13,8 @@ enum Beheaviour {
 	ESCAPE
 };
 
+class Entity;
+
 class AIController : public AirplaneController{
 	public:
 
@@ -26,7 +28,7 @@ class AIController : public AirplaneController{
 		virtual void checkStateEnemy();
 		char checkBehaviour();
 
-		void selectTarget(Airplane* entity);
+		void selectTarget(Entity* entity);
 		void followTarget();
 
 

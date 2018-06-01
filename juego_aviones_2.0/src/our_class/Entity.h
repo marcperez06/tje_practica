@@ -5,9 +5,20 @@
 //#include "Collision.h"
 #include "../camera.h"
 
+enum Type {
+	ENTITY,
+	ENTITY_MESH,
+	ENTITY_COLLIDER,
+	AIRPLANE,
+	WAYPOINT
+};
+
 class Entity {
 
 	public:
+
+		char type;
+
 		Entity* parent;
 
 		std::string name;

@@ -2,6 +2,7 @@
 #define AIRPLANE_H
 
 #include "EntityCollider.h"
+#include "Path.h"
 
 class Weapon;
 class AirplaneController;
@@ -33,8 +34,9 @@ class Airplane : public EntityCollider {
 		std::vector<Weapon*> weapons;
 		int currentWepon;
 
-		Airplane* target;
+		Entity* target;
 		AirplaneController* controller;
+		Path path;
 
 		// --- CONSTRUCTORES ---
 
@@ -65,6 +67,7 @@ class Airplane : public EntityCollider {
 	private:
 
 		void removeAirplane(Airplane* airplane);
+		void removeWeapons();
 };
 
 #endif

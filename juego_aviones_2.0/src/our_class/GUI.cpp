@@ -37,7 +37,7 @@ void GUI::drawPlayerWeapons() {
 
 		if (weapon->type.compare("machineGun") == 0) {
 			this->drawMachineGun();
-		} else if (weapon->type.compare("misil") == 0) {
+		} else if (weapon->type.compare("rocketLauncher") == 0) {
 			this->drawMisil();
 		} else if (weapon->type.compare("bomb") == 0) {
 			this->drawDropBomb();
@@ -78,8 +78,10 @@ void GUI::drawPlayerHealth() {
 void GUI::drawCrosshair() {
 
 	Texture* texture = Texture::Load("data/crosshair.tga");
-	Vector2 start = Vector2(0, 0);
-	Vector2 size = Vector2(100, 100);
+	Vector3 center = World::instance->player->highMesh->box.center;
+	Vector3 pos = World::instance->player->getGlobalMatrix() * center;
+	Vector2 start = Vector2(pos.x, pos.y);
+	Vector2 size = Vector2(50, 50);
 
 	this->drawGUIElement(texture, start, size);
 

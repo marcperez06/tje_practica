@@ -6,12 +6,14 @@ EntityMesh::EntityMesh(const Transform transform, Mesh * highMesh, Material * ma
 	this->highMesh = highMesh;
 	this->lowMesh = NULL;
 	this->material = material;
+	this->type = ENTITY_MESH;
 }
 
 EntityMesh::EntityMesh(const Transform transform, Mesh * highMesh, Mesh * lowMesh, Material * material) : Entity(transform) {
 	this->highMesh = highMesh;
 	this->lowMesh = lowMesh;
 	this->material = material;
+	this->type = ENTITY_MESH;
 }
 
 // --- FIN CONSTRUCTORES ---

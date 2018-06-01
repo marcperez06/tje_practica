@@ -20,6 +20,7 @@ class Transform {
 		Transform(Vector3 const position, Quaternion rotation);
 
 		void translate(Vector3 const position);
+		void rotate(float angleInRadians, const Vector3 & axis);
 };
 
 #endif

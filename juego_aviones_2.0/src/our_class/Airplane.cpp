@@ -17,6 +17,7 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mate
 	this->target = NULL;
 	this->isPlayer = false;
 	this->team = TEAM_DELTA;
+	this->type = AIRPLANE;
 	airplanes.push_back(this);
 }
 
@@ -28,11 +29,30 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mesh
 	this->target = NULL;
 	this->isPlayer = false;
 	this->team = TEAM_DELTA;
+	this->type = AIRPLANE;
 	airplanes.push_back(this);
 }
 
 Airplane::~Airplane() {
 	this->removeAirplane(this);
+	this->removeWeapons();
+}
+
+void Airplane::removeAirplane(Airplane* airplane) {
+	bool founded = false;
+	for (int i = 0; (i < airplanes.size()) && (founded == false); i++) {
+		if (airplanes[i] == airplane) {
+			airplanes.erase(airplanes.begin() + i);
+			founded = true;
+		}
+	}
+}
+
+void Airplane::removeWeapons() {
+	bool founded = false;
+	for (int i = 0; i < this->weapons.size(); i++) {
+		this->weapons.erase(this->weapons.begin() + i);
+	}
 }
 
 void Airplane::render(Camera* camera) {
@@ -101,16 +121,6 @@ bool Airplane::detectStaticCollision() {
 	Vector3 origin = this->lastPosition;
 	Vector3 direction = this->getPosition() - origin;
 	return EntityCollider::haveCollisionAgainstStaticObjects(origin, direction);
-}
-
-void Airplane::removeAirplane(Airplane* airplane) {
-	bool founded = false;
-	for (int i = 0; (i < airplanes.size()) && (founded == false); i++) {
-		if (airplanes[i] == airplane) {
-			airplanes.erase(airplanes.begin() + i);
-			founded = true;
-		}
-	}
 }
 
 void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {

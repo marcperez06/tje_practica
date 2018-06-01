@@ -95,20 +95,33 @@ char AIController::checkBehaviour() {
 
 }
 
-void AIController::selectTarget(Airplane* entity) {
+void AIController::selectTarget(Entity* entity) {
 
-	if (this->airplane->target != NULL && this->airplane->target->state != AIRPLANE_CRHASED) {
+	if (this->airplane->target != NULL) {
 		return;
 	}
 
-	if (entity->team == this->airplane->team) {
-		return;
+	Airplane* target = NULL;
+
+	if (dynamic_cast<Airplane*>(this->airplane->target)) {
+		target = (Airplane*) this->airplane->target;
+		if (target->state != AIRPLANE_CRHASED) {
+			return;
+		}
+	}
+
+	Airplane* airplaneEntity = NULL;
+
+	if (this->airplane->target->type == AIRPLANE) {
+		Airplane* airplaneEntity = (Airplane*) this->airplane->target;
+		if (airplaneEntity->team == this->airplane->team) {
+			return;
+		}
 	}
 
 	if (World::entityACanSeeEntityB(this->airplane, entity) == true) {
 		this->airplane->target = entity;
 	}
-
 
 }
 
@@ -129,8 +142,17 @@ void AIController::checkStateEnemy() {
 
 void AIController::followTarget() {
 
-	if (this->airplane->target == NULL || this->airplane->target->health <= 0) {
+	if (this->airplane->target == NULL) {
 		return;
+	}
+
+	Airplane* airplaneEntity = NULL;
+
+	if (this->airplane->target->type == AIRPLANE) {
+		Airplane* airplaneEntity = (Airplane*) this->airplane->target;
+		if (airplaneEntity->health <= 0) {
+			return;
+		}
 	}
 
 	Matrix44 modelInverse = this->airplane->getGlobalMatrix();
@@ -177,6 +199,14 @@ void AIController::followTarget() {
 	axis = modelInverse.rotateVector(axis);
 	axis.normalize();
 
-	this->airplane->transform.matrixModel.rotate(angle, axis * -1);
+	this->airplane->transform.rotate(angle, axis);
+
+	if (this->airplane->target->getGlobalPosition().x == this->airplane->getGlobalPosition().x) {
+		if (this->airplane->target->getGlobalPosition().y == this->airplane->getGlobalPosition().y) {
+			if (this->airplane->target->getGlobalPosition().z == this->airplane->getGlobalPosition().z) {
+				std::cout << " ------------------- HE LLEGADO -------------" << std::endl;
+			}
+		}
+	}
 
 }

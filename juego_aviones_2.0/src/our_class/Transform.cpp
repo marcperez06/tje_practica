@@ -21,3 +21,8 @@ void Transform::translate(Vector3 const position) {
 	this->matrixModel.translate(position.x, position.y, position.z);
 	this->position = this->matrixModel.getTranslation();
 }
+
+void Transform::rotate(float angleInRadians, const Vector3 & axis) {
+	this->matrixModel.rotate(angleInRadians, axis);
+	this->position = this->matrixModel.getTranslation();
+}

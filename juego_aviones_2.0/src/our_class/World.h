@@ -51,6 +51,10 @@ class World {
 		void initPlayer();
 		void initWorldMap();
 		void initEnemies();
+		void initTeamAlfa();
+		void initTeamDelta();
+		void initTeamBeta();
+		void initTeamGamma();
 		void initSky();
 		void initSea();
 
