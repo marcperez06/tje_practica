@@ -9,14 +9,13 @@ const unsigned int maxMisil = 5;
 class Airplane;
 class EntityMesh;
 
-class Misil : public Weapon {
+class RocketLauncher : public Weapon {
 
 public:
 
 	Projectile misils[maxMisil];
-	EntityMesh* meshMisil;
 
-	Misil(Airplane* owner, std::string type);
+	RocketLauncher(Airplane* owner, std::string type);
 
 	virtual void shoot();
 	virtual void render();

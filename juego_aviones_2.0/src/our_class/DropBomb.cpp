@@ -36,10 +36,10 @@ void DropBomb::shoot() {
 void DropBomb::render() {
 
 	std::vector<Matrix44> misilsTransform;
-	Mesh* mesh = Mesh::Load("data/weapons/torpedo.ASE");
+	Mesh* mesh = Mesh::Load("data/weapons/bomb.ASE");
 	Shader* shader = Shader::Load("data/shaders/instanced.vs", "data/shaders/texture.fs");
 	//Shader* shader = this->meshMisil->material->shader;
-	Texture* texture = Texture::Load("data/weapons/torpedo.tga");
+	Texture* texture = Texture::Load("data/weapons/bomb.tga");
 	Camera* camera = World::instance->currentCamera;
 
 	if (mesh == NULL || shader == NULL) {
@@ -68,6 +68,7 @@ void DropBomb::render() {
 		shader->disable();
 	}
 
+	/*
 	Mesh mesh1;
 
 	for (int i = 0; i < maxBombs; i++) {
@@ -82,7 +83,7 @@ void DropBomb::render() {
 		glPointSize(30);
 		mesh1.renderFixedPipeline(GL_POINTS);
 	}
-
+	*/
 }
 
 void DropBomb::update(float deltaTime) {

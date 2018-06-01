@@ -9,7 +9,7 @@ class Airplane;
 class EntityMesh;
 class MachineGun;
 class DropBomb;
-class Misil;
+class RocketLauncher;
 
 class Factory {
 
@@ -22,7 +22,7 @@ class Factory {
 		static EntityMesh* buildWater(const Vector3 initialPos);
 		static EntityMesh* buildSky(const Vector3 initialPos);
 		static EntityMesh* buildSea(const Vector3 initialPos);
-		static Misil* buildMisil(Airplane* owner);
+		static RocketLauncher* buildRocketLauncher(Airplane* owner);
 		static MachineGun* buildMachineGun(Airplane* owner);
 		static DropBomb* buildDropBomb(Airplane* owner);
 

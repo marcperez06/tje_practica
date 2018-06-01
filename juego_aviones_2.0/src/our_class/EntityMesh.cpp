@@ -1,4 +1,5 @@
 #include "EntityMesh.h"
+#include "../game.h"
 
 // --- CONSTRUCTORES ---
 EntityMesh::EntityMesh(const Transform transform, Mesh * highMesh, Material * material) : Entity(transform) {
@@ -65,7 +66,7 @@ void EntityMesh::renderMesh(Camera * camera, Matrix44 globalMatrix) {
 		}
 		shader->setUniform("u_model", globalMatrix);
 		shader->setUniform("u_camera_position", camera->eye);
-		shader->setUniform("u_time", 1);
+		shader->setUniform("u_time", Game::instance->time);
 
 		mesh->render(GL_TRIANGLES, shader);
 

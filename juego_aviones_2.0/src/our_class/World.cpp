@@ -7,7 +7,7 @@
 #include "Airplane.h"
 #include "MachineGun.h"
 #include "DropBomb.h"
-#include "Misil.h"
+#include "RocketLauncher.h"
 #include "PlayerController.h"
 #include "AIController.h"
 #include "AirplaneController.h"
@@ -58,11 +58,11 @@ void World::initPlayer() {
 	this->player->uuid = 1;
 	MachineGun* machineGun = Factory::buildMachineGun(this->player);
 	DropBomb* dropBomb = Factory::buildDropBomb(this->player);
-	Misil* misil = Factory::buildMisil(this->player);
+	RocketLauncher* rocketLauncher = Factory::buildRocketLauncher(this->player);
 	
 	this->player->weapons.push_back(machineGun);
 	this->player->weapons.push_back(dropBomb);
-	this->player->weapons.push_back(misil);
+	this->player->weapons.push_back(rocketLauncher);
 	this->player->currentWepon = 0;
 	this->player->isPlayer = true;
 	this->player->team = TEAM_ALFA;
@@ -132,7 +132,7 @@ void World::initSky() {
 void World::initSea() {
 	assert(this->playerCamera);
 	Vector3 initialPos = this->playerCamera->eye;
-	initialPos.y = -185;
+	initialPos.y = -140;
 	this->sea = Factory::buildSea(initialPos);
 }
 
@@ -301,7 +301,7 @@ void World::render(Camera* camera) {
 	}
 
 	if (this->sea != NULL) {
-		this->sea->transform.matrixModel.setTranslation(camera->eye.x, -180, camera->eye.z);
+		this->sea->transform.matrixModel.setTranslation(camera->eye.x, -140, camera->eye.z);
 		this->sea->render(camera);
 	}
 

@@ -52,10 +52,6 @@ void Airplane::update(float deltaTime) {
 
 		this->controller->update(deltaTime);
 
-		for (int i = 0; i < this->weapons.size(); i++) {
-			this->weapons[i]->update(deltaTime);
-		}
-
 		if (this->isPlayer == true) {
 			if (this->detectStaticCollision() == true) {
 				std::cout << "Collision !!" << std::endl;
@@ -63,6 +59,10 @@ void Airplane::update(float deltaTime) {
 			}
 		}
 
+	}
+
+	for (int i = 0; i < this->weapons.size(); i++) {
+		this->weapons[i]->update(deltaTime);
 	}
 
 }

@@ -12,7 +12,6 @@ class Airplane;
 class Weapon {
 
 	public:
-		std::vector<Bullet> bullets;
 		float bulletSpeed;
 		float damage;
 		Airplane* owner;

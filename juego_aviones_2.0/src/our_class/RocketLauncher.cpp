@@ -1,21 +1,23 @@
-#include "Misil.h"
+#include "RocketLauncher.h"
 #include "Airplane.h"
 #include "Factory.h"
 #include "../Camera.h"
 #include "World.h"
 #include "CollisionHandler.h"
 
-Misil::Misil(Airplane* owner, std::string type) : Weapon(owner, type) {
+RocketLauncher::RocketLauncher(Airplane* owner, std::string type) : Weapon(owner, type) {
 	memset(&this->misils, 0, sizeof(misils));
 }
 
-void Misil::shoot() {
+void RocketLauncher::shoot() {
 	if (this->cooldown < 0) {
 
 		Matrix44 misilTransform = this->owner->getGlobalMatrix();
 		misilTransform.translate(0, -2, 0);
-		
-		Vector3 velocity = Vector3(0, 0, -1);
+		misilTransform.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
+
+		Vector3 velocity = Vector3(0, 0, 1);
+
 		velocity = velocity * this->bulletSpeed;
 
 		Projectile misil = Factory::buildProjectile(misilTransform, velocity, 30, this->type, this->owner, this->damage);
@@ -34,7 +36,7 @@ void Misil::shoot() {
 	}
 }
 
-void Misil::render() {
+void RocketLauncher::render() {
 
 	std::vector<Matrix44> misilsTransform;
 	Mesh* mesh = Mesh::Load("data/weapons/torpedo.ASE");
@@ -81,6 +83,7 @@ void Misil::render() {
 		shader->disable();
 	}
 
+	/*
 	Mesh mesh1;
 	for (int i = 0; i < maxMisil; i++) {
 		Bullet& misil = this->misils[i];
@@ -94,11 +97,12 @@ void Misil::render() {
 		glPointSize(10);
 		mesh1.renderFixedPipeline(GL_POINTS);
 	}
+	*/
 	
 
 }
 
-void Misil::update(float deltaTime) {
+void RocketLauncher::update(float deltaTime) {
 	Weapon::update(deltaTime);
 
 	for (int i = 0; i < maxMisil; i++) {

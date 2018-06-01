@@ -16,10 +16,10 @@ void main()
 {
 	vec2 uv = v_uv;
 	uv = v_world_position.xz * 0.001;
-	//uv.x += sin(u_time + (uv.x)) * 0.05;
+	//uv.x += sin(u_time + (uv.x)) * 0.05; 
 	//uv.x += u_time * 0.5;
 	
-	vec2 uvDeltaMoveX = uv + vec2(u_time * 0.2, u_time * 0.05);
+	vec2 uvDeltaMoveX = uv + vec2(u_time * 5, u_time * 0.05);
 	vec2 uvDeltaMoveY = uv + vec2(u_time * 0.03, u_time * 0.3);
 	
 	vec4 color = texture2D( u_texture, uv);
@@ -29,7 +29,7 @@ void main()
 
 	vec3 N = normalize(v_normal);
 	N = texture2D(u_texture, uvDeltaMoveX).xzy * vec3(2.0) - vec3(1.0);
-	N = texture2D(u_texture, uv).xzy * vec3(2.0) - vec3(1.0);
+	N = texture2D(u_texture, uvDeltaMoveY).xzy * vec3(2.0) - vec3(1.0);
 	N = normalize(N);
 	vec3 E = v_world_position - u_camera_pos;
 	float E_distance = E.length();

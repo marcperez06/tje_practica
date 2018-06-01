@@ -140,7 +140,7 @@ void AIController::followTarget() {
 	Vector3 targetPos = this->airplane->target->getGlobalPosition();
 
 	if (pos.y < 300) {
-		this->airplane->rotatePitchDirection(this->airplane->speed * 0.02);
+		//this->airplane->rotatePitchDirection(this->airplane->speed * 0.02);
 		//Vector3 newTargetPos = pos + Transform::UP * 10;
 		//targetPos = newTargetPos;
 	}
