@@ -15,7 +15,7 @@ class Factory {
 
 	public:
 
-		static Airplane* buildAirplane(const Vector3 initialPos, float speed);
+		static Airplane* buildAirplane(char team, const Vector3 pos, float speed);
 		static Bullet buildBullet(const Vector3 pos, const Vector3 velocity, float timeToLive, std::string type, Airplane* owner, int damage);
 		static Projectile buildProjectile(const Matrix44 transform, const Vector3 velocity, float timeToLive, std::string type, Airplane* owner, int damage);
 		static EntityMesh* buildIsland(const Vector3 initialPos);
@@ -25,6 +25,13 @@ class Factory {
 		static RocketLauncher* buildRocketLauncher(Airplane* owner);
 		static MachineGun* buildMachineGun(Airplane* owner);
 		static DropBomb* buildDropBomb(Airplane* owner);
+
+	private:
+
+		static Airplane* buildSpitfire(const Vector3 pos, float speed);
+		static Airplane* buildBomber(const Vector3 pos, float speed);
+		static Airplane* buildFighterPlaneP38(const Vector3 pos, float speed);
+		static Airplane* buildWildcat(const Vector3 pos, float speed);
 
 };
 

@@ -10,6 +10,7 @@ class Projectile : public Bullet{
 	public:
 		Matrix44 transform;
 		Projectile();
+		void setProperties(const Matrix44 transform, const Vector3 velocity, float timeToLive, std::string type, Airplane* owner, int damage);
 
 };
 

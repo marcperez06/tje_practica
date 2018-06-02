@@ -107,9 +107,9 @@ void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
 			Vector3 direction = dynamicEntity->getPosition() - origin;
 			float maxRayDistance = direction.length();
 
-			if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
+			//if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
 
-				std::cout << "Airplane Destroy ..... " << std::endl;
+			if (collision_model->sphereCollision(origin.v, dynamicEntity->highMesh->box.halfsize.length() - 5) == true) {
 				dynamicEntity->collisionEffect();
 
 			}
@@ -152,12 +152,19 @@ void CollisionHandler::bulletsCollisionAgainstStaticEntities(Bullet bullets[], i
 				continue;
 			}
 
+			Vector3 insideMinAxis = staticEntity->getGlobalMatrix() * staticEntity->highMesh->aabb_min;
+			Vector3 insideMaxAxis = staticEntity->getGlobalMatrix() * staticEntity->highMesh->aabb_max;
+
+			if (bullet.position.x < insideMinAxis.x || bullet.position.x > insideMaxAxis.x
+				|| bullet.position.z < insideMinAxis.z || bullet.position.z > insideMaxAxis.z) {
+				continue;
+			}
+
 			Vector3 origin = bullet.lastPosition;
 			Vector3 direction = bullet.position - bullet.lastPosition;
 			float maxRayDistance = direction.length();
 
 			if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
-
 				bullet.timeToLive = 0;
 				std::cout << "BUllet Destroy ..... " << std::endl;
 
@@ -200,11 +207,19 @@ void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], 
 				continue;
 			}
 
+			Vector3 insideMinAxis = dynamicEntity->getGlobalMatrix() * dynamicEntity->highMesh->aabb_min;
+			Vector3 insideMaxAxis = dynamicEntity->getGlobalMatrix() * dynamicEntity->highMesh->aabb_max;
+
+			if (bullet.position.x < insideMinAxis.x || bullet.position.x > insideMaxAxis.x
+				|| bullet.position.z < insideMinAxis.z || bullet.position.z > insideMaxAxis.z) {
+				continue;
+			}
+
 			Vector3 origin = bullet.lastPosition;
 			Vector3 direction = bullet.position - bullet.lastPosition;
 			float maxRayDistance = direction.length();
 
-			if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
+			if (collision_model->sphereCollision(origin.v, dynamicEntity->highMesh->box.halfsize.length() + 10) == true) {
 
 				Vector3 collisionPoint;
 				collision_model->getCollisionPoint(collisionPoint.v, true);

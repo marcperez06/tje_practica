@@ -49,16 +49,18 @@ void main()
 	vec2 uv_reflection = vec2(yaw, clamp(pitch, 0.0, 1.0) );
 
 	//read the sky texture (ignoring mipmaps to avoid problems)
-	vec3 sky_color = texture2DLod(u_extra_texture, uv_reflection, 0.0);
+	//vec3 sky_color = texture2DLod(u_extra_texture, uv_reflection, 0.0);
+	//vec3 sky_color = texture2D(u_extra_texture, uv_reflection);
 
+	vec3 sky_color = vec3(1.0, 1.0, 1.0);
 	vec4 s_color = vec4(sky_color.x, sky_color.y, sky_color.z, 1.0);
 	
-	//float fresnel = 1.0 - clamp(dot(E, N), 0.0, 1.0);
+	float fresnel = 1.0 - clamp(dot(E, N), 0.0, 1.0);
 	
-	//color = color * sky_color * fresnel;
+	color = color * s_color * fresnel;
 
 	color.a = 0.8;
-	color = u_color * color * s_color;
+	color = u_color * color;
 	
 	gl_FragColor = color;
 }

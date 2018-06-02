@@ -18,6 +18,7 @@ class Bullet {
 		int damage;
 
 		Bullet();
+		void setProperties(const Vector3 pos, const Vector3 velocity, float timeToLive, std::string type, Airplane* owner, int damage);
 
 };
 

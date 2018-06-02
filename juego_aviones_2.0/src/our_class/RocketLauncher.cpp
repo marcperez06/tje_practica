@@ -20,7 +20,8 @@ void RocketLauncher::shoot() {
 
 		velocity = velocity * this->bulletSpeed;
 
-		Projectile misil = Factory::buildProjectile(misilTransform, velocity, 30, this->type, this->owner, this->damage);
+		Projectile misil;
+		misil.setProperties(misilTransform, velocity, 30, this->type, this->owner, this->damage);
 
 		for (int i = 0; i < maxMisil; i++) {
 			Projectile& auxMisil = this->misils[i];

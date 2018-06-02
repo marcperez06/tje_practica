@@ -73,10 +73,10 @@ void Airplane::update(float deltaTime) {
 		this->controller->update(deltaTime);
 
 		if (this->isPlayer == true) {
-			if (this->detectStaticCollision() == true) {
+			/*if (this->detectStaticCollision() == true) {
 				std::cout << "Collision !!" << std::endl;
 				this->state = AIRPLANE_CRHASED;
-			}
+			}*/
 		}
 
 	}

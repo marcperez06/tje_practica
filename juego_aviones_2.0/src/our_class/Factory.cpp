@@ -4,43 +4,93 @@
 #include "DropBomb.h"
 #include "RocketLauncher.h"
 
-Airplane* Factory::buildAirplane(const Vector3 initialPos, float speed) {
+Airplane* Factory::buildAirplane(char team, const Vector3 pos, float speed) {
+
+	Airplane* airplane = NULL;
+
+	switch (team) {
+
+		case TEAM_ALFA:
+			airplane = Factory::buildSpitfire(pos, speed);
+			break;
+		case TEAM_DELTA:
+			airplane = Factory::buildBomber(pos, speed);
+			break;
+		case TEAM_BETA:
+			airplane = Factory::buildFighterPlaneP38(pos, speed);
+			break;
+		case TEAM_GAMMA:
+			airplane = Factory::buildWildcat(pos, speed);
+			break;
+
+	}
+
+	airplane->team = team;
+	return airplane;
+
+}
+
+Airplane* Factory::buildSpitfire(const Vector3 pos, float speed) {
 	Mesh* highMesh = Mesh::Load("data/spitfire/spitfire.ASE");
 	Mesh* lowMesh = Mesh::Load("data/spitfire/spitfire_low.ASE");
 	Texture* texture = Texture::Load("data/spitfire/spitfire_color_spec.tga");
 	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
 
-	Transform transform = Transform(initialPos, Quaternion());
+	Transform transform = Transform(pos, Quaternion());
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
 
 	Airplane* airplane = new Airplane(speed, transform, highMesh, lowMesh, material);
+	airplane->weapons.push_back(Factory::buildMachineGun(airplane));
+	airplane->currentWepon = 0;
 
 	return airplane;
 }
 
-Bullet Factory::buildBullet(const Vector3 pos, const Vector3 velocity, float timeToLive, 
-											std::string type, Airplane* owner, int damage) {
-	Bullet bullet;
-	bullet.lastPosition = pos;
-	bullet.position = pos;
-	bullet.velocity = velocity;
-	bullet.timeToLive = timeToLive;
-	bullet.type = type;
-	bullet.owner = owner;
-	bullet.damage = damage;
-	return bullet;
+Airplane* Factory::buildBomber(const Vector3 pos, float speed) {
+	Mesh* highMesh = Mesh::Load("data/bomber/bomber_axis.ASE");
+	Texture* texture = Texture::Load("data/bomber/bomber_axis.tga");
+	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
+
+	Transform transform = Transform(pos, Quaternion());
+	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
+
+	Airplane* airplane = new Airplane(speed, transform, highMesh, material);
+	airplane->weapons.push_back(Factory::buildMachineGun(airplane));
+	airplane->currentWepon = 0;
+
+	return airplane;
 }
 
-Projectile Factory::buildProjectile(const Matrix44 transform, const Vector3 velocity, float timeToLive, 
-														std::string type, Airplane* owner, int damage) {
-	Projectile projectile;
-	projectile.transform = transform;
-	projectile.velocity = velocity;
-	projectile.timeToLive = timeToLive;
-	projectile.type = type;
-	projectile.owner = owner;
-	projectile.damage = damage;
-	return projectile;
+Airplane* Factory::buildFighterPlaneP38(const Vector3 pos, float speed) {
+	Mesh* highMesh = Mesh::Load("data/caza_p38/p38.ASE");
+	Mesh* lowMesh = Mesh::Load("data/caza_p38/p38_low.ASE");
+	Texture* texture = Texture::Load("data/caza_p38/p38.tga");
+	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
+
+	Transform transform = Transform(pos, Quaternion());
+	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
+
+	Airplane* airplane = new Airplane(speed, transform, highMesh, lowMesh, material);
+	airplane->weapons.push_back(Factory::buildMachineGun(airplane));
+	airplane->currentWepon = 0;
+
+	return airplane;
+}
+
+Airplane* Factory::buildWildcat(const Vector3 pos, float speed) {
+	Mesh* highMesh = Mesh::Load("data/wildcat/wildcat.ASE");
+	Mesh* lowMesh = Mesh::Load("data/wildcat/wildcat_low.ASE");
+	Texture* texture = Texture::Load("data/wildcat/wildcat.tga");
+	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
+
+	Transform transform = Transform(pos, Quaternion());
+	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
+
+	Airplane* airplane = new Airplane(speed, transform, highMesh, lowMesh, material);
+	airplane->weapons.push_back(Factory::buildMachineGun(airplane));
+	airplane->currentWepon = 0;
+
+	return airplane;
 }
 
 EntityMesh* Factory::buildIsland(const Vector3 initialPos) {
@@ -103,25 +153,13 @@ EntityMesh* Factory::buildSea(const Vector3 initialPos) {
 	return sea;
 }
 
-
 RocketLauncher* Factory::buildRocketLauncher(Airplane* owner) {
-	RocketLauncher* weapon = new RocketLauncher(owner, "rocketLauncher");
-	weapon->damage = 400;
-	weapon->bulletSpeed = 230;
-	weapon->cooldown = 5;
-	weapon->fireRate = 5;
-	
-	/*
-	Mesh* highMesh = Mesh::Load("data/weapons/torpedo.ASE");
-	Texture* texture = Texture::Load("data/weapons/torpedo.tga");
-	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
-	Transform transform = Transform(owner->getPosition(), Quaternion());
-	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
-	
-	weapon->meshMisil = new EntityMesh(transform, highMesh, material);
-	*/
-
-	return weapon;
+	RocketLauncher* rocketLauncher = new RocketLauncher(owner, "rocketLauncher");
+	rocketLauncher->damage = 400;
+	rocketLauncher->bulletSpeed = 230;
+	rocketLauncher->cooldown = 5;
+	rocketLauncher->fireRate = 5;
+	return rocketLauncher;
 }
 
 MachineGun* Factory::buildMachineGun(Airplane* owner) {

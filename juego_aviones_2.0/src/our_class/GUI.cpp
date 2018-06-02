@@ -78,9 +78,11 @@ void GUI::drawPlayerHealth() {
 void GUI::drawCrosshair() {
 
 	Texture* texture = Texture::Load("data/crosshair.tga");
-	Vector3 center = World::instance->player->highMesh->box.center;
-	Vector3 pos = World::instance->player->getGlobalMatrix() * center;
-	Vector2 start = Vector2(pos.x, pos.y);
+	//Vector3 center = World::instance->player->highMesh->box.center;
+	//Vector3 pos = World::instance->player->getGlobalMatrix() * center;
+	Vector3 pos = World::instance->player->getGlobalPosition() + Vector3(-1.05, 0.75, -3);
+	Vector3 pos2D = World::instance->playerCamera->project(pos, this->windowWidth, this->windowHeight);
+	Vector2 start = Vector2(pos2D.x, pos2D.y);
 	Vector2 size = Vector2(50, 50);
 
 	this->drawGUIElement(texture, start, size);
@@ -128,7 +130,7 @@ void GUI::highlightEntity(Entity* entity) {
 	Vector3 pos2D = World::instance->currentCamera->project(pos, this->windowWidth, this->windowHeight);
 
 	Vector2 start = Vector2(pos2D.x, pos2D.y);
-	Vector2 size = Vector2(5, 5);
+	Vector2 size = Vector2(30, 30);
 
 	Texture* texture = Texture::Load("data/texture.tga");
 	this->drawGUIElement(texture, start, size);

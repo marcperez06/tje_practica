@@ -92,6 +92,18 @@ void Game::render(void)
 	world->render(world->currentCamera);
 	gui->render();
 
+	for (int i = 0; i < world->AIAirplanes.size(); i++) {
+		
+		if (world->player->team == world->AIAirplanes[i]->team) {
+			continue;
+		}
+
+		if (World::distanceBetween(world->player, world->AIAirplanes[i]) > 100) {
+			gui->highlightEntity(world->AIAirplanes[i]);
+		}
+
+	}
+
 	//Draw out world
 	//drawGrid();
 

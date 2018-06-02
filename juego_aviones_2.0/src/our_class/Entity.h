@@ -10,7 +10,8 @@ enum Type {
 	ENTITY_MESH,
 	ENTITY_COLLIDER,
 	AIRPLANE,
-	WAYPOINT
+	WAYPOINT,
+	MILITARY_BASE
 };
 
 class Entity {

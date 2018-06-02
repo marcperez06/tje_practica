@@ -126,7 +126,7 @@ void AIController::selectTarget(Entity* entity) {
 }
 
 void AIController::checkStateEnemy() {
-	std::vector<Airplane*> enemies = World::instance->enemies;
+	std::vector<Airplane*> enemies = World::instance->AIAirplanes;
 	Airplane* player = World::instance->player;
 	for (int i = 1; i < enemies.size(); i++) {
 		Airplane* airplane = enemies[i];

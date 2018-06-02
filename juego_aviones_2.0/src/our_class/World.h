@@ -20,9 +20,12 @@ class World {
 		Entity* root;
 
 		Airplane* player;
-		std::vector<Airplane*> enemies;
+		std::vector<Airplane*> AIAirplanes;
 
-		int numEnemies;
+		//std::vector<Base*> teamMilitaryBases;
+		//std::vector<Powerup*> powerups;
+
+		int numAIAirplanes;
 
 		EntityMesh* sky;
 		EntityMesh* sea;
@@ -45,12 +48,15 @@ class World {
 		static float distanceBetween(Entity* entityA, Entity* entityB);
 		static float angleBetween(Entity* entityA, Entity* entityB);
 
+		template<class T> static void removeElement(std::vector<T> list, T element);
+		template<class T> static void deleteAndRemoveElement(std::vector<T> list, T element);
+
 	private:
 		
 		void initCameras();
 		void initPlayer();
 		void initWorldMap();
-		void initEnemies();
+		void initTeams();
 		void initTeamAlfa();
 		void initTeamDelta();
 		void initTeamBeta();
@@ -66,3 +72,5 @@ class World {
 
 
 #endif
+
+
