@@ -13,8 +13,8 @@ void MachineGun::shoot() {
 		Vector3 velocity = modelMatrix.rotateVector(Vector3(0, 0, -1));
 		velocity = velocity * this->owner->speed * this->bulletSpeed;
 
-		BulletManager::instance->createBullet(leftPos, velocity, "-", this->owner, this->damage);
-		BulletManager::instance->createBullet(rigthPos, velocity, "-", this->owner, this->damage);
+		BulletManager::instance->createBullet(leftPos, velocity, "machineGun", this->owner, this->damage);
+		BulletManager::instance->createBullet(rigthPos, velocity, "machineGun", this->owner, this->damage);
 
 		this->cooldown = 0.50;
 	}

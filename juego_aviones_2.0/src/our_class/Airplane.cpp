@@ -134,7 +134,7 @@ void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 	}
 
 	Mesh mesh;
-	mesh.vertices.push_back(collision);
+	mesh.vertices.push_back(this->getGlobalMatrix() * collision);
 	mesh.colors.push_back(Vector4(0, 0, 1, 1));
 	glPointSize(500);
 	mesh.renderFixedPipeline(GL_POINTS);
@@ -143,4 +143,5 @@ void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 void Airplane::collisionEffect() {
 	this->material->color = Vector4(0, 0, 0, 1);
 	this->state = AIRPLANE_CRHASED;
+	//this->transform.translate(Vector3(0, -3, 0));
 }

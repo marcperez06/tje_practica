@@ -3,6 +3,7 @@
 #include "MachineGun.h"
 #include "DropBomb.h"
 #include "RocketLauncher.h"
+#include "ShootGun.h"
 
 Airplane* Factory::buildAirplane(char team, const Vector3 pos, float speed) {
 
@@ -180,13 +181,11 @@ DropBomb* Factory::buildDropBomb(Airplane* owner) {
 	return weapon;
 }
 
-/*
-MachineGun* Factory::buildShootGun(Airplane* owner) {
-	MachineGun* machineGun = new MachineGun(owner, "machineGun");
-	machineGun->damage = 60;
-	machineGun->bulletSpeed = 2.5;
-	machineGun->cooldown = 0.50;
-	machineGun->fireRate = 10;
-	return machineGun;
+ShootGun* Factory::buildShootGun(Airplane* owner) {
+	ShootGun* shootGun = new ShootGun(owner, "shootGun");
+	shootGun->damage = 60;
+	shootGun->bulletSpeed = 2.5;
+	shootGun->cooldown = 0.50;
+	shootGun->fireRate = 10;
+	return shootGun;
 }
-*/

@@ -8,6 +8,7 @@
 #include "MachineGun.h"
 #include "DropBomb.h"
 #include "RocketLauncher.h"
+#include "ShootGun.h"
 #include "PlayerController.h"
 #include "AIController.h"
 #include "AirplaneController.h"
@@ -59,9 +60,11 @@ void World::initPlayer() {
 
 	DropBomb* dropBomb = Factory::buildDropBomb(this->player);
 	RocketLauncher* rocketLauncher = Factory::buildRocketLauncher(this->player);
+	ShootGun* shootGun = Factory::buildShootGun(this->player);
 	
 	this->player->weapons.push_back(dropBomb);
 	this->player->weapons.push_back(rocketLauncher);
+	this->player->weapons.push_back(shootGun);
 	this->player->currentWepon = 0;
 	this->player->isPlayer = true;
 	this->player->controller = new PlayerController();
@@ -124,6 +127,12 @@ void World::initTeams() {
 			}
 
 			//this->AIAirplanes[i]->target = this->player;
+			/*
+			Entity* auxEntity = new Entity(AIAirplanes[i]->getGlobalPosition());
+			auxEntity->transform.translate(Vector3(0, 10, -20));
+			AIAirplanes[i]->target = auxEntity;
+			*/
+
 		}
 	}
 }
@@ -176,11 +185,6 @@ void World::initTeamBeta() {
 	float z = (rand() % 20) - 500 - this->player->highMesh->aabb_max.z;
 	Airplane* enemy = Factory::buildAirplane(TEAM_BETA, Vector3(x, y, z), 200);
 
-	//enemy->target = this->player;
-	Entity* auxEntity = new Entity(enemy->getGlobalPosition());
-	auxEntity->transform.translate(Vector3(0, 10, -20));
-	enemy->target = auxEntity;
-
 	enemy->isPlayer = false;
 
 	enemy->controller = new AIController();
@@ -196,11 +200,6 @@ void World::initTeamGamma() {
 	float y = (rand() % 100) + 400 + this->player->highMesh->aabb_max.y;
 	float z = (rand() % 20) + 500 + this->player->highMesh->aabb_max.z;
 	Airplane* enemy = Factory::buildAirplane(TEAM_GAMMA, Vector3(x, y, z), 200);
-
-	//enemy->target = this->player;
-	Entity* auxEntity = new Entity(enemy->getGlobalPosition());
-	auxEntity->transform.translate(Vector3(0, 10, -20));
-	enemy->target = auxEntity;
 
 	enemy->isPlayer = false;
 	enemy->team = TEAM_GAMMA;

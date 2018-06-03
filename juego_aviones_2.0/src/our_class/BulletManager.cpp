@@ -15,7 +15,15 @@ BulletManager::BulletManager() {
 void BulletManager::createBullet(Vector3 pos, Vector3 velocity, std::string type, Airplane* owner, int damage) {
 
 	Bullet bullet;
-	bullet.setProperties(pos, velocity, 10, type, owner, damage);
+	int timeToLive = 0;
+
+	if (type.compare("machineGun") == 0) {
+		timeToLive = 10;
+	}	else if (type.compare("shootGun") == 0) {
+		timeToLive = 2;
+	}
+
+	bullet.setProperties(pos, velocity, timeToLive, type, owner, damage);
 
 	for (int i = 0; i < maxBullets; i++) {
 		Bullet& auxBullet = this->bullets[i];

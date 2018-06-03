@@ -10,14 +10,13 @@ class EntityMesh;
 class MachineGun;
 class DropBomb;
 class RocketLauncher;
+class ShootGun;
 
 class Factory {
 
 	public:
 
 		static Airplane* buildAirplane(char team, const Vector3 pos, float speed);
-		static Bullet buildBullet(const Vector3 pos, const Vector3 velocity, float timeToLive, std::string type, Airplane* owner, int damage);
-		static Projectile buildProjectile(const Matrix44 transform, const Vector3 velocity, float timeToLive, std::string type, Airplane* owner, int damage);
 		static EntityMesh* buildIsland(const Vector3 initialPos);
 		static EntityMesh* buildWater(const Vector3 initialPos);
 		static EntityMesh* buildSky(const Vector3 initialPos);
@@ -25,6 +24,7 @@ class Factory {
 		static RocketLauncher* buildRocketLauncher(Airplane* owner);
 		static MachineGun* buildMachineGun(Airplane* owner);
 		static DropBomb* buildDropBomb(Airplane* owner);
+		static ShootGun* buildShootGun(Airplane* owner);
 
 	private:
 
