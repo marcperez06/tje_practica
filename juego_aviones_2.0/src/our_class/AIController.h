@@ -10,7 +10,8 @@ enum Beheaviour {
 	SHOOT,
 	FOLLOW,
 	EVADE,
-	ESCAPE
+	ESCAPE,
+	PATROL
 };
 
 class Entity;

@@ -1,4 +1,5 @@
 #include "Path.h"
+#include "Entity.h"
 
 Path::Path() {
 	
@@ -7,15 +8,31 @@ Path::Path() {
 Path::~Path() {}
 
 
-void Path::createCircle(Vector3 center, int radius, int points) {
+void Path::createCircle(Vector3 center, int radius, int heigth) {
 
-	Entity* wayPoint;
-	for (int i = 0; i < points; i++)
-	{
-		//Vector3 wayPos = new Vector3(center.x+radius, 0, center.z);
-	}
+	Vector3 up = Vector3::Vector3(center.x, heigth, center.z+radius);
+	createWayPoint(up);
+	Vector3 upright = Vector3::Vector3(center.x + radius/sqrt(2), heigth, center.z + radius/sqrt(2));
+	createWayPoint(upright);
+	Vector3 rigth = Vector3::Vector3(center.x + radius, heigth, center.z);
+	createWayPoint(rigth);
+	Vector3 downrigth = Vector3::Vector3(center.x + radius/sqrt(2), heigth, center.z - radius/sqrt(2));
+	createWayPoint(downrigth);
+	Vector3 down = Vector3::Vector3(center.x, heigth, center.z - radius);
+	createWayPoint(down);
+	Vector3 downleft = Vector3::Vector3(center.x - radius/sqrt(2), heigth, center.z - radius / sqrt(2));
+	createWayPoint(downleft);
+	Vector3 left = Vector3::Vector3(center.x - radius, heigth, center.z);
+	createWayPoint(left);
+	Vector3 upleft = Vector3::Vector3(center.x - radius / sqrt(2), heigth, center.z + radius / sqrt(2));
+	createWayPoint(upleft);
+
+}
+
+void Path::createWayPoint(Vector3 pos) {
+	Entity* wayPoint = new Entity(pos);
 	this->wayPoints.push_back(wayPoint);
-
+	//delete wayPoint;
 }
 
 

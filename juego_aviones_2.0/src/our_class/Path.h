@@ -13,7 +13,8 @@ public:
 	Path();
 	~Path();
 
-	void createCircle(Vector3 center, int radius, int points);
+	void createCircle(Vector3 center, int radius, int heigth);
+	void createWayPoint(Vector3 pos);
 
 };
 

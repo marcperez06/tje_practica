@@ -1,6 +1,7 @@
 #include "AIController.h"
 #include "World.h"
 #include "Airplane.h"
+#include "Path.h"
 
 AIController::AIController() : AirplaneController() {
 	this->state = FLYING;
@@ -28,6 +29,9 @@ void AIController::update(float deltaTime) {
 				break;
 			case ESCAPE:
 				//this->escape();
+				break;
+			case PATROL:
+				//this->airplane->target = 
 				break;
 		}
 
@@ -75,6 +79,7 @@ char AIController::checkBehaviour() {
 				|| World::distanceBetween(this->airplane, this->airplane->target) > 1500) {
 		return FOLLOW;
 	}
+	
 
 	/*
 	std::vector<Entity*> islands = World::instance->getWorldMap()->children;
