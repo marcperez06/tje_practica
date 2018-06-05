@@ -98,7 +98,7 @@ void Game::render(void)
 			continue;
 		}
 
-		if (World::distanceBetween(world->player, world->AIAirplanes[i]) > 100) {
+		if (World::distanceBetween(world->player, world->AIAirplanes[i]) > 200) {
 			gui->highlightEntity(world->AIAirplanes[i]);
 		}
 

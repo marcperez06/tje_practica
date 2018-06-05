@@ -11,6 +11,8 @@ class Transform {
 		static const Vector3 DOWN;
 		static const Vector3 LEFT;
 		static const Vector3 RIGHT;
+		static const Vector3 FRONT;
+		static const Vector3 BACK;
 
 		Matrix44 matrixModel;
 		Vector3 position; // Posicion Local del objeto, respecto a su eje de cordenadas.

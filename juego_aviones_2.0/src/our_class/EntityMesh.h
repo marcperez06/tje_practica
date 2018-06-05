@@ -1,5 +1,6 @@
 #ifndef ENTIY_MESH_H
 #define ENTITY_MESH_H
+#pragma once
 
 #include "../mesh.h"
 #include "Material.h"

@@ -12,18 +12,20 @@
 #include "PlayerController.h"
 #include "AIController.h"
 #include "AirplaneController.h"
+#include "Clouds.h"
 
 World* World::instance = NULL;
 
 World::World() {
 	this->root = new Entity(Vector3(0, 0, 0));
-	this->numAIAirplanes = 4;
+	this->numAIAirplanes = 8;
 	this->initPlayer();
 	this->initCameras();
 	this->initTeams();
 	this->initWorldMap();
 	this->initSky();
 	this->initSea();
+	this->clouds = new Clouds();
 	World::instance = this;
 }
 
@@ -33,6 +35,8 @@ World::~World() {
 		this->root->children.erase(this->root->children.begin() + i);
 	}
 	delete this->sky;
+	delete this->sea;
+	delete this->clouds;
 	delete this->root;
 }
 
@@ -412,7 +416,6 @@ void World::renderAirplanes(Camera* camera) {
 }
 
 void World::render(Camera* camera) {
-
 	if (this->sky != NULL) {
 		this->sky->transform.matrixModel.setTranslation(camera->eye.x, camera->eye.y, camera->eye.z);
 		glDisable(GL_DEPTH_TEST);
@@ -434,6 +437,9 @@ void World::render(Camera* camera) {
 	}
 
 	this->renderAirplanes(camera);
+
+	this->clouds->render(camera);
+
 	BulletManager::instance->render();
 
 }

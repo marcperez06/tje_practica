@@ -15,12 +15,12 @@ uniform vec3 u_camera_pos;
 void main()
 {
 	vec2 uv = v_uv;
-	uv = v_world_position.xz * 0.001;
+	uv = v_world_position.xz * 0.0001;
 	//uv.x += sin(u_time + (uv.x)) * 0.05; 
 	//uv.x += u_time * 0.5;
 	
-	vec2 uvDeltaMoveX = uv + vec2(u_time * 5, u_time * 0.05);
-	vec2 uvDeltaMoveY = uv + vec2(u_time * 0.03, u_time * 0.3);
+	vec2 uvDeltaMoveX = uv + vec2(sin(u_time * 0.03), u_time * 0.01);
+	vec2 uvDeltaMoveY = uv + vec2(u_time * 0.01, sin(u_time * 0.03));
 	
 	vec4 color = texture2D( u_texture, uv);
 	
@@ -49,18 +49,15 @@ void main()
 	vec2 uv_reflection = vec2(yaw, clamp(pitch, 0.0, 1.0) );
 
 	//read the sky texture (ignoring mipmaps to avoid problems)
-	//vec3 sky_color = texture2DLod(u_extra_texture, uv_reflection, 0.0);
-	//vec3 sky_color = texture2D(u_extra_texture, uv_reflection);
+	vec4 sky_color = texture2DLod(u_extra_texture, uv_reflection, 0.0);
+	//vec4 sky_color = texture2D(u_extra_texture, uv_reflection);
 
-	vec3 sky_color = vec3(1.0, 1.0, 1.0);
-	vec4 s_color = vec4(sky_color.x, sky_color.y, sky_color.z, 1.0);
+	//float fresnel = 1.0 - clamp(dot(E, N), 0.0, 1.0);
+	float fresnel = 0.75;
 	
-	float fresnel = 1.0 - clamp(dot(E, N), 0.0, 1.0);
-	
-	color = color * s_color * fresnel;
-
-	color.a = 0.8;
+	color = color * sky_color * fresnel;
 	color = u_color * color;
+	color.a = 0.5;
 	
 	gl_FragColor = color;
 }

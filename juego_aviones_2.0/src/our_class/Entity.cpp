@@ -37,11 +37,11 @@ void Entity::moveTo(const Vector3 pos) {
 }
 
 Vector3 Entity::getPosition() {
-	return this->transform.position;
+	return this->transform.matrixModel * Vector3();
 }
 
 Vector3 Entity::getGlobalPosition() {
-	return this->getGlobalMatrix().getTranslation();
+	return this->getGlobalMatrix() * Vector3();
 }
 
 Matrix44 Entity::getGlobalMatrix() {

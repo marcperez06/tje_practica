@@ -66,7 +66,7 @@ void EntityMesh::renderMesh(Camera * camera, Matrix44 globalMatrix) {
 		shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 		shader->setUniform("u_texture", this->material->texture);
 		if (this->material->extraTexture != NULL) {
-			shader->setUniform("u_extra_texture", this->material->texture);
+			shader->setUniform("u_extra_texture", this->material->extraTexture);
 		}
 		shader->setUniform("u_model", globalMatrix);
 		shader->setUniform("u_camera_position", camera->eye);

@@ -6,6 +6,7 @@ class Entity;
 class EntityMesh;
 class Airplane;
 class Camera;
+class Clouds;
 
 class World {
 	public:
@@ -29,6 +30,7 @@ class World {
 
 		EntityMesh* sky;
 		EntityMesh* sea;
+		Clouds* clouds;
 
 		// Vectores para almacenar las entidades, para comprobar collisiones.
 		std::vector<Entity*> staticObjects;
