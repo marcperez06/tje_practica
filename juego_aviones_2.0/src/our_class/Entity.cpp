@@ -1,5 +1,7 @@
 #include "Entity.h"
 
+Entity::Entity() {}
+
 Entity::Entity(const Vector3 position) {
 	this->parent = NULL;
 	this->transform = Transform(position, Quaternion());

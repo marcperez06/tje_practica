@@ -28,6 +28,7 @@ class Entity {
 
 		std::vector<Entity*> children;
 
+		Entity();
 		Entity(const Vector3 position);
 		Entity(const Vector3 position, const Quaternion rotation);
 		Entity(const Transform transform);

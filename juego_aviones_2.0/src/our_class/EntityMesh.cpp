@@ -2,6 +2,8 @@
 #include "../game.h"
 
 // --- CONSTRUCTORES ---
+EntityMesh::EntityMesh() : Entity() {}
+
 EntityMesh::EntityMesh(const Transform transform, Mesh * highMesh, Material * material) : Entity(transform) {
 	this->highMesh = highMesh;
 	this->lowMesh = NULL;

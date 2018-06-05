@@ -14,7 +14,7 @@ class EntityMesh : public Entity {
 		Material* material; // Texture + Shader + Vector4 color + como se pinta booleanas (blend_alpha, depth_test, cull_face)
 		
 		// --- CONSTRUCTORES ---
-
+		EntityMesh();
 		EntityMesh(const Transform transform, Mesh * highMesh, Material * material);
 		EntityMesh(const Transform transform, Mesh * highMesh, Mesh * lowMesh, Material * material);
 
