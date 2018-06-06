@@ -139,8 +139,9 @@ EntityMesh* Factory::buildSky(const Vector3 initialPos) {
 
 EntityMesh* Factory::buildSea(const Vector3 initialPos) {
 	Mesh* highMesh = new Mesh();
-	highMesh->createSubdividedPlane(1000, 100, true);
-	Texture* texture = Texture::Load("data/water/water_normalmap.tga");
+	highMesh->createSubdividedPlane(130000, 100, true);
+	//Texture* texture = Texture::Load("data/water/water_normalmap.tga");
+	Texture* texture = Texture::Load("data/water/agua.tga");
 	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/water.fs");
 
 	Transform transform = Transform(initialPos, Quaternion());

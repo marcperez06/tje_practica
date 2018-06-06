@@ -22,12 +22,15 @@ void main()
 	float fogFactor = clamp(1.0 - (fogDiferenceDistance / fogDiferenceMaxMin) , 0.0, 1.0);
 	fogFactor = pow(fogFactor, 3);
 
-	vec4 fogColor = vec4(1, 1, 1, 1);
+	float red = 161.0 / 255.0;
+	float green = 192.0 / 255.0;
+	float blue = 203.0 / 255.0;
+	vec4 fogColor = vec4(red, green, blue, 0.70);
 
 	vec2 uv = v_uv;
 	vec4 detailColor = texture2D(u_detail_texture, uv * detailRepeat);
 	if (v_world_position.y < -100) {
-		detailColor = vec4(0.80, 0.80, 0.80, 1);
+		detailColor = vec4(1.0, 1.0, 1.0, 0.50);
 	}
 	
 	vec4 color = u_color * texture2D( u_texture, uv );

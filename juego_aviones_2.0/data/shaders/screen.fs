@@ -13,13 +13,17 @@ uniform float texture_size;
 void main()
 {
 	vec2 uv = v_uv;
-	vec4 color = texture2D(u_texture, uv) * 0.80;
-	color += texture2D(u_texture, uv, 2.0) * 0.60;
+	vec4 color = texture2D(u_texture, uv) * 0.55;
+	color += texture2D(u_texture, uv, 2.0) * 0.45;
 
-	float average = (color.x + color.y + color.z) / 4.0;
-	color = color * (average * 1.5);
+	float average = (color.x + color.y + color.z) / 2.0;
+	color = color * (average * 1.75);
 	//color = vec4(average);
 	
+	float distance = 1.0 - length(uv - vec2(0.5,0.5));
+	distance -= 0.1;
+	color *= distance;
+	color += 0.09;
 	gl_FragColor = color;
 	
 	// Pintar en escala de grises;
