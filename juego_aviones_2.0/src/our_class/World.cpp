@@ -438,7 +438,7 @@ void World::render(Camera* camera) {
 
 	this->renderAirplanes(camera);
 
-	this->clouds->render(camera);
+	//this->clouds->render(camera);
 
 	BulletManager::instance->render();
 

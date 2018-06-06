@@ -27,7 +27,7 @@ Clouds::Clouds() : EntityMesh() {
 		CloudProperties & cloud = this->clouds[i];
 		cloud.id = i;
 		cloud.pos = Vector3();
-		cloud.pos.random(Vector3(1000, 1000, 1000));
+		cloud.pos.random(3000);
 		cloud.pos.x *= 0.5;
 		cloud.pos.z *= 0.5;
 		cloud.pos = cloud.pos + Vector3(0, 300, 0);
@@ -57,8 +57,8 @@ void Clouds::render(Camera* camera) {
 
 		CloudProperties & cloud = this->clouds[i];
 		
-		Vector2 offset(0.5, 0.5);
-		/*
+		Vector2 offset(0, 0);
+
 		if (cloud.id % 4 == 1) {
 			offset.x = 0.5;
 		} else if (cloud.id % 4 == 2) {
@@ -67,7 +67,7 @@ void Clouds::render(Camera* camera) {
 			offset.x = 0.5;
 			offset.y = 0.5;
 		}
-		*/
+
 
 		Vector3 topRight = cloud.pos + (top + right) * cloud.size;
 		Vector3 topLeft = cloud.pos + (top - right) * cloud.size;
@@ -81,12 +81,12 @@ void Clouds::render(Camera* camera) {
 		mesh.vertices.push_back(bottomRight);
 		mesh.uvs.push_back(Vector2(0.5, 0.5) + offset);
 
-		mesh.vertices.push_back(topLeft);
-		mesh.uvs.push_back(Vector2(0, 0) + offset);
 		mesh.vertices.push_back(bottomRight);
 		mesh.uvs.push_back(Vector2(0.5, 0.5) + offset);
 		mesh.vertices.push_back(bottomLeft);
 		mesh.uvs.push_back(Vector2(0, 0.5) + offset);
+		mesh.vertices.push_back(topLeft);
+		mesh.uvs.push_back(Vector2(0, 0) + offset);
 
 		shader->enable();
 

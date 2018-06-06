@@ -13,6 +13,8 @@
 #include "our_class\BulletManager.h"
 #include "our_class\GUI.h"
 
+#include "rendertotexture.h"
+
 //some globals
 Mesh* mesh = NULL;
 Texture* texture = NULL;
@@ -22,6 +24,7 @@ float angle = 0;
 World* world = NULL;
 BulletManager* bulletManager = NULL;
 GUI* gui = NULL;
+RenderToTexture* rt = NULL;
 
 float gameSpeed;
 
@@ -51,6 +54,8 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	world = new World();
 	bulletManager = new BulletManager();
 	gui = new GUI(this->window_width, this->window_height);
+	rt = new RenderToTexture();
+	rt->create(612, 612, true);
 
 	/*
 
@@ -89,7 +94,24 @@ void Game::render(void)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
+	rt->enable();
+	
+	glClearColor(red, green, blue, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 	world->render(world->currentCamera);
+	
+	rt->disable();
+
+	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+	Shader* screenShader = Shader::Load("data/shaders/screen.vs", "data/shaders/screen.fs");
+	screenShader->enable();
+	screenShader->setUniform("u_time", this->time);
+	screenShader->setUniform("texture_size", 612);
+	rt->toViewport(screenShader);
+	screenShader->disable();
+
 	gui->render();
 
 	for (int i = 0; i < world->AIAirplanes.size(); i++) {
