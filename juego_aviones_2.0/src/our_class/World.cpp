@@ -48,11 +48,11 @@ void World::initCameras() {
 	//create our free camera
 	this->freeCamera = new Camera();
 	this->freeCamera->lookAt(cameraPosition, cameraCenter, cameraUp); //position the camera and point to 0,0,0
-	this->freeCamera->setPerspective(70.f, Game::instance->window_width / (float) Game::instance->window_height, 0.1f, 30000.f); //set the projection, we want to be perspective
+	this->freeCamera->setPerspective(70.f, Game::instance->window_width / (float) Game::instance->window_height, 1, 30000.f); //set the projection, we want to be perspective
 
 	this->playerCamera = new Camera();
 	this->playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp); //position the camera and point to 0,0,0
-	this->playerCamera->setPerspective(70.f, Game::instance->window_width / (float) Game::instance->window_height, 0.1f, 10000.f); //set the projection, we want to be perspective
+	this->playerCamera->setPerspective(70.f, Game::instance->window_width / (float) Game::instance->window_height, 1, 10000.f); //set the projection, we want to be perspective
 
 	this->currentCamera = this->playerCamera;
 }
@@ -438,7 +438,7 @@ void World::render(Camera* camera) {
 
 	this->renderAirplanes(camera);
 
-	//this->clouds->render(camera);
+	this->clouds->render(camera);
 
 	BulletManager::instance->render();
 

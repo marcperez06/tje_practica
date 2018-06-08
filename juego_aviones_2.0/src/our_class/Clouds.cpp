@@ -5,12 +5,7 @@
 #include <algorithm>
 
 bool sortClouds(const Clouds::CloudProperties & cloudA, const Clouds::CloudProperties & cloudB) {
-	if (cloudA.distance < cloudB.distance) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	return (cloudA.distance < cloudB.distance);
 }
 
 Clouds::Clouds() : EntityMesh() {
@@ -22,16 +17,15 @@ Clouds::Clouds() : EntityMesh() {
 
 	this->material = material;
 
-	this->clouds.resize(100);
+	this->clouds.resize(200);
 	for (int i = 0; i < this->clouds.size(); i++) {
 		CloudProperties & cloud = this->clouds[i];
 		cloud.id = i;
 		cloud.pos = Vector3();
-		cloud.pos.random(3000);
-		cloud.pos.x *= 0.5;
-		cloud.pos.z *= 0.5;
-		cloud.pos = cloud.pos + Vector3(0, 300, 0);
-		cloud.size = 50 + (random() * 100);
+		cloud.pos.random(Vector3(100000, 200, 10000));
+		//cloud.pos.x *= 0.5;
+		cloud.pos = cloud.pos + Vector3(0, 600, 0);
+		cloud.size = 400 + (random() * 100);
 	}
 }
 
@@ -51,11 +45,18 @@ void Clouds::render(Camera* camera) {
 		this->clouds[i].distance = this->clouds[i].pos.distance(cameraPos);
 	}
 	
-	std::sort(this->clouds.begin(), this->clouds.end(), sortClouds);
+	try {
+		std::sort(this->clouds.begin(), this->clouds.end(), sortClouds);
+	} catch (std::exception e) {}
 
 	for (int i = 0; i < this->clouds.size(); i++) {
 
+		
 		CloudProperties & cloud = this->clouds[i];
+
+		if (camera->testSphereInFrustum(cloud.pos, 200) == false) {
+			continue;
+		}
 		
 		Vector2 offset(0, 0);
 
@@ -99,11 +100,11 @@ void Clouds::render(Camera* camera) {
 		shader->setUniform("u_time", Game::instance->time);
 
 		glEnable(GL_BLEND);
-
+		glDisable(GL_CULL_FACE);
 		mesh.render(GL_TRIANGLES, shader);
 		
 		glDisable(GL_BLEND);
-
+		glEnable(GL_CULL_FACE);
 		shader->disable();
 
 	}

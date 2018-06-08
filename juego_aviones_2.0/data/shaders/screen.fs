@@ -17,7 +17,7 @@ void main()
 	color += texture2D(u_texture, uv, 2.0) * 0.45;
 
 	float average = (color.x + color.y + color.z) / 2.0;
-	color = color * (average * 1.75);
+	color = color * (average * 1.85);
 	//color = vec4(average);
 	
 	float distance = 1.0 - length(uv - vec2(0.5,0.5));

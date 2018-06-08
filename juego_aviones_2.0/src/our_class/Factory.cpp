@@ -130,6 +130,7 @@ EntityMesh* Factory::buildSky(const Vector3 initialPos) {
 	Shader* shader = Shader::Load("data/shaders/texture.vs", "data/shaders/texture.fs");
 
 	Transform transform = Transform(initialPos, Quaternion());
+	//transform.translate(Vector3(0, -20, 0));
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
 	
 	EntityMesh* sky = new EntityMesh(transform, highMesh, material);
@@ -150,7 +151,7 @@ EntityMesh* Factory::buildSea(const Vector3 initialPos) {
 
 	EntityMesh* sea = new EntityMesh(transform, highMesh, material);
 
-	sea->transform.matrixModel.scale(10000, 10000, 10000);
+	//sea->transform.matrixModel.scale(10000, 10000, 10000);
 
 	return sea;
 }
