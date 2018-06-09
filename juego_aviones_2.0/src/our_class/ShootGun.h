@@ -9,7 +9,7 @@ class ShootGun : public Weapon {
 
 public:
 
-	ShootGun(Airplane* owner, std::string type);
+	ShootGun(Airplane* owner, char type);
 
 	virtual void shoot();
 	virtual void update(float deltaTime);

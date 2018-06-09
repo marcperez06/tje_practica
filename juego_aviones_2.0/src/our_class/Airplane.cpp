@@ -9,6 +9,7 @@
 // --- CONSTRUCTORES ---
 
 std::vector<Airplane*> Airplane::airplanes;
+std::vector<Airplane*> Airplane::airplanesToDestroy;
 
 Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Material * material) : EntityCollider(transform, highMesh, material) {
 	this->speed = speed;
@@ -35,6 +36,7 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mesh
 
 Airplane::~Airplane() {
 	this->removeAirplane(this);
+	this->removeAirplaneToDestroy(this);
 	this->removeWeapons();
 }
 
@@ -43,6 +45,17 @@ void Airplane::removeAirplane(Airplane* airplane) {
 	for (int i = 0; (i < airplanes.size()) && (founded == false); i++) {
 		if (airplanes[i] == airplane) {
 			airplanes.erase(airplanes.begin() + i);
+			airplanesToDestroy.push_back(airplane);
+			founded = true;
+		}
+	}
+}
+
+void Airplane::removeAirplaneToDestroy(Airplane* airplane) {
+	bool founded = false;
+	for (int i = 0; (i < airplanesToDestroy.size()) && (founded == false); i++) {
+		if (airplanesToDestroy[i] == airplane) {
+			airplanesToDestroy.erase(airplanes.begin() + i);
 			founded = true;
 		}
 	}
@@ -64,13 +77,15 @@ void Airplane::render(Camera* camera) {
 
 void Airplane::update(float deltaTime) {
 
-	if (this->state != AIRPLANE_CRHASED) {
+	if (this->state != AIRPLANE_DESTROYED) {
 
 		EntityCollider::update(deltaTime);
 
 		this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
 
 		this->controller->update(deltaTime);
+
+		this->material->color = Vector4(1, 1, 1, 1);
 
 		if (this->isPlayer == true) {
 			/*if (this->detectStaticCollision() == true) {
@@ -112,6 +127,34 @@ void Airplane::turbo(float deltaTime) {
 	this->transform.translate(Vector3(0, 0, 10) * this->speed * deltaTime);
 }
 
+void Airplane::selectWeapon(char type) {
+	boolean founded = false;
+	
+	for (int i = 0; i < this->weapons.size() && founded == false; i++) {
+		if (weapons[i]->type == type) {
+			founded = true;
+			this->currentWepon = i;
+		}
+	}
+
+	if (founded == false) {
+		this->currentWepon = 0;
+	}
+}
+
+Weapon* Airplane::getWeapon(char type) {
+	Weapon* weapon = NULL;
+	boolean founded = false;
+
+	for (int i = 0; i < this->weapons.size() && founded == false; i++) {
+		if (weapons[i]->type == type) {
+			founded = true;
+			weapon = this->weapons[i];
+		}
+	}
+	return weapon;
+}
+
 void Airplane::shoot() {	
 	this->weapons[currentWepon]->shoot();
 }
@@ -126,11 +169,18 @@ bool Airplane::detectStaticCollision() {
 void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 	
 	std::cout << "SOME ONE HIT ME!!!!!!!! " << std::endl;
-	std::cout << "Collision Y !!!!!!!! " << collision.y << std::endl;
+	Vector3 globalCollision = this->getGlobalMatrix() * collision;
+
+	std::cout << "Collision Y !!!!!!!! " << globalCollision.y << std::endl;
 
 	this->health -= bullet.damage;
+	this->material->color = Vector4(1, 0, 0, 1);
+
 	if (this->health <= 0) {
-		this->collisionEffect();
+		this->state = AIRPLANE_CRASHED;
+		Vector3 newPos = this->transform.matrixModel.rotateVector(Vector3(0, -100, -1));
+		this->transform.translate(newPos);
+		World::instance->createRandomPowerup();
 	}
 
 	Mesh mesh;
@@ -142,6 +192,13 @@ void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 
 void Airplane::collisionEffect() {
 	this->material->color = Vector4(0, 0, 0, 1);
-	this->state = AIRPLANE_CRHASED;
-	//this->transform.translate(Vector3(0, -3, 0));
+	this->state = AIRPLANE_DESTROYED;
+}
+
+void Airplane::destroyDeadAirplanes() {
+	for (int i = 0; i < airplanesToDestroy.size(); i++) {
+		if (airplanesToDestroy[i]->state == AIRPLANE_DESTROYED) {
+			delete airplanesToDestroy[i];
+		}
+	}
 }

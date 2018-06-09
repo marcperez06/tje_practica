@@ -9,6 +9,13 @@
 class Entity;
 class Airplane;
 
+enum WeaponType {
+	MACHINE_GUN,
+	SHOOT_GUN,
+	ROCKET_LAUNCHER,
+	DROP_BOMB
+};
+
 class Weapon {
 
 	public:
@@ -17,14 +24,18 @@ class Weapon {
 		Airplane* owner;
 		float fireRate;
 		float cooldown;
-		std::string type;
+		int ammounition;
+
+		char type;
 		
 
-		Weapon(Airplane* owner, std::string type);
+		Weapon(Airplane* owner, char type);
 
 		virtual void shoot();
 		virtual void render();
 		virtual void update(float deltaTime);
+		
+		void addAmmounition(int ammo);
 };
 
 #endif

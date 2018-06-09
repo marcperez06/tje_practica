@@ -157,7 +157,7 @@ EntityMesh* Factory::buildSea(const Vector3 initialPos) {
 }
 
 RocketLauncher* Factory::buildRocketLauncher(Airplane* owner) {
-	RocketLauncher* rocketLauncher = new RocketLauncher(owner, "rocketLauncher");
+	RocketLauncher* rocketLauncher = new RocketLauncher(owner, ROCKET_LAUNCHER);
 	rocketLauncher->damage = 400;
 	rocketLauncher->bulletSpeed = 230;
 	rocketLauncher->cooldown = 5;
@@ -166,7 +166,7 @@ RocketLauncher* Factory::buildRocketLauncher(Airplane* owner) {
 }
 
 MachineGun* Factory::buildMachineGun(Airplane* owner) {
-	MachineGun* machineGun = new MachineGun(owner, "machineGun");
+	MachineGun* machineGun = new MachineGun(owner, MACHINE_GUN);
 	machineGun->damage = 60;
 	machineGun->bulletSpeed = 2.5;
 	machineGun->cooldown = 0.50;
@@ -175,7 +175,7 @@ MachineGun* Factory::buildMachineGun(Airplane* owner) {
 }
 
 DropBomb* Factory::buildDropBomb(Airplane* owner) {
-	DropBomb* weapon = new DropBomb(owner, "bomb");
+	DropBomb* weapon = new DropBomb(owner, DROP_BOMB);
 	weapon->damage = 600;
 	weapon->bulletSpeed = 1;
 	weapon->cooldown = 10;
@@ -184,7 +184,7 @@ DropBomb* Factory::buildDropBomb(Airplane* owner) {
 }
 
 ShootGun* Factory::buildShootGun(Airplane* owner) {
-	ShootGun* shootGun = new ShootGun(owner, "shootGun");
+	ShootGun* shootGun = new ShootGun(owner, SHOOT_GUN);
 	shootGun->damage = 60;
 	shootGun->bulletSpeed = 2.5;
 	shootGun->cooldown = 0.50;

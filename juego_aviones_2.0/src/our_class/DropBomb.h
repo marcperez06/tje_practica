@@ -14,7 +14,7 @@ public:
 
 	Projectile bombs[maxBombs];
 
-	DropBomb(Airplane* owner, std::string type);
+	DropBomb(Airplane* owner, char type);
 
 	virtual void shoot();
 	virtual void render();

@@ -20,7 +20,7 @@ void BulletManager::createBullet(Vector3 pos, Vector3 velocity, std::string type
 	if (type.compare("machineGun") == 0) {
 		timeToLive = 10;
 	}	else if (type.compare("shootGun") == 0) {
-		timeToLive = 2;
+		timeToLive = 1;
 	}
 
 	bullet.setProperties(pos, velocity, timeToLive, type, owner, damage);

@@ -5,7 +5,7 @@
 #include <algorithm>
 
 bool sortClouds(const Clouds::CloudProperties & cloudA, const Clouds::CloudProperties & cloudB) {
-	return (cloudA.distance < cloudB.distance);
+	return !(cloudA.distance <= cloudB.distance);
 }
 
 Clouds::Clouds() : EntityMesh() {

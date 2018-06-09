@@ -13,7 +13,7 @@ void AIController::render() {}
 
 void AIController::update(float deltaTime) {
 
-	if (this->airplane->state != AIRPLANE_CRHASED) {
+	if (this->airplane->state != AIRPLANE_CRASHED && this->airplane->state != AIRPLANE_DESTROYED) {
 
 		this->state = checkBehaviour();
 
@@ -58,7 +58,7 @@ char AIController::checkBehaviour() {
 	std::vector<Airplane*> airplanes = Airplane::airplanes;
 	for (int i = 0; i < airplanes.size(); i++) {
 
-		if (this->airplane == airplanes[i] || airplanes[i]->state == AIRPLANE_CRHASED) {
+		if (this->airplane == airplanes[i] || airplanes[i]->state == AIRPLANE_CRASHED || airplanes[i]->state == AIRPLANE_DESTROYED) {
 			continue;
 		}
 
@@ -110,7 +110,7 @@ void AIController::selectTarget(Entity* entity) {
 
 	if (dynamic_cast<Airplane*>(this->airplane->target)) {
 		target = (Airplane*) this->airplane->target;
-		if (target->state != AIRPLANE_CRHASED) {
+		if (target->state != AIRPLANE_CRASHED && target->state != AIRPLANE_DESTROYED) {
 			return;
 		}
 	}

@@ -2,6 +2,7 @@
 #include "World.h"
 #include "Airplane.h"
 #include "Weapon.h"
+#include "../utils.h"
 
 GUI::GUI(float windowWidth, float windowHeight) {
 	this->windowWidth = windowWidth;
@@ -35,15 +36,15 @@ void GUI::drawPlayerWeapons() {
 
 		Weapon* weapon = weapons[i];
 
-		if (weapon->type.compare("machineGun") == 0) {
+		if (weapon->type == MACHINE_GUN) {
 			this->drawMachineGun();
-		} else if (weapon->type.compare("rocketLauncher") == 0) {
+		} else if (weapon->type == ROCKET_LAUNCHER) {
 			this->drawMisil();
-		} else if (weapon->type.compare("bomb") == 0) {
+		} else if (weapon->type == DROP_BOMB) {
 			this->drawDropBomb();
-		} else if (weapon->type.compare("shootGun") == 0) {
+		} else if (weapon->type == SHOOT_GUN) {
 			this->drawShootGun();
-		} else if (weapon->type.compare("machineGunFree") == 0) {
+		} else if (weapon->type == MACHINE_GUN) {
 			this->drawMachineGunFree();
 		}
 
@@ -72,7 +73,12 @@ void GUI::drawMachineGunFree() {
 }
 
 void GUI::drawPlayerHealth() {
+	std::ostringstream floatToStr;
+	floatToStr << "Your health: " << World::instance->player->health;
+	
+	std::string playerHealth(floatToStr.str());
 
+	drawText(5, this->windowHeight - 20, playerHealth, Vector3(1, 1, 1), 2);
 }
 
 void GUI::drawCrosshair() {

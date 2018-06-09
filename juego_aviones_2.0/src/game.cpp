@@ -12,6 +12,7 @@
 #include "our_class\World.h"
 #include "our_class\BulletManager.h"
 #include "our_class\GUI.h"
+#include "our_class\Weapon.h"
 
 #include "rendertotexture.h"
 
@@ -25,6 +26,7 @@ World* world = NULL;
 BulletManager* bulletManager = NULL;
 GUI* gui = NULL;
 RenderToTexture* rt = NULL;
+Shader* screenShader = NULL;
 
 float gameSpeed;
 
@@ -56,6 +58,8 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	gui = new GUI(this->window_width, this->window_height);
 	rt = new RenderToTexture();
 	rt->create(612, 612, true);
+
+	screenShader = Shader::Load("data/shaders/screen.vs", "data/shaders/screen.fs");
 
 	/*
 
@@ -105,7 +109,6 @@ void Game::render(void)
 
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
-	Shader* screenShader = Shader::Load("data/shaders/screen.vs", "data/shaders/screen.fs");
 	screenShader->enable();
 	screenShader->setUniform("u_time", this->time);
 	screenShader->setUniform("texture_size", 612);
@@ -215,11 +218,6 @@ void Game::onKeyDown( SDL_KeyboardEvent event )
 			World::instance->player->state = 0; 
 			World::instance->player->health = 100;
 			break;
-		case SDLK_0: World::instance->player->currentWepon = 0; break;
-		case SDLK_9: World::instance->player->currentWepon = 1; break;
-		case SDLK_8: World::instance->player->currentWepon = 2; break;
-		case SDLK_7: World::instance->player->currentWepon = 3; break;
-
 	}
 }
 

@@ -4,12 +4,12 @@
 #include "World.h"
 #include "CollisionHandler.h"
 
-DropBomb::DropBomb(Airplane* owner, std::string type) : Weapon(owner, type) {
+DropBomb::DropBomb(Airplane* owner, char type) : Weapon(owner, type) {
 	memset(&this->bombs, 0, sizeof(bombs));
 }
 
 void DropBomb::shoot() {
-	if (this->cooldown < 0) {
+	if (this->cooldown < 0 && this->ammounition > 0) {
 
 		Matrix44 bombTransform = this->owner->getGlobalMatrix();
 		bombTransform.translate(0, -2, 1);
@@ -18,7 +18,7 @@ void DropBomb::shoot() {
 		velocity = velocity * this->bulletSpeed;
 
 		Projectile bomb;
-		bomb.setProperties(bombTransform, velocity, 300, this->type, this->owner, this->damage);
+		bomb.setProperties(bombTransform, velocity, 300, "bomb", this->owner, this->damage);
 
 		for (int i = 0; i < maxBombs; i++) {
 			Projectile& auxBomb = this->bombs[i];
@@ -30,7 +30,8 @@ void DropBomb::shoot() {
 			break;
 		}
 
-		this->cooldown = 1;
+		this->cooldown = 10;
+		this->ammounition -= 1;
 	}
 }
 

@@ -1,6 +1,10 @@
 #include "EntityCollider.h"
 #include "World.h"
 
+EntityCollider::EntityCollider() : EntityMesh() {
+	this->type = ENTITY_COLLIDER;
+}
+
 EntityCollider::EntityCollider(const Transform transform, Mesh * highMesh, Material * material) : EntityMesh(transform, highMesh, material) {
 	this->type = ENTITY_COLLIDER;
 }

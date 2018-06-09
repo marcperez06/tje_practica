@@ -2,7 +2,7 @@
 #include "Airplane.h"
 #include "BulletManager.h"
 
-ShootGun::ShootGun(Airplane* owner, std::string type) : Weapon(owner, type) {}
+ShootGun::ShootGun(Airplane* owner, char type) : Weapon(owner, type) {}
 
 void ShootGun::shoot() {
 	if (this->cooldown < 0) {

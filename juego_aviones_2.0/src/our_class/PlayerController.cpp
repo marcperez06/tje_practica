@@ -1,6 +1,7 @@
 #include "PlayerController.h"
 #include "Airplane.h"
 #include "../input.h"
+#include "Weapon.h"
 
 
 PlayerController::PlayerController() : AirplaneController() {}
@@ -11,6 +12,8 @@ void PlayerController::update(float deltaTime) {
 	this->rotateAirplane(deltaTime);
 
 	this->turbo(deltaTime);
+
+	selectWeapon();
 
 	if (Input::isKeyPressed(SDL_SCANCODE_SPACE) == true) {
 		this->airplane->shoot();
@@ -69,4 +72,24 @@ void PlayerController::turbo(float deltaTime) {
 	if (Input::isKeyPressed(SDL_SCANCODE_TAB) == true) {
 		this->airplane->turbo(deltaTime);
 	}
+}
+
+void PlayerController::selectWeapon() {
+	
+	if (Input::wasKeyPressed(SDL_SCANCODE_0) == true) {
+		this->airplane->selectWeapon(MACHINE_GUN);
+	}
+
+	if (Input::wasKeyPressed(SDL_SCANCODE_9) == true) {
+		this->airplane->selectWeapon(DROP_BOMB);
+	}
+
+	if (Input::wasKeyPressed(SDL_SCANCODE_8) == true) {
+		this->airplane->selectWeapon(ROCKET_LAUNCHER);
+	}
+
+	if (Input::wasKeyPressed(SDL_SCANCODE_7) == true) {
+		this->airplane->selectWeapon(SHOOT_GUN);
+	}
+
 }

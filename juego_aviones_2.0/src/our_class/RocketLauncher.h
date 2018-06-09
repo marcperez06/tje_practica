@@ -15,7 +15,7 @@ public:
 
 	Projectile misils[maxMisil];
 
-	RocketLauncher(Airplane* owner, std::string type);
+	RocketLauncher(Airplane* owner, char type);
 
 	virtual void shoot();
 	virtual void render();

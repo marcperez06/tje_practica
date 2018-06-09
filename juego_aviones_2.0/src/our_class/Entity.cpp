@@ -1,6 +1,11 @@
 #include "Entity.h"
 
-Entity::Entity() {}
+Entity::Entity() {
+	this->parent = NULL;
+	this->name = "";
+	this->uuid = -1;
+	this->type = ENTITY;
+}
 
 Entity::Entity(const Vector3 position) {
 	this->parent = NULL;

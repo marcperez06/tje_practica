@@ -2,7 +2,12 @@
 #include "../game.h"
 
 // --- CONSTRUCTORES ---
-EntityMesh::EntityMesh() : Entity() {}
+EntityMesh::EntityMesh() : Entity() {
+	this->highMesh = NULL;
+	this->lowMesh = NULL;
+	this->material = NULL;
+	this->type = ENTITY_MESH;
+}
 
 EntityMesh::EntityMesh(const Transform transform, Mesh * highMesh, Material * material) : Entity(transform) {
 	this->highMesh = highMesh;

@@ -5,12 +5,12 @@
 #include "World.h"
 #include "CollisionHandler.h"
 
-RocketLauncher::RocketLauncher(Airplane* owner, std::string type) : Weapon(owner, type) {
+RocketLauncher::RocketLauncher(Airplane* owner, char type) : Weapon(owner, type) {
 	memset(&this->misils, 0, sizeof(misils));
 }
 
 void RocketLauncher::shoot() {
-	if (this->cooldown < 0) {
+	if (this->cooldown < 0 && this->ammounition > 0) {
 
 		Matrix44 misilTransform = this->owner->getGlobalMatrix();
 		misilTransform.translate(0, -2, 0);
@@ -21,7 +21,7 @@ void RocketLauncher::shoot() {
 		velocity = velocity * this->bulletSpeed;
 
 		Projectile misil;
-		misil.setProperties(misilTransform, velocity, 30, this->type, this->owner, this->damage);
+		misil.setProperties(misilTransform, velocity, 30, "rocketLauncher", this->owner, this->damage);
 
 		for (int i = 0; i < maxMisil; i++) {
 			Projectile& auxMisil = this->misils[i];
@@ -34,6 +34,7 @@ void RocketLauncher::shoot() {
 		}
 
 		this->cooldown = 5;
+		this->ammounition -= 1;
 	}
 }
 

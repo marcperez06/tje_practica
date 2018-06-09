@@ -19,6 +19,7 @@ class PlayerController : public AirplaneController {
 		void rotatePitchDirection(float deltaMove);
 		void rotateYawDirection(float deltaMove);
 		void turbo(float deltaTime);
+		void selectWeapon();
 
 };
 

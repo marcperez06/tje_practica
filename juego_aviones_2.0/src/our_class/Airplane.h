@@ -6,10 +6,13 @@
 
 class Weapon;
 class AirplaneController;
+class Weapon;
 
 enum States {
 	AIRPLANE_FLYING,
-	AIRPLANE_CRHASED
+	AIRPLANE_HURT,
+	AIRPLANE_CRASHED,
+	AIRPLANE_DESTROYED
 };
 
 enum Team {
@@ -24,6 +27,7 @@ class Airplane : public EntityCollider {
 	public:
 
 		static std::vector<Airplane*> airplanes;
+		static std::vector<Airplane*> airplanesToDestroy;
 
 		bool isPlayer;
 		float speed;
@@ -56,7 +60,9 @@ class Airplane : public EntityCollider {
 
 		void turbo(float deltaTime);
 
+		void selectWeapon(char type);
 		void shoot();
+		Weapon* getWeapon(char type);
 
 		bool detectStaticCollision();
 
@@ -64,9 +70,12 @@ class Airplane : public EntityCollider {
 
 		virtual void onBulletCollision(Bullet &  bullet, Vector3 collision);
 
+		static void destroyDeadAirplanes();
+
 	private:
 
 		void removeAirplane(Airplane* airplane);
+		void removeAirplaneToDestroy(Airplane* airplane);
 		void removeWeapons();
 };
 

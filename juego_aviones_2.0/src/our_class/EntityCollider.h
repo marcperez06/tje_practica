@@ -5,12 +5,14 @@
 #include "Collision.h"
 
 class Bullet;
+class Powerup;
 
 class EntityCollider : public EntityMesh {
 	public:
 		Vector3 lastPosition;
 		Collision collision;
 
+		EntityCollider();
 		EntityCollider(const Transform transform, Mesh * highMesh, Material * material);
 		EntityCollider(const Transform transform, Mesh * highMesh, Mesh * lowMesh, Material * material);
 

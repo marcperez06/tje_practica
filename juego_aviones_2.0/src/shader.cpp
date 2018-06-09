@@ -316,6 +316,7 @@ void Shader::enable()
 	current = this;
 
 	glUseProgram(program);
+
 	assert (glGetError() == GL_NO_ERROR);
 
 	last_slot = 0;

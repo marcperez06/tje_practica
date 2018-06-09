@@ -73,6 +73,9 @@
     <ClCompile Include="..\..\src\our_class\BulletManager.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\our_class\Clouds.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\our_class\Collision.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
@@ -94,13 +97,13 @@
     <ClCompile Include="..\..\src\our_class\Factory.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\our_class\GUI.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\our_class\MachineGun.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\our_class\Material.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Misil.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\our_class\Path.cpp">
@@ -112,6 +115,12 @@
     <ClCompile Include="..\..\src\our_class\Projectile.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\our_class\RocketLauncher.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\ShootGun.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\our_class\Transform.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
@@ -121,7 +130,7 @@
     <ClCompile Include="..\..\src\our_class\World.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\our_class\GUI.cpp">
+    <ClCompile Include="..\..\src\our_class\Powerup.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
   </ItemGroup>
@@ -194,6 +203,9 @@
     <ClInclude Include="..\..\src\our_class\BulletManager.h">
       <Filter>our_class</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\our_class\Clouds.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\our_class\Collision.h">
       <Filter>our_class</Filter>
     </ClInclude>
@@ -215,13 +227,13 @@
     <ClInclude Include="..\..\src\our_class\Factory.h">
       <Filter>our_class</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\our_class\GUI.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\our_class\MachineGun.h">
       <Filter>our_class</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\our_class\Material.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Misil.h">
       <Filter>our_class</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\our_class\Path.h">
@@ -233,6 +245,12 @@
     <ClInclude Include="..\..\src\our_class\Projectile.h">
       <Filter>our_class</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\our_class\RocketLauncher.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\ShootGun.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\our_class\Transform.h">
       <Filter>our_class</Filter>
     </ClInclude>
@@ -242,7 +260,7 @@
     <ClInclude Include="..\..\src\our_class\World.h">
       <Filter>our_class</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\our_class\GUI.h">
+    <ClInclude Include="..\..\src\our_class\Powerup.h">
       <Filter>our_class</Filter>
     </ClInclude>
   </ItemGroup>

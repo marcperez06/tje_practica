@@ -111,7 +111,6 @@ void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
 
 			if (collision_model->sphereCollision(origin.v, dynamicEntity->highMesh->box.halfsize.length() - 5) == true) {
 				dynamicEntity->collisionEffect();
-
 			}
 
 		}

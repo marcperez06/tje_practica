@@ -53,6 +53,9 @@ class World {
 		template<class T> static void removeElement(std::vector<T> list, T element);
 		template<class T> static void deleteAndRemoveElement(std::vector<T> list, T element);
 
+		void createRandomPowerup();
+		void createPowerup(char type);
+
 	private:
 		
 		void initCameras();
@@ -69,6 +72,11 @@ class World {
 		void renderWorldMap(Camera* camera);
 		void renderWater(Camera* camera);
 		void renderAirplanes(Camera* camera);
+		void renderPowerups(Camera* camera);
+
+		void updatePowerups(float deltaTime);
+
+		void cameraFollowEntity(Camera* camera, Entity* entity);
 
 };
 

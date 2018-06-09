@@ -9,7 +9,7 @@ class MachineGun : public Weapon {
 
 	public:
 		
-		MachineGun(Airplane* owner, std::string type);
+		MachineGun(Airplane* owner, char type);
 
 		virtual void shoot();
 		virtual void update(float deltaTime);
