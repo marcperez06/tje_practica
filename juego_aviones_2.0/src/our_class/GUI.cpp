@@ -21,6 +21,7 @@ void GUI::render() {
 
 	this->drawPlayerWeapons();
 	this->drawPlayerHealth();
+	this->drawPlayerFuell();
 	this->drawCrosshair();
 
 	glDisable(GL_BLEND);
@@ -53,32 +54,61 @@ void GUI::drawPlayerWeapons() {
 }
 
 void GUI::drawMachineGun() {
-
+	Texture* texture = Texture::Load("data/texture.tga");
+	Vector2 start = Vector2(5, 30);
+	Vector2 size = Vector2(50, 50);
+	
+	this->drawGUIElement(texture, start, size);
 }
 
 void GUI::drawMisil() {
+	Texture* texture = Texture::Load("data/texture.tga");
+	Vector2 start = Vector2(5, 80);
+	Vector2 size = Vector2(50, 50);
 
+	this->drawGUIElement(texture, start, size);
 }
 
 void GUI::drawDropBomb() {
+	Texture* texture = Texture::Load("data/texture.tga");
+	Vector2 start = Vector2(5, 130);
+	Vector2 size = Vector2(50, 50);
 
+	this->drawGUIElement(texture, start, size);
 }
 
 void GUI::drawShootGun() {
+	Texture* texture = Texture::Load("data/texture.tga");
+	Vector2 start = Vector2(5, 180);
+	Vector2 size = Vector2(50, 50);
 
+	this->drawGUIElement(texture, start, size);
 }
 
 void GUI::drawMachineGunFree() {
+	Texture* texture = Texture::Load("data/texture.tga");
+	Vector2 start = Vector2(5, 180);
+	Vector2 size = Vector2(50, 50);
 
+	this->drawGUIElement(texture, start, size);
 }
 
 void GUI::drawPlayerHealth() {
 	std::ostringstream floatToStr;
-	floatToStr << "Your health: " << World::instance->player->health;
+	floatToStr << "Health: " << World::instance->player->health;
 	
 	std::string playerHealth(floatToStr.str());
 
 	drawText(5, this->windowHeight - 20, playerHealth, Vector3(1, 1, 1), 2);
+}
+
+void GUI::drawPlayerFuell() {
+	std::ostringstream floatToStr;
+	floatToStr << "Fuell: " << World::instance->player->fuell;
+
+	std::string playerHealth(floatToStr.str());
+
+	drawText(this->windowWidth - 175, this->windowHeight - 20, playerHealth, Vector3(1, 1, 1), 2);
 }
 
 void GUI::drawCrosshair() {

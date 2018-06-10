@@ -66,11 +66,11 @@ void PlayerController::rotateYawDirection(float deltaMove) {
 
 void PlayerController::turbo(float deltaTime) {
 	if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT) == true) {
-		this->airplane->turbo(-1 * deltaTime);
+		this->airplane->turbo(deltaTime);
 	}
 
 	if (Input::isKeyPressed(SDL_SCANCODE_TAB) == true) {
-		this->airplane->turbo(deltaTime);
+		this->airplane->turbo(-1 * deltaTime);
 	}
 }
 

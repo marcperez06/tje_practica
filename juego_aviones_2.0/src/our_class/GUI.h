@@ -31,6 +31,7 @@ class GUI {
 		void drawShootGun();
 		void drawMachineGunFree();
 		void drawPlayerHealth();
+		void drawPlayerFuell();
 
 		void drawCrosshair();
 

@@ -474,7 +474,8 @@ Entity* World::getWorldMap() {
 }
 
 void World::createRandomPowerup() {
-	this->createPowerup(POWERUP_ROCKET_LAUNCHER);
+	PowerupType type = PowerupType(rand() % 5);
+	this->createPowerup(type);
 }
 
 void World::createPowerup(char type) {

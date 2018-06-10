@@ -217,6 +217,7 @@ void Game::onKeyDown( SDL_KeyboardEvent event )
 		case SDLK_2: 
 			World::instance->player->state = 0; 
 			World::instance->player->health = 100;
+			World::instance->player->fuell = 500;
 			break;
 	}
 }

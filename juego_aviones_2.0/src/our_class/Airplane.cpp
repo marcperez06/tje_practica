@@ -14,6 +14,7 @@ std::vector<Airplane*> Airplane::airplanesToDestroy;
 Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Material * material) : EntityCollider(transform, highMesh, material) {
 	this->speed = speed;
 	this->health = 100;
+	this->fuell = 500;
 	this->state = AIRPLANE_FLYING;
 	this->target = NULL;
 	this->isPlayer = false;
@@ -26,6 +27,7 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mesh
 					: EntityCollider(transform, highMesh, lowMesh, material) {
 	this->speed = speed;
 	this->health = 100;
+	this->fuell = 500;
 	this->state = AIRPLANE_FLYING;
 	this->target = NULL;
 	this->isPlayer = false;
@@ -92,6 +94,10 @@ void Airplane::update(float deltaTime) {
 				std::cout << "Collision !!" << std::endl;
 				this->state = AIRPLANE_CRHASED;
 			}*/
+			this->fuell -= deltaTime;
+			if (this->fuell <= 0) {
+				this->state = AIRPLANE_CRASHED;
+			}
 		}
 
 	}
@@ -124,7 +130,7 @@ void Airplane::rotateYawDirection(float deltaMove) {
 }
 
 void Airplane::turbo(float deltaTime) {
-	this->transform.translate(Vector3(0, 0, 10) * this->speed * deltaTime);
+	this->transform.matrixModel.translate(0, 0, -5 * this->speed * deltaTime);
 }
 
 void Airplane::selectWeapon(char type) {

@@ -32,6 +32,7 @@ class Airplane : public EntityCollider {
 		bool isPlayer;
 		float speed;
 		float health;
+		float fuell;
 		char state;
 		char team;
 	
