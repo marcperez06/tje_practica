@@ -20,8 +20,8 @@ void main()
 	//uv.x += sin(u_time + (uv.x)) * 0.05; 
 	//uv.x += u_time * 0.5;
 	
-	vec2 uvDeltaMoveX = uv + vec2(sin(u_time * 0.3), u_time * 0.1);
-	vec2 uvDeltaMoveY = uv + vec2(u_time * 0.1, sin(u_time * 0.3));
+	vec2 uvDeltaMoveX = uv + vec2(sin(u_time * 0.1) + 1, cos(u_time * 0.08));
+	vec2 uvDeltaMoveY = uv + vec2(cos(u_time * 0.08), sin(u_time * 0.1));
 
 	vec4 color = texture2D( u_texture, uv);
 	
@@ -29,8 +29,8 @@ void main()
 	//uv.y += u_time * 0.5; 
 
 	vec3 N = normalize(v_normal);
-	N = texture2D(u_texture, uvDeltaMoveX).xzy * vec3(2.0) - vec3(1.0);
-	N = texture2D(u_texture, uvDeltaMoveY).xzy * vec3(2.0) - vec3(1.0);
+	N = texture2D(u_extra_texture, uvDeltaMoveX).xzy * vec3(2.0) - vec3(1.0);
+	N = texture2D(u_extra_texture, uvDeltaMoveY).xzy * vec3(2.0) - vec3(1.0);
 	N = normalize(N);
 	vec3 E = v_world_position - u_camera_pos;
 	float E_distance = E.length();
@@ -50,7 +50,7 @@ void main()
 	vec2 uv_reflection = vec2(yaw, clamp(pitch, 0.0, 1.0) );
 
 	//read the sky texture (ignoring mipmaps to avoid problems)
-	vec4 sky_color = texture2DLod(u_extra_texture, uv_reflection, 0.0);
+	vec4 sky_color = texture2DLod(u_extra_texture, uv_reflection, 1.0);
 	//vec4 sky_color = texture2D(u_extra_texture, uv_reflection);
 
 	float fresnel = 1.0 - clamp(dot(E, N), 0.0, 1.0);
@@ -60,7 +60,7 @@ void main()
 	color = color * u_color + sky_color;
 
 	float distance = length(u_camera_pos - v_world_position);
-	float fogMaxDistance = 25000.0;
+	float fogMaxDistance = 35000.0;
 	float fogMinDistance = 0.0;
 	float fogDiferenceDistance = fogMaxDistance - distance;
 	float fogDiferenceMaxMin = fogMaxDistance - fogMinDistance;

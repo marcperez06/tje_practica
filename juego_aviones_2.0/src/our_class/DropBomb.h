@@ -4,21 +4,15 @@
 #include "Weapon.h"
 #include "Projectile.h"
 
-const unsigned int maxBombs = 5;
-
 class Airplane;
 
 class DropBomb : public Weapon {
 
 public:
 
-	Projectile bombs[maxBombs];
-
 	DropBomb(Airplane* owner, char type);
 
 	virtual void shoot();
-	virtual void render();
-	virtual void update(float deltaTime);
 
 };
 

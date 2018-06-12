@@ -30,7 +30,7 @@ class AIController : public AirplaneController{
 		char checkBehaviour();
 
 		void selectTarget(Entity* entity);
-		void followTarget();
+		void followTarget(float deltaTime);
 
 
 };

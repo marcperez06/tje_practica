@@ -19,7 +19,7 @@ public:
 
 	virtual void shoot();
 	virtual void render();
-	virtual void update(float deltaTime);
+	//virtual void update(float deltaTime);
 
 };
 

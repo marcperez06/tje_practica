@@ -1,5 +1,4 @@
 #include "BulletManager.h"
-#include "Factory.h"
 #include "World.h"
 #include "../extra/coldet/coldet.h"
 #include "EntityCollider.h"

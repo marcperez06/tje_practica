@@ -19,7 +19,7 @@ void AIController::update(float deltaTime) {
 
 		switch (this->state) {
 			case FOLLOW:
-				this->followTarget();
+				this->followTarget(deltaTime);
 				break;
 			case SHOOT:
 				this->airplane->shoot();
@@ -145,7 +145,38 @@ void AIController::checkStateEnemy() {
 	}
 }
 
-void AIController::followTarget() {
+void AIController::followTarget(float deltaTime) {
+	Vector3 direction = (this->airplane->target->getPosition() - this->airplane->getPosition());
+	Vector3 entityFront = this->airplane->getGlobalMatrix().frontVector();
+	Vector3 entityRight = this->airplane->getGlobalMatrix().rightVector();
+
+	direction.y = 0.0;
+	direction.normalize();
+	entityFront.y = 0.0;
+	direction.normalize();
+	entityRight.y = 0.0;
+	direction.normalize();
+
+	//Necessitem que no tingui en compte la diferencia d'alçada, ja que només rota en un pla
+	//Per això passem de les Y, sinó rota encara que estigui alineada amb el target (però en diferent alçada)
+	double dot = (direction.x * entityFront.x) + (direction.z * entityFront.z);
+	double dot_frontUp = (direction.x * entityRight.x) + (direction.z * entityRight.z);
+	float angle = acos(dot);
+
+	//Es torreta aka enfocar en el pla xz rota sobre el seu eix Y
+	if (angle > 0.05)
+	{
+		if (dot_frontUp > 0.0) {
+			this->airplane->transform.rotate(float(-deltaTime * angle), this->airplane->getGlobalMatrix().topVector());
+		}
+		else if (dot_frontUp < 0.0) {
+			this->airplane->transform.rotate(float(deltaTime * angle), this->airplane->getGlobalMatrix().topVector());
+		}
+	}
+}
+
+/*
+void AIController::followTarget(float deltaTime) {
 
 	if (this->airplane->target == NULL) {
 		return;
@@ -215,3 +246,4 @@ void AIController::followTarget() {
 	}
 
 }
+*/

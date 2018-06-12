@@ -20,6 +20,8 @@ void MachineGun::shoot() {
 	}
 }
 
+/*
 void MachineGun::update(float deltaTime) {
 	Weapon::update(deltaTime);
 }
+*/

@@ -103,9 +103,17 @@ void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
 
 			EntityCollider* dynamicEntity = (EntityCollider*) dynamicEntities[j];
 
+			Vector3 insideMinAxis = staticEntity->getGlobalMatrix() * staticEntity->highMesh->aabb_min;
+			Vector3 insideMaxAxis = staticEntity->getGlobalMatrix() * staticEntity->highMesh->aabb_max;
+
 			Vector3 origin = dynamicEntity->lastPosition;
 			Vector3 direction = dynamicEntity->getPosition() - origin;
 			float maxRayDistance = direction.length();
+
+			if (origin.x < insideMinAxis.x || origin.x > insideMaxAxis.x
+				|| origin.z < insideMinAxis.z || origin.z > insideMaxAxis.z) {
+				continue;
+			}
 
 			//if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
 

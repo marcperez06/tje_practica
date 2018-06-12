@@ -11,10 +11,13 @@
 #include "our_class\Airplane.h"
 #include "our_class\World.h"
 #include "our_class\BulletManager.h"
+#include "our_class\ProjectileManager.h"
+
 #include "our_class\GUI.h"
 #include "our_class\Weapon.h"
 
 #include "rendertotexture.h"
+#include "bass.h"
 
 //some globals
 Mesh* mesh = NULL;
@@ -24,6 +27,7 @@ float angle = 0;
 
 World* world = NULL;
 BulletManager* bulletManager = NULL;
+ProjectileManager* projectileManager = NULL;
 GUI* gui = NULL;
 RenderToTexture* rt = NULL;
 Shader* screenShader = NULL;
@@ -55,11 +59,33 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	// Build world.
 	world = new World();
 	bulletManager = new BulletManager();
+	projectileManager = new ProjectileManager();
 	gui = new GUI(this->window_width, this->window_height);
 	rt = new RenderToTexture();
 	rt->create(612, 612, true);
 
 	screenShader = Shader::Load("data/shaders/screen.vs", "data/shaders/screen.fs");
+
+	// REPRODUCIR SONIDO...
+
+	//El handler para un sample
+	HSAMPLE hSample;
+
+	//El handler para un canal
+	HCHANNEL hSampleChannel;
+
+	//Inicializamos BASS  (id_del_device, muestras por segundo, ...)
+	BASS_Init(1, 44100, BASS_DEVICE_STEREO, 0, NULL);
+
+	//Cargamos un sample (memoria, filename, offset, length, max, flags)
+	//use BASS_SAMPLE_LOOP in the last param to have a looped sound
+	hSample = BASS_SampleLoad(false, "data/sounds/grenade.wav", 0, 0, 3, 0);
+
+	//Creamos un canal para el sample
+	hSampleChannel = BASS_SampleGetChannel(hSample, false);
+
+	//Lanzamos un sample
+	BASS_ChannelPlay(hSampleChannel, true);
 
 	/*
 

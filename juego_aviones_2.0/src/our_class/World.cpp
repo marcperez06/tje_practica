@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "../game.h";
 #include "BulletManager.h"
+#include "ProjectileManager.h"
 #include "CollisionHandler.h"
 #include "Airplane.h"
 #include "MachineGun.h"
@@ -19,7 +20,7 @@ World* World::instance = NULL;
 
 World::World() {
 	this->root = new Entity(Vector3(0, 0, 0));
-	this->numAIAirplanes = 8;
+	this->numAIAirplanes = 40;
 	this->initPlayer();
 	this->initCameras();
 	this->initTeams();
@@ -279,7 +280,7 @@ void World::render(Camera* camera) {
 	this->renderPowerups(camera);
 
 	BulletManager::instance->render();
-
+	ProjectileManager::instance->render();
 }
 
 void World::renderWorldMap(Camera* camera) {
@@ -370,42 +371,46 @@ void World::renderAirplanes(Camera* camera) {
 		airplanesTransform.push_back(airplane->getGlobalMatrix());
 	}
 
-	int limit = numAIAirplanes / 4;
+	if (airplanesTransform.size() > 0) {
 
-	if (shader != NULL) {
+		int limit = numAIAirplanes / 4;
 
-		for (int i = 0; i < 4; i++) {
+		if (shader != NULL) {
 
-			if (Airplane::airplanes.size() > 0) {
-				base = Airplane::airplanes[i * limit];
-				airplaneMesh = base->getCorrectMeshRespectCameraDistance(camera);
-			}
+			for (int i = 0; i < 4; i++) {
 
-			shader->enable();
-
-			if (airplaneMesh != NULL) {
-				shader->setUniform("u_color", base->material->color);
-				shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
-				shader->setUniform("u_texture", base->material->texture);
-				shader->setUniform("u_camera_position", camera->eye);
-				shader->setUniform("u_time", 1);
-
-				airplaneMesh->renderInstanced(GL_TRIANGLES, shader, &airplanesTransform[i * limit], airplanesTransform.size() - limit * 3);
-
-				/* Si se eliminan los aviones, luego hay problema a la hora de renderizar, porque los valores cambian..
-				if (numAIAirplanes == airplanesTransform.size()) {
-					airplaneMesh->renderInstanced(GL_TRIANGLES, shader, &airplanesTransform[i * limit], airplanesTransform.size() - limit * 3);
-				} else {
-					int dif = numAIAirplanes - airplanesTransform.size();
-					float range = airplanesTransform.size() - dif;
-					airplaneMesh->renderInstanced(GL_TRIANGLES, shader, &airplanesTransform[i * limit], range - limit - dif * 3);
+				if (Airplane::airplanes.size() > 0) {
+					base = Airplane::airplanes[i * limit];
+					airplaneMesh = base->getCorrectMeshRespectCameraDistance(camera);
 				}
-				*/
 
+				shader->enable();
+
+				if (airplaneMesh != NULL) {
+					shader->setUniform("u_color", base->material->color);
+					shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+					shader->setUniform("u_texture", base->material->texture);
+					shader->setUniform("u_camera_position", camera->eye);
+					shader->setUniform("u_time", 1);
+
+					airplaneMesh->renderInstanced(GL_TRIANGLES, shader, &airplanesTransform[i * limit], airplanesTransform.size() - limit * 3);
+
+					/* Si se eliminan los aviones, luego hay problema a la hora de renderizar, porque los valores cambian..
+					if (numAIAirplanes == airplanesTransform.size()) {
+						airplaneMesh->renderInstanced(GL_TRIANGLES, shader, &airplanesTransform[i * limit], airplanesTransform.size() - limit * 3);
+					} else {
+						int dif = numAIAirplanes - airplanesTransform.size();
+						float range = airplanesTransform.size() - dif;
+						airplaneMesh->renderInstanced(GL_TRIANGLES, shader, &airplanesTransform[i * limit], range - limit - dif * 3);
+					}
+					*/
+
+				}
+
+				shader->disable();
 			}
-
-			shader->disable();
 		}
+
 	}
 
 }
@@ -436,6 +441,7 @@ void World::update(float deltaTime) {
 	this->updatePowerups(deltaTime);
 
 	BulletManager::instance->update(deltaTime);
+	ProjectileManager::instance->update(deltaTime);
 	CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis();
 
 	Airplane::destroyDeadAirplanes();
@@ -480,8 +486,8 @@ void World::createRandomPowerup() {
 
 void World::createPowerup(char type) {
 	Vector3 pos;
-	pos.random(Vector3(50, 70, 200));
-	pos = pos + this->player->getGlobalPosition();
+	pos.random(Vector3(50, 70, 0));
+	pos = pos + this->player->getGlobalPosition() + Vector3(0, 0, -400);
 
 	Powerup* powerup = new Powerup(type, pos);
 }

@@ -142,12 +142,15 @@ EntityMesh* Factory::buildSea(const Vector3 initialPos) {
 	Mesh* highMesh = new Mesh();
 	highMesh->createSubdividedPlane(130000, 100, true);
 	//Texture* texture = Texture::Load("data/water/water_normalmap.tga");
+	//Texture* texture = Texture::Load("data/cielo/cielo.tga");
 	Texture* texture = Texture::Load("data/water/agua.tga");
 	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/water.fs");
 
 	Transform transform = Transform(initialPos, Quaternion());
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
-	material->extraTexture = Texture::Load("data/cielo/cielo.tga");
+	//material->extraTexture = Texture::Load("data/cielo/cielo.tga");
+	material->extraTexture = Texture::Load("data/water/water_normalmap.tga");
+	//material->extraTexture = Texture::Load("data/water/agua.tga");
 
 	EntityMesh* sea = new EntityMesh(transform, highMesh, material);
 

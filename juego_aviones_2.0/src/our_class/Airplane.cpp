@@ -37,6 +37,7 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mesh
 }
 
 Airplane::~Airplane() {
+	delete this->controller;
 	this->removeAirplane(this);
 	this->removeAirplaneToDestroy(this);
 	this->removeWeapons();
@@ -72,9 +73,6 @@ void Airplane::removeWeapons() {
 
 void Airplane::render(Camera* camera) {
 	EntityMesh::render(camera);
-	for (int i = 0; i < this->weapons.size(); i++) {
-		this->weapons[i]->render();
-	}
 }
 
 void Airplane::update(float deltaTime) {
@@ -83,21 +81,27 @@ void Airplane::update(float deltaTime) {
 
 		EntityCollider::update(deltaTime);
 
-		this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
+		if (this->state == AIRPLANE_CRASHED) {
+			this->transform.translate(Vector3(0, -1, -1) * this->speed * deltaTime);
+		} else {
 
-		this->controller->update(deltaTime);
+			this->transform.translate(Vector3(0, 0, -1) * this->speed * deltaTime);
 
-		this->material->color = Vector4(1, 1, 1, 1);
+			this->controller->update(deltaTime);
 
-		if (this->isPlayer == true) {
-			/*if (this->detectStaticCollision() == true) {
-				std::cout << "Collision !!" << std::endl;
-				this->state = AIRPLANE_CRHASED;
-			}*/
-			this->fuell -= deltaTime;
-			if (this->fuell <= 0) {
-				this->state = AIRPLANE_CRASHED;
+			this->material->color = Vector4(1, 1, 1, 1);
+
+			if (this->isPlayer == true) {
+				/*if (this->detectStaticCollision() == true) {
+					std::cout << "Collision !!" << std::endl;
+					this->state = AIRPLANE_CRHASED;
+				}*/
+				this->fuell -= deltaTime;
+				if (this->fuell <= 0) {
+					this->state = AIRPLANE_CRASHED;
+				}
 			}
+
 		}
 
 	}
@@ -180,12 +184,9 @@ void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 	std::cout << "Collision Y !!!!!!!! " << globalCollision.y << std::endl;
 
 	this->health -= bullet.damage;
-	this->material->color = Vector4(1, 0, 0, 1);
 
 	if (this->health <= 0) {
 		this->state = AIRPLANE_CRASHED;
-		Vector3 newPos = this->transform.matrixModel.rotateVector(Vector3(0, -100, -1));
-		this->transform.translate(newPos);
 		World::instance->createRandomPowerup();
 	}
 
