@@ -1,6 +1,7 @@
 #include "MachineGun.h"
 #include "Airplane.h"
 #include "BulletManager.h"
+#include "SoundManager.h"
 
 MachineGun::MachineGun(Airplane* owner, char type) : Weapon(owner, type) {}
 
@@ -17,6 +18,7 @@ void MachineGun::shoot() {
 		BulletManager::instance->createBullet(rigthPos, velocity, "machineGun", this->owner, this->damage);
 
 		this->cooldown = 0.50;
+		SoundManager::reproduceSound("normal_shoot.wav");
 	}
 }
 

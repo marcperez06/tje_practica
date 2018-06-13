@@ -45,6 +45,8 @@ void BulletManager::render() {
 		if (bullet.timeToLive > 0) {
 			mesh.vertices.push_back(bullet.lastPosition);
 			mesh.vertices.push_back(bullet.position);
+			mesh.colors.push_back(Vector4(255.0 / 255.0, 249.0 / 255.0, 147.0 / 255.0, 1));
+			mesh.colors.push_back(Vector4(255.0 / 255.0, 249.0 / 255.0, 147.0 / 255.0, 1));
 		}
 	}
 

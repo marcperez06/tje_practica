@@ -5,6 +5,7 @@
 #include "BulletManager.h"
 #include "Weapon.h"
 #include "AirplaneController.h"
+#include "SoundManager.h"
 
 // --- CONSTRUCTORES ---
 
@@ -97,6 +98,11 @@ void Airplane::update(float deltaTime) {
 					this->state = AIRPLANE_CRHASED;
 				}*/
 				this->fuell -= deltaTime;
+
+				if (this->fuell < 60) {
+					//SoundManager::reproducir("low_fuel.wav");
+				}
+
 				if (this->fuell <= 0) {
 					this->state = AIRPLANE_CRASHED;
 				}
@@ -185,9 +191,14 @@ void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 
 	this->health -= bullet.damage;
 
+	if (this->isPlayer == true) {
+		SoundManager::reproduceSound("damage.wav");
+	}
+
 	if (this->health <= 0) {
 		this->state = AIRPLANE_CRASHED;
 		World::instance->createRandomPowerup();
+		SoundManager::reproduceSound("killingAirplane.wav");
 	}
 
 	Mesh mesh;
@@ -200,6 +211,7 @@ void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 void Airplane::collisionEffect() {
 	this->material->color = Vector4(0, 0, 0, 1);
 	this->state = AIRPLANE_DESTROYED;
+	//airplanesToDestroy.push_back(this);
 }
 
 void Airplane::destroyDeadAirplanes() {

@@ -58,7 +58,7 @@ void Powerup::update(float deltaTime) {
 
 bool Powerup::detectCollision(Entity* entity) {
 	float distance = World::distanceBetween(this, entity);
-	return (distance < 10);
+	return (distance < 30);
 }
 
 void Powerup::onAirplaneCollision(Airplane* airplane) {
@@ -83,12 +83,19 @@ void Powerup::onAirplaneCollision(Airplane* airplane) {
 			airplane->weapons.push_back(dropBomb);
 		}
 	} else if (this->powerupType == POWERUP_SHOOT_GUN) {
-		ShootGun* shootGun = Factory::buildShootGun(airplane);
-		airplane->weapons.push_back(shootGun);
+		Weapon* airplaneShootGun = airplane->getWeapon(SHOOT_GUN);
+		
+		if (airplaneShootGun != NULL) {
+			airplaneShootGun->damage += 10;
+			airplane->getWeapon(MACHINE_GUN)->damage += 5;
+		} else {
+			ShootGun* shootGun = Factory::buildShootGun(airplane);
+			airplane->weapons.push_back(shootGun);
+		}
 	} else if (this->powerupType == POWERUP_HEALTH) {
 		airplane->health += 50;
 	} else if (this->powerupType == POWERUP_FUELL) {
-
+		airplane->fuell += 100;
 	}
 
 }

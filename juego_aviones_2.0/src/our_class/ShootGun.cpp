@@ -1,6 +1,7 @@
 #include "ShootGun.h"
 #include "Airplane.h"
 #include "BulletManager.h"
+#include "SoundManager.h"
 
 ShootGun::ShootGun(Airplane* owner, char type) : Weapon(owner, type) {}
 
@@ -26,6 +27,7 @@ void ShootGun::shoot() {
 		}
 
 		this->cooldown = 0.50;
+		SoundManager::reproduceSound("shootgun_shoot.wav");
 	}
 }
 

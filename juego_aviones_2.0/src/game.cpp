@@ -12,6 +12,7 @@
 #include "our_class\World.h"
 #include "our_class\BulletManager.h"
 #include "our_class\ProjectileManager.h"
+#include "our_class\SoundManager.h"
 
 #include "our_class\GUI.h"
 #include "our_class\Weapon.h"
@@ -65,41 +66,6 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	rt->create(612, 612, true);
 
 	screenShader = Shader::Load("data/shaders/screen.vs", "data/shaders/screen.fs");
-
-	// REPRODUCIR SONIDO...
-
-	//El handler para un sample
-	HSAMPLE hSample;
-
-	//El handler para un canal
-	HCHANNEL hSampleChannel;
-
-	//Inicializamos BASS  (id_del_device, muestras por segundo, ...)
-	BASS_Init(1, 44100, BASS_DEVICE_STEREO, 0, NULL);
-
-	//Cargamos un sample (memoria, filename, offset, length, max, flags)
-	//use BASS_SAMPLE_LOOP in the last param to have a looped sound
-	hSample = BASS_SampleLoad(false, "data/sounds/grenade.wav", 0, 0, 3, 0);
-
-	//Creamos un canal para el sample
-	hSampleChannel = BASS_SampleGetChannel(hSample, false);
-
-	//Lanzamos un sample
-	BASS_ChannelPlay(hSampleChannel, true);
-
-	/*
-
-	//create a plane mesh
-	mesh = Mesh::Load("data/island/island.ASE");
-
-	//load one texture
-	texture = new Texture();
- 	texture->load("data/island/island_color.tga");
-
-	// example of shader loading
-	shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
-
-	*/
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse

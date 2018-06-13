@@ -63,7 +63,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glu32.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glu32.lib;glew32s.lib;bass.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -82,7 +82,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glu32.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glu32.lib;glew32s.lib;bass.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -123,8 +123,10 @@
     <ClCompile Include="..\..\src\our_class\PlayerController.cpp" />
     <ClCompile Include="..\..\src\our_class\Powerup.cpp" />
     <ClCompile Include="..\..\src\our_class\Projectile.cpp" />
+    <ClCompile Include="..\..\src\our_class\ProjectileManager.cpp" />
     <ClCompile Include="..\..\src\our_class\RocketLauncher.cpp" />
     <ClCompile Include="..\..\src\our_class\ShootGun.cpp" />
+    <ClCompile Include="..\..\src\our_class\SoundManager.cpp" />
     <ClCompile Include="..\..\src\our_class\Transform.cpp" />
     <ClCompile Include="..\..\src\our_class\Weapon.cpp" />
     <ClCompile Include="..\..\src\our_class\World.cpp" />
@@ -169,8 +171,10 @@
     <ClInclude Include="..\..\src\our_class\PlayerController.h" />
     <ClInclude Include="..\..\src\our_class\Powerup.h" />
     <ClInclude Include="..\..\src\our_class\Projectile.h" />
+    <ClInclude Include="..\..\src\our_class\ProjectileManager.h" />
     <ClInclude Include="..\..\src\our_class\RocketLauncher.h" />
     <ClInclude Include="..\..\src\our_class\ShootGun.h" />
+    <ClInclude Include="..\..\src\our_class\SoundManager.h" />
     <ClInclude Include="..\..\src\our_class\Transform.h" />
     <ClInclude Include="..\..\src\our_class\Weapon.h" />
     <ClInclude Include="..\..\src\our_class\World.h" />

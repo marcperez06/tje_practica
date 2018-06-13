@@ -4,6 +4,7 @@
 #include "../Camera.h"
 #include "World.h"
 #include "ProjectileManager.h"
+#include "SoundManager.h"
 
 RocketLauncher::RocketLauncher(Airplane* owner, char type) : Weapon(owner, type) {
 	memset(&this->misils, 0, sizeof(misils));
@@ -24,6 +25,8 @@ void RocketLauncher::shoot() {
 
 		this->cooldown = 1;
 		this->ammounition -= 1;
+
+		SoundManager::reproduceSound("misil_shoot.wav");
 	}
 }
 

@@ -112,7 +112,13 @@
     <ClCompile Include="..\..\src\our_class\PlayerController.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\our_class\Powerup.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\our_class\Projectile.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\ProjectileManager.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\our_class\RocketLauncher.cpp">
@@ -130,7 +136,7 @@
     <ClCompile Include="..\..\src\our_class\World.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Powerup.cpp">
+    <ClCompile Include="..\..\src\our_class\SoundManager.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
   </ItemGroup>
@@ -242,7 +248,13 @@
     <ClInclude Include="..\..\src\our_class\PlayerController.h">
       <Filter>our_class</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\our_class\Powerup.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\our_class\Projectile.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\ProjectileManager.h">
       <Filter>our_class</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\our_class\RocketLauncher.h">
@@ -260,7 +272,7 @@
     <ClInclude Include="..\..\src\our_class\World.h">
       <Filter>our_class</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Powerup.h">
+    <ClInclude Include="..\..\src\our_class\SoundManager.h">
       <Filter>our_class</Filter>
     </ClInclude>
   </ItemGroup>
