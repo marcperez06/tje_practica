@@ -31,7 +31,7 @@ void AIController::update(float deltaTime) {
 				//this->escape();
 				break;
 			case PATROL:
-				//this->airplane->target = 
+				//this->patrol();
 				break;
 		}
 
@@ -69,7 +69,7 @@ char AIController::checkBehaviour() {
 
 	}
 
-	if (World::distanceBetween(this->airplane, this->airplane->target) < 150) {
+	if (World::distanceBetween(this->airplane, this->airplane->target) < 350) {
 		if (World::angleBetween(this->airplane, this->airplane->target) < 0.01) {
 			return SHOOT;
 		} else {
@@ -102,30 +102,30 @@ char AIController::checkBehaviour() {
 
 void AIController::selectTarget(Entity* entity) {
 
-	if (this->airplane->target != NULL) {
-		return;
-	}
+	if (entity->type == AIRPLANE) {
+		Airplane* target = (Airplane*) entity;
+		if (target->state == AIRPLANE_CRASHED || target->state == AIRPLANE_DESTROYED
+			|| target->team == this->airplane->team) {
 
-	Airplane* target = NULL;
-
-	if (dynamic_cast<Airplane*>(this->airplane->target)) {
-		target = (Airplane*) this->airplane->target;
-		if (target->state != AIRPLANE_CRASHED && target->state != AIRPLANE_DESTROYED) {
 			return;
 		}
 	}
 
-	Airplane* airplaneEntity = NULL;
-
-	if (this->airplane->target->type == AIRPLANE) {
-		Airplane* airplaneEntity = (Airplane*) this->airplane->target;
-		if (airplaneEntity->team == this->airplane->team) {
-			return;
+	if (this->airplane->target != NULL) {
+		if (this->airplane->target->type == AIRPLANE) {
+			Airplane* target = (Airplane*) this->airplane->target;
+			if (target->state == AIRPLANE_CRASHED || target->state == AIRPLANE_DESTROYED
+				|| target->team == this->airplane->team) {
+				this->airplane->target == NULL;
+			}
 		}
 	}
 
 	if (World::entityACanSeeEntityB(this->airplane, entity) == true) {
-		this->airplane->target = entity;
+		if (this->airplane->target == NULL) {
+			this->airplane->target = entity;
+			return;
+		}
 	}
 
 }
@@ -146,43 +146,10 @@ void AIController::checkStateEnemy() {
 }
 
 void AIController::followTarget(float deltaTime) {
-	Vector3 direction = (this->airplane->target->getPosition() - this->airplane->getPosition());
-	Vector3 entityFront = this->airplane->getGlobalMatrix().frontVector();
-	Vector3 entityRight = this->airplane->getGlobalMatrix().rightVector();
-
-	direction.y = 0.0;
-	direction.normalize();
-	entityFront.y = 0.0;
-	direction.normalize();
-	entityRight.y = 0.0;
-	direction.normalize();
-
-	//Necessitem que no tingui en compte la diferencia d'alçada, ja que només rota en un pla
-	//Per això passem de les Y, sinó rota encara que estigui alineada amb el target (però en diferent alçada)
-	double dot = (direction.x * entityFront.x) + (direction.z * entityFront.z);
-	double dot_frontUp = (direction.x * entityRight.x) + (direction.z * entityRight.z);
-	float angle = acos(dot);
-
-	//Es torreta aka enfocar en el pla xz rota sobre el seu eix Y
-	if (angle > 0.05)
-	{
-		if (dot_frontUp > 0.0) {
-			this->airplane->transform.rotate(float(-deltaTime * angle), this->airplane->getGlobalMatrix().topVector());
-		}
-		else if (dot_frontUp < 0.0) {
-			this->airplane->transform.rotate(float(deltaTime * angle), this->airplane->getGlobalMatrix().topVector());
-		}
-	}
-}
-
-/*
-void AIController::followTarget(float deltaTime) {
 
 	if (this->airplane->target == NULL) {
 		return;
 	}
-
-	Airplane* airplaneEntity = NULL;
 
 	if (this->airplane->target->type == AIRPLANE) {
 		Airplane* airplaneEntity = (Airplane*) this->airplane->target;
@@ -191,6 +158,36 @@ void AIController::followTarget(float deltaTime) {
 		}
 	}
 
+	Matrix44 modelInverse = this->airplane->getGlobalMatrix();
+	modelInverse.inverse();
+
+	Vector3 targetFront = this->airplane->target->getFront();
+	Vector3 myFront = this->airplane->getFront();
+
+	targetFront.normalize();
+
+	Vector3 pos = this->airplane->getPosition();
+	Vector3 targetPos = this->airplane->target->getPosition();
+	Vector3 toTarget = (targetPos - pos);
+
+	std::cout << "POS " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+	std::cout << "TO TARGET " << toTarget.x << " " << toTarget.y << " " << toTarget.z << std::endl;
+	//std::cout << "TARGET TO POS " << targetPos.x << " " << targetPos.y << " " << targetPos.z << std::endl;
+
+	if (abs(toTarget.length()) < 0.0001) {
+		return;
+	}
+
+	toTarget.normalize();
+
+	float cos_angle = 1.0 - myFront.dot(toTarget);
+	Vector3 axis = toTarget.cross(myFront);
+
+	axis = modelInverse.rotateVector(axis);
+	this->airplane->transform.rotate(cos_angle * deltaTime * 3.5, axis);
+
+
+	/*
 	Matrix44 modelInverse = this->airplane->getGlobalMatrix();
 	modelInverse.inverse();
 
@@ -205,13 +202,17 @@ void AIController::followTarget(float deltaTime) {
 
 	Vector3 toTarget = (targetPos - pos);
 
+	std::cout << "POS " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+	std::cout << "TO TARGET " << toTarget.x << " " << toTarget.y << " " << toTarget.z << std::endl;
+	//std::cout << "TARGET TO POS " << targetPos.x << " " << targetPos.y << " " << targetPos.z << std::endl;
+
 	if (abs(toTarget.length()) < 0.0001) {
 		return;
 	}
 
 	toTarget.normalize();
 
-	Vector3 front = this->airplane->getGlobalMatrix().rotateVector(Vector3(0, 0, -1));
+	Vector3 front = this->airplane->getFront();
 
 	if (abs(front.length()) < 0.0001) {
 		return;
@@ -227,23 +228,13 @@ void AIController::followTarget(float deltaTime) {
 	float angle = acos(frontDotToTarget);
 
 	if (abs(angle) < 0.01) {
-		//this->airplane->shoot();
 		return;
 	}
 
-	Vector3 axis = front.cross(toTarget);
+	Vector3 axis = front.cross(toTarget) * -1;
 	axis = modelInverse.rotateVector(axis);
 	axis.normalize();
 
-	this->airplane->transform.rotate(angle, axis);
-
-	if (this->airplane->target->getGlobalPosition().x == this->airplane->getGlobalPosition().x) {
-		if (this->airplane->target->getGlobalPosition().y == this->airplane->getGlobalPosition().y) {
-			if (this->airplane->target->getGlobalPosition().z == this->airplane->getGlobalPosition().z) {
-				std::cout << " ------------------- HE LLEGADO -------------" << std::endl;
-			}
-		}
-	}
-
+	this->airplane->transform.rotate(angle * deltaTime, axis);
+	*/
 }
-*/

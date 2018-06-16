@@ -29,30 +29,3 @@ void RocketLauncher::shoot() {
 		SoundManager::reproduceSound("misil_shoot.wav");
 	}
 }
-
-void RocketLauncher::render() {
-
-	/*
-	Mesh mesh1;
-	for (int i = 0; i < maxMisil; i++) {
-		Bullet& misil = this->misils[i];
-		if (misil.timeToLive > 0) {
-			mesh1.vertices.push_back(misil.position);
-			mesh1.colors.push_back(Vector4(1, 0, 0, 1));
-		}
-	}
-
-	if (mesh1.vertices.size() > 0) {
-		glPointSize(10);
-		mesh1.renderFixedPipeline(GL_POINTS);
-	}
-	*/
-	
-
-}
-
-/*
-void RocketLauncher::update(float deltaTime) {
-	Weapon::update(deltaTime);
-}
-*/

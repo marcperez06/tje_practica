@@ -18,9 +18,6 @@ public:
 	RocketLauncher(Airplane* owner, char type);
 
 	virtual void shoot();
-	virtual void render();
-	//virtual void update(float deltaTime);
-
 };
 
 

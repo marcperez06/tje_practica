@@ -17,13 +17,7 @@ void MachineGun::shoot() {
 		BulletManager::instance->createBullet(leftPos, velocity, "machineGun", this->owner, this->damage);
 		BulletManager::instance->createBullet(rigthPos, velocity, "machineGun", this->owner, this->damage);
 
-		this->cooldown = 0.50;
+		this->cooldown = 0.25;
 		SoundManager::reproduceSound("normal_shoot.wav");
 	}
 }
-
-/*
-void MachineGun::update(float deltaTime) {
-	Weapon::update(deltaTime);
-}
-*/

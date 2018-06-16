@@ -47,6 +47,8 @@ class Entity {
 		Vector3 getGlobalPosition();
 		Matrix44 getGlobalMatrix();
 
+		Vector3 getFront();
+
 		void addChild(Entity* entity);
 		void removeChild(Entity* entity);
 

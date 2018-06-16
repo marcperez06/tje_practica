@@ -25,6 +25,8 @@ void Transform::translate(Vector3 const position) {
 }
 
 void Transform::rotate(float angleInRadians, const Vector3 & axis) {
-	this->matrixModel.rotate(angleInRadians, axis);
-	this->position = this->matrixModel * Vector3();
+	if (abs(axis.length()) > 0.001) {
+		this->matrixModel.rotate(angleInRadians, axis);
+		this->position = this->matrixModel * Vector3();
+	}
 }

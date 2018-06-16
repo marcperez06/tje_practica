@@ -130,7 +130,6 @@ EntityMesh* Factory::buildSky(const Vector3 initialPos) {
 	Shader* shader = Shader::Load("data/shaders/texture.vs", "data/shaders/texture.fs");
 
 	Transform transform = Transform(initialPos, Quaternion());
-	//transform.translate(Vector3(0, -20, 0));
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
 	
 	EntityMesh* sky = new EntityMesh(transform, highMesh, material);
@@ -163,7 +162,7 @@ RocketLauncher* Factory::buildRocketLauncher(Airplane* owner) {
 	RocketLauncher* rocketLauncher = new RocketLauncher(owner, ROCKET_LAUNCHER);
 	rocketLauncher->damage = 400;
 	rocketLauncher->bulletSpeed = 230;
-	rocketLauncher->cooldown = 5;
+	rocketLauncher->cooldown = 0;
 	rocketLauncher->fireRate = 5;
 	return rocketLauncher;
 }
@@ -172,7 +171,7 @@ MachineGun* Factory::buildMachineGun(Airplane* owner) {
 	MachineGun* machineGun = new MachineGun(owner, MACHINE_GUN);
 	machineGun->damage = 60;
 	machineGun->bulletSpeed = 2.5;
-	machineGun->cooldown = 0.50;
+	machineGun->cooldown = 0;
 	machineGun->fireRate = 10;
 	return machineGun;
 }
@@ -181,7 +180,7 @@ DropBomb* Factory::buildDropBomb(Airplane* owner) {
 	DropBomb* weapon = new DropBomb(owner, DROP_BOMB);
 	weapon->damage = 600;
 	weapon->bulletSpeed = 1;
-	weapon->cooldown = 10;
+	weapon->cooldown = 0;
 	weapon->fireRate = 5;
 	return weapon;
 }
@@ -190,7 +189,7 @@ ShootGun* Factory::buildShootGun(Airplane* owner) {
 	ShootGun* shootGun = new ShootGun(owner, SHOOT_GUN);
 	shootGun->damage = 60;
 	shootGun->bulletSpeed = 2.5;
-	shootGun->cooldown = 0.50;
+	shootGun->cooldown = 0;
 	shootGun->fireRate = 10;
 	return shootGun;
 }

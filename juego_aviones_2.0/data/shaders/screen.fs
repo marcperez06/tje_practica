@@ -21,9 +21,9 @@ void main()
 	//color = vec4(average);
 	
 	float distance = 1.0 - length(uv - vec2(0.5,0.5));
-	distance -= 0.1;
+	distance -= 0.3;
 	color *= distance;
-	color += 0.09;
+	color += 0.07;
 	gl_FragColor = color;
 	
 	// Pintar en escala de grises;

@@ -45,8 +45,6 @@ void GUI::drawPlayerWeapons() {
 			this->drawDropBomb();
 		} else if (weapon->type == SHOOT_GUN) {
 			this->drawShootGun();
-		} else if (weapon->type == MACHINE_GUN) {
-			this->drawMachineGunFree();
 		}
 
 	}
@@ -54,7 +52,7 @@ void GUI::drawPlayerWeapons() {
 }
 
 void GUI::drawMachineGun() {
-	Texture* texture = Texture::Load("data/texture.tga");
+	Texture* texture = Texture::Load("data/gui/machinegun_gui.tga");
 	Vector2 start = Vector2(5, 30);
 	Vector2 size = Vector2(50, 50);
 	
@@ -62,7 +60,7 @@ void GUI::drawMachineGun() {
 }
 
 void GUI::drawMisil() {
-	Texture* texture = Texture::Load("data/texture.tga");
+	Texture* texture = Texture::Load("data/gui/missile_gui.tga");
 	Vector2 start = Vector2(5, 80);
 	Vector2 size = Vector2(50, 50);
 
@@ -70,7 +68,7 @@ void GUI::drawMisil() {
 }
 
 void GUI::drawDropBomb() {
-	Texture* texture = Texture::Load("data/texture.tga");
+	Texture* texture = Texture::Load("data/gui/bomb_gui.tga");
 	Vector2 start = Vector2(5, 130);
 	Vector2 size = Vector2(50, 50);
 
@@ -78,15 +76,7 @@ void GUI::drawDropBomb() {
 }
 
 void GUI::drawShootGun() {
-	Texture* texture = Texture::Load("data/texture.tga");
-	Vector2 start = Vector2(5, 180);
-	Vector2 size = Vector2(50, 50);
-
-	this->drawGUIElement(texture, start, size);
-}
-
-void GUI::drawMachineGunFree() {
-	Texture* texture = Texture::Load("data/texture.tga");
+	Texture* texture = Texture::Load("data/gui/shootgun_gui.tga");
 	Vector2 start = Vector2(5, 180);
 	Vector2 size = Vector2(50, 50);
 
@@ -113,7 +103,7 @@ void GUI::drawPlayerFuell() {
 
 void GUI::drawCrosshair() {
 
-	Texture* texture = Texture::Load("data/crosshair.tga");
+	Texture* texture = Texture::Load("data/gui/crosshair.tga");
 	Vector3 center = World::instance->player->highMesh->box.center + Vector3(-0.58, 1.76, -3);
 	Vector3 pos = World::instance->player->getGlobalMatrix() * center;
 	//Vector3 pos = World::instance->player->getGlobalPosition() + Vector3(-1.05, 0.75, -3);
@@ -170,7 +160,7 @@ void GUI::highlightEntity(Entity* entity) {
 	Vector2 start = Vector2(pos2D.x, pos2D.y);
 	Vector2 size = Vector2(30, 30);
 
-	Texture* texture = Texture::Load("data/texture.tga");
+	Texture* texture = Texture::Load("data/gui/highlight.tga");
 	
 	if (pos2D.z < 1) {
 		this->drawGUIElement(texture, start, size);

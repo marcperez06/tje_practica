@@ -99,6 +99,10 @@ void Entity::removeChild(Entity* entity) {
 	}
 }
 
+Vector3 Entity::getFront() {
+	return this->getGlobalMatrix().rotateVector(Vector3(0, 0, -1));
+}
+
 /*
 bool Entity::haveRayCollision(Vector3 origin, Vector3 direction) {
 	this->detectRayCollision(origin, direction);

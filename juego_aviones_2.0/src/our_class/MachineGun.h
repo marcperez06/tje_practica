@@ -12,7 +12,6 @@ class MachineGun : public Weapon {
 		MachineGun(Airplane* owner, char type);
 
 		virtual void shoot();
-		//virtual void update(float deltaTime);
 };
 
 

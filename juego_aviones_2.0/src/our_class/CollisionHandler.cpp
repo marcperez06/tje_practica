@@ -81,6 +81,11 @@ void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
 	for (int i = 0; i < staticEntities.size(); i++) {
 
 		EntityMesh* staticEntity = (EntityMesh*)staticEntities[i];
+
+		if (staticEntity == NULL) {
+			continue;
+		}
+
 		Matrix44 modelMatrix = staticEntity->getGlobalMatrix();
 		Mesh* mesh = staticEntity->highMesh;
 
@@ -94,6 +99,9 @@ void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
 			}
 		}
 
+		Vector3 boundingBoxCenter = staticEntity->getGlobalMatrix() * staticEntity->highMesh->box.center;
+		Vector3 boundingBoxHalfSize = staticEntity->getGlobalMatrix() * staticEntity->highMesh->box.halfsize;
+
 		CollisionModel3D* collision_model = (CollisionModel3D*) mesh->collision_model;
 		assert(collision_model && "CollisionModel3D must be created before using it, call createCollisionModel");
 
@@ -103,15 +111,15 @@ void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
 
 			EntityCollider* dynamicEntity = (EntityCollider*) dynamicEntities[j];
 
-			Vector3 insideMinAxis = staticEntity->getGlobalMatrix() * staticEntity->highMesh->aabb_min;
-			Vector3 insideMaxAxis = staticEntity->getGlobalMatrix() * staticEntity->highMesh->aabb_max;
+			if (dynamicEntity == NULL) {
+				continue;
+			}
 
 			Vector3 origin = dynamicEntity->lastPosition;
 			Vector3 direction = dynamicEntity->getPosition() - origin;
 			float maxRayDistance = direction.length();
 
-			if (origin.x < insideMinAxis.x || origin.x > insideMaxAxis.x
-				|| origin.z < insideMinAxis.z || origin.z > insideMaxAxis.z) {
+			if (World::distanceBetween(staticEntity, dynamicEntity) > boundingBoxHalfSize.length()) {
 				continue;
 			}
 
@@ -127,12 +135,83 @@ void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
 
 }
 
+void CollisionHandler::collisionDynamicEntitesAgainstDynamicEntiteis() {
+
+	std::vector<Entity*> dynamicEntities = World::instance->dynamicObjects;
+
+	for (int i = 0; i < dynamicEntities.size(); i++) {
+		boolean haveCollision = false;
+		EntityCollider* dynamicEntity = (EntityCollider*)dynamicEntities[i];
+
+		if (dynamicEntity == NULL) {
+			continue;
+		}
+
+		Matrix44 modelMatrix = dynamicEntity->getGlobalMatrix();
+		Mesh* mesh = dynamicEntity->highMesh;
+
+		if (dynamicEntity->lowMesh != NULL) {
+			mesh = dynamicEntity->lowMesh;
+		}
+
+		if (!mesh->collision_model) {
+			if (!mesh->createCollisionModel()) {
+				break;
+			}
+		}
+
+		Vector3 boundingBoxCenter = dynamicEntity->getGlobalMatrix() * dynamicEntity->highMesh->box.center;
+		Vector3 boundingBoxHalfSize = dynamicEntity->getGlobalMatrix() * dynamicEntity->highMesh->box.halfsize;
+
+		CollisionModel3D* collision_model = (CollisionModel3D*)mesh->collision_model;
+		assert(collision_model && "CollisionModel3D must be created before using it, call createCollisionModel");
+
+		collision_model->setTransform(modelMatrix.m);
+
+		for (int j = 0; j < dynamicEntities.size(); j++) {
+
+			EntityCollider* dynamicEntity2 = (EntityCollider*)dynamicEntities[j];
+
+			if (dynamicEntity2 == NULL || dynamicEntity == dynamicEntity2) {
+				continue;
+			}
+
+			Vector3 origin = dynamicEntity2->lastPosition;
+			Vector3 direction = dynamicEntity2->getPosition() - origin;
+			float maxRayDistance = direction.length();
+
+			if (World::distanceBetween(dynamicEntity, dynamicEntity2) > boundingBoxHalfSize.length()) {
+				continue;
+			}
+
+			//if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
+
+			if (collision_model->sphereCollision(origin.v, dynamicEntity2->highMesh->box.halfsize.length() - 5) == true) {
+				dynamicEntity2->collisionEffect();
+				haveCollision = true;
+			}
+
+		}
+
+		if (haveCollision == true) {
+			dynamicEntity->collisionEffect();
+		}
+
+	}
+
+}
+
 void CollisionHandler::bulletsCollisionAgainstStaticEntities(Bullet bullets[], int bulletsSize) {
 	std::vector<Entity*> staticEntities = World::instance->staticObjects;
 
 	for (int i = 0; i < staticEntities.size(); i++) {
 
 		EntityMesh* staticEntity = (EntityMesh*)staticEntities[i];
+
+		if (staticEntity == NULL) {
+			continue;
+		}
+
 		Matrix44 modelMatrix = staticEntity->getGlobalMatrix();
 		Mesh* mesh = staticEntity->highMesh;
 
@@ -145,6 +224,9 @@ void CollisionHandler::bulletsCollisionAgainstStaticEntities(Bullet bullets[], i
 				break;
 			}
 		}
+
+		Vector3 boundingBoxCenter = staticEntity->getGlobalMatrix() * staticEntity->highMesh->box.center;
+		Vector3 boundingBoxHalfSize = staticEntity->getGlobalMatrix() * staticEntity->highMesh->box.halfsize;
 
 		CollisionModel3D* collision_model = (CollisionModel3D*)mesh->collision_model;
 		assert(collision_model && "CollisionModel3D must be created before using it, call createCollisionModel");
@@ -159,11 +241,7 @@ void CollisionHandler::bulletsCollisionAgainstStaticEntities(Bullet bullets[], i
 				continue;
 			}
 
-			Vector3 insideMinAxis = staticEntity->getGlobalMatrix() * staticEntity->highMesh->aabb_min;
-			Vector3 insideMaxAxis = staticEntity->getGlobalMatrix() * staticEntity->highMesh->aabb_max;
-
-			if (bullet.position.x < insideMinAxis.x || bullet.position.x > insideMaxAxis.x
-				|| bullet.position.z < insideMinAxis.z || bullet.position.z > insideMaxAxis.z) {
+			if (bullet.position.distance(boundingBoxCenter) > boundingBoxHalfSize.length()) {
 				continue;
 			}
 
@@ -188,6 +266,11 @@ void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], 
 	for (int i = 0; i < dynamicEntities.size(); i++) {
 
 		Airplane* dynamicEntity = (Airplane*) dynamicEntities[i];
+
+		if (dynamicEntity == NULL) {
+			continue;
+		}
+
 		Matrix44 modelMatrix = dynamicEntity->getGlobalMatrix();
 		Mesh* mesh = dynamicEntity->highMesh;
 
@@ -200,6 +283,9 @@ void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], 
 				break;
 			}
 		}
+
+		Vector3 boundingBoxCenter = dynamicEntity->getGlobalMatrix() * dynamicEntity->highMesh->box.center;
+		Vector3 boundingBoxHalfSize = dynamicEntity->getGlobalMatrix() * dynamicEntity->highMesh->box.halfsize;
 
 		CollisionModel3D* collision_model = (CollisionModel3D*)mesh->collision_model;
 		assert(collision_model && "CollisionModel3D must be created before using it, call createCollisionModel");
@@ -214,11 +300,7 @@ void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], 
 				continue;
 			}
 
-			Vector3 insideMinAxis = dynamicEntity->getGlobalMatrix() * dynamicEntity->highMesh->aabb_min;
-			Vector3 insideMaxAxis = dynamicEntity->getGlobalMatrix() * dynamicEntity->highMesh->aabb_max;
-
-			if (bullet.position.x < insideMinAxis.x || bullet.position.x > insideMaxAxis.x
-				|| bullet.position.z < insideMinAxis.z || bullet.position.z > insideMaxAxis.z) {
+			if (bullet.position.distance(boundingBoxCenter) > boundingBoxHalfSize.length()) {
 				continue;
 			}
 

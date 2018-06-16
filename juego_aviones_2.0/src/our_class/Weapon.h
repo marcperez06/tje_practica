@@ -32,7 +32,6 @@ class Weapon {
 		Weapon(Airplane* owner, char type);
 
 		virtual void shoot();
-		virtual void render();
 		virtual void update(float deltaTime);
 		
 		void addAmmounition(int ammo);

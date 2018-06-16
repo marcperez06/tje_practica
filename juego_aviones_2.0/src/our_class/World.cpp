@@ -20,7 +20,7 @@ World* World::instance = NULL;
 
 World::World() {
 	this->root = new Entity(Vector3(0, 0, 0));
-	this->numAIAirplanes = 40;
+	this->numAIAirplanes = 16;
 	this->initPlayer();
 	this->initCameras();
 	this->initTeams();
@@ -129,9 +129,10 @@ void World::initTeams() {
 			}
 
 			//this->AIAirplanes[i]->target = this->player;
+			
 			/*
 			Entity* auxEntity = new Entity(AIAirplanes[i]->getGlobalPosition());
-			auxEntity->transform.translate(Vector3(0, 10, -20));
+			auxEntity->transform.translate(Vector3(100, 100, -100));
 			AIAirplanes[i]->target = auxEntity;
 			*/
 
@@ -141,7 +142,7 @@ void World::initTeams() {
 
 void World::initTeamAlfa() {
 	float x = (rand() % 50) + 500 + this->player->highMesh->aabb_max.x;
-	float y = (rand() % 100) + 400 + this->player->highMesh->aabb_max.y;
+	float y = (rand() % 100) + 600 + this->player->highMesh->aabb_max.y;
 	float z = (rand() % 20) - 500 - this->player->highMesh->aabb_max.z;
 	Airplane* enemy = Factory::buildAirplane(TEAM_ALFA, Vector3(x, y, z), 200);
 
@@ -162,14 +163,9 @@ void World::initTeamAlfa() {
 
 void World::initTeamDelta() {
 	float x = (rand() % 50) + 500 + this->player->highMesh->aabb_max.x;
-	float y = (rand() % 100) + 400 + this->player->highMesh->aabb_max.y;
+	float y = (rand() % 100) + 600 + this->player->highMesh->aabb_max.y;
 	float z = (rand() % 20) + 500 + this->player->highMesh->aabb_max.z;
 	Airplane* enemy = Factory::buildAirplane(TEAM_DELTA, Vector3(x, y, z), 200);
-	
-	//enemy->target = this->player;
-	Entity* auxEntity = new Entity(enemy->getGlobalPosition());
-	auxEntity->transform.translate(Vector3(0, 10, -20));
-	enemy->target = auxEntity;
 
 	enemy->isPlayer = false;
 
@@ -183,7 +179,7 @@ void World::initTeamDelta() {
 
 void World::initTeamBeta() {
 	float x = (rand() % 50) - 500 - this->player->highMesh->aabb_max.x;
-	float y = (rand() % 100) + 400 + this->player->highMesh->aabb_max.y;
+	float y = (rand() % 100) + 600 + this->player->highMesh->aabb_max.y;
 	float z = (rand() % 20) - 500 - this->player->highMesh->aabb_max.z;
 	Airplane* enemy = Factory::buildAirplane(TEAM_BETA, Vector3(x, y, z), 200);
 
@@ -199,7 +195,7 @@ void World::initTeamBeta() {
 
 void World::initTeamGamma() {
 	float x = (rand() % 50) - 500 - this->player->highMesh->aabb_max.x;
-	float y = (rand() % 100) + 400 + this->player->highMesh->aabb_max.y;
+	float y = (rand() % 100) + 600 + this->player->highMesh->aabb_max.y;
 	float z = (rand() % 20) + 500 + this->player->highMesh->aabb_max.z;
 	Airplane* enemy = Factory::buildAirplane(TEAM_GAMMA, Vector3(x, y, z), 200);
 
@@ -254,7 +250,7 @@ void World::initSea() {
 
 void World::render(Camera* camera) {
 	if (this->sky != NULL) {
-		this->sky->transform.matrixModel.setTranslation(camera->eye.x, camera->eye.y, camera->eye.z);
+		this->sky->transform.matrixModel.setTranslation(camera->eye.x, camera->eye.y - 40, camera->eye.z);
 		glDisable(GL_DEPTH_TEST);
 		this->sky->render(camera);
 		glEnable(GL_DEPTH_TEST);
@@ -431,9 +427,9 @@ void World::update(float deltaTime) {
 	}
 
 	if (this->AIAirplanes.size() > 0) {
-		/*
-		this->cameraFollowEntity(this->playerCamera, AIAirplanes[0]);
-		*/
+		
+		//this->cameraFollowEntity(this->playerCamera, AIAirplanes[0]);
+		
 	}
 
 	this->cameraFollowEntity(this->playerCamera, this->player);
@@ -443,6 +439,7 @@ void World::update(float deltaTime) {
 	BulletManager::instance->update(deltaTime);
 	ProjectileManager::instance->update(deltaTime);
 	CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis();
+	CollisionHandler::collisionDynamicEntitesAgainstDynamicEntiteis();
 
 	Airplane::destroyDeadAirplanes();
 }
@@ -486,8 +483,8 @@ void World::createRandomPowerup() {
 
 void World::createPowerup(char type) {
 	Vector3 pos;
-	pos.random(Vector3(50, 70, 0));
-	pos = pos + this->player->getGlobalPosition() + Vector3(0, 0, -400);
+	pos.random(Vector3(40, 40, 0));
+	pos = pos + this->player->getGlobalPosition() + Vector3(0, 0, -450);
 
 	Powerup* powerup = new Powerup(type, pos);
 }

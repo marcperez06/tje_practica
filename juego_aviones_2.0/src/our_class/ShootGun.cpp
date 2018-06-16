@@ -26,11 +26,7 @@ void ShootGun::shoot() {
 			}
 		}
 
-		this->cooldown = 0.50;
+		this->cooldown = 1.50;
 		SoundManager::reproduceSound("shootgun_shoot.wav");
 	}
-}
-
-void ShootGun::update(float deltaTime) {
-	Weapon::update(deltaTime);
 }

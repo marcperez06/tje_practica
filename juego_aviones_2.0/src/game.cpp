@@ -107,10 +107,8 @@ void Game::render(void)
 	rt->toViewport(screenShader);
 	screenShader->disable();
 
-	gui->render();
-
 	for (int i = 0; i < world->AIAirplanes.size(); i++) {
-		
+
 		if (world->player->team == world->AIAirplanes[i]->team) {
 			continue;
 		}
@@ -120,6 +118,8 @@ void Game::render(void)
 		}
 
 	}
+
+	gui->render();
 
 	//Draw out world
 	//drawGrid();

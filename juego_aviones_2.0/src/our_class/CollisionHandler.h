@@ -18,6 +18,7 @@ class CollisionHandler {
 		static bool haveAnyRayCollision(Vector3 origin, Vector3 direction, std::vector<Entity*> entitiesMesh, Vector3 & collision, Vector3 & normal);
 
 		static void collisionStaticEntitesAgainstDynamicEntiteis();
+		static void collisionDynamicEntitesAgainstDynamicEntiteis();
 
 		static void bulletsCollisionAgainstStaticEntities(Bullet bullets[], int bulletsSize);
 		static void bulletsCollisionAgainstDynamicEntities(Bullet bullets[], int bulletsSize);

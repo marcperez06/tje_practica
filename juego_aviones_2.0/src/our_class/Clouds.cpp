@@ -17,7 +17,7 @@ Clouds::Clouds() : EntityMesh() {
 
 	this->material = material;
 
-	this->clouds.resize(200);
+	this->clouds.resize(300);
 	for (int i = 0; i < this->clouds.size(); i++) {
 		CloudProperties & cloud = this->clouds[i];
 		cloud.id = i;
@@ -54,7 +54,7 @@ void Clouds::render(Camera* camera) {
 		
 		CloudProperties & cloud = this->clouds[i];
 
-		if (camera->testSphereInFrustum(cloud.pos, 200) == false) {
+		if (camera->testSphereInFrustum(cloud.pos, 250) == false) {
 			continue;
 		}
 		
