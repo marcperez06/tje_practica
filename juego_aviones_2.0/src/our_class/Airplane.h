@@ -6,7 +6,6 @@
 
 class Weapon;
 class AirplaneController;
-class Weapon;
 
 enum States {
 	AIRPLANE_FLYING,
@@ -15,12 +14,6 @@ enum States {
 	AIRPLANE_DESTROYED
 };
 
-enum Team {
-	TEAM_DELTA,
-	TEAM_ALFA,
-	TEAM_BETA,
-	TEAM_GAMMA
-};
 
 class Airplane : public EntityCollider {
 

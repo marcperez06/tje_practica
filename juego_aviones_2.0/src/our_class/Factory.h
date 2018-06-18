@@ -2,6 +2,7 @@
 #define FACTORY_H
 
 #include "Bullet.h"
+#include "World.h"
 #include "Projectile.h"
 #include "../framework.h"
 
@@ -11,12 +12,14 @@ class MachineGun;
 class DropBomb;
 class RocketLauncher;
 class ShootGun;
+class Bunker;
 
 class Factory {
 
 	public:
 
 		static Airplane* buildAirplane(char team, const Vector3 pos, float speed);
+		static Bunker* buildBunker(char team, const Vector3 pos);
 		static EntityMesh* buildIsland(const Vector3 initialPos);
 		static EntityMesh* buildWater(const Vector3 initialPos);
 		static EntityMesh* buildSky(const Vector3 initialPos);

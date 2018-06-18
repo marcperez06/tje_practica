@@ -15,6 +15,7 @@
 #include "AirplaneController.h"
 #include "Clouds.h"
 #include "Powerup.h"
+#include "Bunker.h"
 
 World* World::instance = NULL;
 
@@ -28,6 +29,7 @@ World::World() {
 	this->initSky();
 	this->initSea();
 	this->clouds = new Clouds();
+	this->initBunkers();
 	
 	this->createRandomPowerup();
 
@@ -74,6 +76,18 @@ void World::initPlayer() {
 
 	this->root->addChild(this->player);
 	this->dynamicObjects.push_back(this->player);
+}
+
+void World::initBunkers() {
+
+			this->teamMilitaryBases.push_back(Factory::buildBunker(TEAM_ALFA, Vector3(500, 600, -600)));
+			this->root->addChild(this->teamMilitaryBases[0]);
+			this->staticObjects.push_back(this->teamMilitaryBases[0]);
+
+			this->teamMilitaryBases.push_back(Factory::buildBunker(TEAM_BETA, Vector3(500, 600, -400)));
+			this->root->addChild(this->teamMilitaryBases[1]);
+			this->staticObjects.push_back(this->teamMilitaryBases[1]);
+
 }
 
 void World::initTeams() {
@@ -271,6 +285,9 @@ void World::render(Camera* camera) {
 
 	this->renderAirplanes(camera);
 
+	this->renderBunkers(camera);
+
+
 	this->clouds->render(camera);
 
 	this->renderPowerups(camera);
@@ -406,6 +423,49 @@ void World::renderAirplanes(Camera* camera) {
 				shader->disable();
 			}
 		}
+
+	}
+
+}
+
+void World::renderBunkers(Camera* camera) {
+	Bunker* base;
+	//std::vector<Matrix44> bunkersTransform;
+	//Mesh* bunkerMesh = NULL;
+	Shader* shader = Shader::Load("data/shaders/texture.vs", "data/shaders/world.fs");
+
+	/*for (int i = 1; i < this->teamMilitaryBases.size; i++) {
+		bunkersTransform.push_back(this->teamMilitaryBases[i]->getGlobalMatrix());
+	}
+
+	if (bunkersTransform.size() > 0) {*/
+
+		if (shader != NULL) {
+
+			for (int i = 0; i < 2; i++) {
+
+				this->teamMilitaryBases[i]->render(camera);
+
+				/*if (this->teamMilitaryBases.size() > 0) {
+					bunkerMesh = this->teamMilitaryBases[i]->highMesh;
+				}
+
+				shader->enable();
+
+				if (bunkerMesh != NULL) {
+					shader->setUniform("u_color", base->material->color);
+					shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+					shader->setUniform("u_texture", base->material->texture);
+					shader->setUniform("u_camera_position", camera->eye);
+					shader->setUniform("u_time", 1);
+
+					bunkerMesh->renderInstanced(GL_TRIANGLES, shader, &bunkersTransform[i], bunkersTransform.size());
+				}
+
+				shader->disable();*/
+
+			}
+		//}
 
 	}
 

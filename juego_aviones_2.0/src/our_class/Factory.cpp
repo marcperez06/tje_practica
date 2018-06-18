@@ -4,6 +4,7 @@
 #include "DropBomb.h"
 #include "RocketLauncher.h"
 #include "ShootGun.h"
+#include "Bunker.h"
 
 Airplane* Factory::buildAirplane(char team, const Vector3 pos, float speed) {
 
@@ -29,6 +30,20 @@ Airplane* Factory::buildAirplane(char team, const Vector3 pos, float speed) {
 	airplane->team = team;
 	return airplane;
 
+}
+
+Bunker* Factory::buildBunker(char team, const Vector3 pos) {
+	Mesh* highMesh = Mesh::Load("data/terrain_props/fort_base.ASE");
+	//Mesh* lowMesh = Mesh::Load("data/terrain_props/spitfire_low.ASE");
+	Texture* texture = Texture::Load("data/terrain_props/bunkers_and_forts.tga");
+	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
+
+	Transform transform = Transform(pos, Quaternion());
+	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
+
+	Bunker* bunker = new Bunker(transform, highMesh, material, team);
+
+	return bunker;
 }
 
 Airplane* Factory::buildSpitfire(const Vector3 pos, float speed) {

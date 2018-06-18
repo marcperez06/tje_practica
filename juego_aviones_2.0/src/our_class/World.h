@@ -7,6 +7,14 @@ class EntityMesh;
 class Airplane;
 class Camera;
 class Clouds;
+class Bunker;
+
+enum Team {
+	TEAM_DELTA,
+	TEAM_ALFA,
+	TEAM_BETA,
+	TEAM_GAMMA
+};
 
 class World {
 	public:
@@ -23,7 +31,7 @@ class World {
 		Airplane* player;
 		std::vector<Airplane*> AIAirplanes;
 
-		//std::vector<Base*> teamMilitaryBases;
+		std::vector<Bunker*> teamMilitaryBases;
 		//std::vector<Powerup*> powerups;
 
 		int numAIAirplanes;
@@ -68,11 +76,13 @@ class World {
 		void initTeamGamma();
 		void initSky();
 		void initSea();
+		void initBunkers();
 
 		void renderWorldMap(Camera* camera);
 		void renderWater(Camera* camera);
 		void renderAirplanes(Camera* camera);
 		void renderPowerups(Camera* camera);
+		void renderBunkers(Camera* camera);
 
 		void updatePowerups(float deltaTime);
 
