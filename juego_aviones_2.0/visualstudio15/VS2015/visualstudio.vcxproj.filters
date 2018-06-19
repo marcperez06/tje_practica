@@ -157,6 +157,9 @@
     <ClCompile Include="..\..\src\our_class\GameStage.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\our_class\EndStage.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\camera.h" />
@@ -309,6 +312,9 @@
       <Filter>our_class</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\our_class\GameStage.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\EndStage.h">
       <Filter>our_class</Filter>
     </ClInclude>
   </ItemGroup>

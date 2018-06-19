@@ -170,10 +170,6 @@ void AIController::followTarget(float deltaTime) {
 	Vector3 targetPos = this->airplane->target->getPosition();
 	Vector3 toTarget = (targetPos - pos);
 
-	std::cout << "POS " << pos.x << " " << pos.y << " " << pos.z << std::endl;
-	std::cout << "TO TARGET " << toTarget.x << " " << toTarget.y << " " << toTarget.z << std::endl;
-	//std::cout << "TARGET TO POS " << targetPos.x << " " << targetPos.y << " " << targetPos.z << std::endl;
-
 	if (abs(toTarget.length()) < 0.0001) {
 		return;
 	}
@@ -186,55 +182,4 @@ void AIController::followTarget(float deltaTime) {
 	axis = modelInverse.rotateVector(axis);
 	this->airplane->transform.rotate(cos_angle * deltaTime * 3.5, axis);
 
-
-	/*
-	Matrix44 modelInverse = this->airplane->getGlobalMatrix();
-	modelInverse.inverse();
-
-	Vector3 pos = this->airplane->getGlobalPosition();
-	Vector3 targetPos = this->airplane->target->getGlobalPosition();
-
-	if (pos.y < 300) {
-		//this->airplane->rotatePitchDirection(this->airplane->speed * 0.02);
-		//Vector3 newTargetPos = pos + Transform::UP * 10;
-		//targetPos = newTargetPos;
-	}
-
-	Vector3 toTarget = (targetPos - pos);
-
-	std::cout << "POS " << pos.x << " " << pos.y << " " << pos.z << std::endl;
-	std::cout << "TO TARGET " << toTarget.x << " " << toTarget.y << " " << toTarget.z << std::endl;
-	//std::cout << "TARGET TO POS " << targetPos.x << " " << targetPos.y << " " << targetPos.z << std::endl;
-
-	if (abs(toTarget.length()) < 0.0001) {
-		return;
-	}
-
-	toTarget.normalize();
-
-	Vector3 front = this->airplane->getFront();
-
-	if (abs(front.length()) < 0.0001) {
-		return;
-	}
-
-	front.normalize();
-
-	float frontDotToTarget = front.dot(toTarget);
-	if (abs(frontDotToTarget) >= 1) {
-		return;
-	}
-
-	float angle = acos(frontDotToTarget);
-
-	if (abs(angle) < 0.01) {
-		return;
-	}
-
-	Vector3 axis = front.cross(toTarget) * -1;
-	axis = modelInverse.rotateVector(axis);
-	axis.normalize();
-
-	this->airplane->transform.rotate(angle * deltaTime, axis);
-	*/
 }

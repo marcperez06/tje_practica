@@ -28,10 +28,7 @@ public:
 
 	virtual void update(float deltaTime);
 
-
-	bool detectStaticCollision();
-
-	virtual void collisionEffect();
+	virtual void collisionEffectAgainstDynamicEntity();
 
 	virtual void onBulletCollision(Bullet &  bullet, Vector3 collision);
 

@@ -60,7 +60,8 @@ class Airplane : public EntityCollider {
 
 		bool detectStaticCollision();
 
-		virtual void collisionEffect();
+		virtual void collisionEffectAgainstStaticEntity();
+		virtual void collisionEffectAgainstDynamicEntity();
 
 		virtual void onBulletCollision(Bullet &  bullet, Vector3 collision);
 

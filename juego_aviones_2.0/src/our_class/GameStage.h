@@ -12,6 +12,7 @@ class Shader;
 
 class GameStage : public Stage {
 	public:
+		static GameStage* instance;
 		World* world;
 		BulletManager* bulletManager;
 		ProjectileManager* projectileManager;
@@ -26,6 +27,8 @@ class GameStage : public Stage {
 
 		virtual void render();
 		virtual void update(float deltaTime);
+
+		void reset();
 };
 
 #endif

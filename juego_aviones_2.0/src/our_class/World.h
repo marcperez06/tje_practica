@@ -35,6 +35,7 @@ class World {
 		//std::vector<Powerup*> powerups;
 
 		int numAIAirplanes;
+		int numOfTeams;
 
 		EntityMesh* sky;
 		EntityMesh* sea;

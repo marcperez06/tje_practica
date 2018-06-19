@@ -114,6 +114,7 @@
     <ClCompile Include="..\..\src\our_class\CollisionHandler.cpp" />
     <ClCompile Include="..\..\src\our_class\ControlStage.cpp" />
     <ClCompile Include="..\..\src\our_class\DropBomb.cpp" />
+    <ClCompile Include="..\..\src\our_class\EndStage.cpp" />
     <ClCompile Include="..\..\src\our_class\Entity.cpp" />
     <ClCompile Include="..\..\src\our_class\EntityCollider.cpp" />
     <ClCompile Include="..\..\src\our_class\EntityMesh.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="..\..\src\our_class\CollisionHandler.h" />
     <ClInclude Include="..\..\src\our_class\ControlStage.h" />
     <ClInclude Include="..\..\src\our_class\DropBomb.h" />
+    <ClInclude Include="..\..\src\our_class\EndStage.h" />
     <ClInclude Include="..\..\src\our_class\Entity.h" />
     <ClInclude Include="..\..\src\our_class\EntityCollider.h" />
     <ClInclude Include="..\..\src\our_class\EntityMesh.h" />

@@ -22,14 +22,15 @@ World* World::instance = NULL;
 World::World() {
 	this->root = new Entity(Vector3(0, 0, 0));
 	this->numAIAirplanes = 16;
+	this->numOfTeams = 2;
 	this->initPlayer();
+	this->initBunkers();
 	this->initCameras();
 	this->initTeams();
 	this->initWorldMap();
 	this->initSky();
 	this->initSea();
 	this->clouds = new Clouds();
-	this->initBunkers();
 	
 	this->createRandomPowerup();
 
@@ -65,7 +66,7 @@ void World::initCameras() {
 }
 
 void World::initPlayer() {
-	this->player = Factory::buildAirplane(TEAM_ALFA, Vector3(500, 425, -500), 205);
+	this->player = Factory::buildAirplane(TEAM_ALFA, Vector3(-1565, 600, 13655), 205);
 	this->player->name = "player";
 	this->player->uuid = 1;
 
@@ -80,19 +81,20 @@ void World::initPlayer() {
 
 void World::initBunkers() {
 
-			this->teamMilitaryBases.push_back(Factory::buildBunker(TEAM_ALFA, Vector3(500, 600, -600)));
-			this->root->addChild(this->teamMilitaryBases[0]);
-			this->staticObjects.push_back(this->teamMilitaryBases[0]);
+	this->teamMilitaryBases.push_back(Factory::buildBunker(TEAM_ALFA, Vector3(-1565, 0, 13070)));
+	this->root->addChild(this->teamMilitaryBases[0]);
+	this->dynamicObjects.push_back(this->teamMilitaryBases[0]);
 
-			this->teamMilitaryBases.push_back(Factory::buildBunker(TEAM_BETA, Vector3(500, 600, -400)));
-			this->root->addChild(this->teamMilitaryBases[1]);
-			this->staticObjects.push_back(this->teamMilitaryBases[1]);
+	this->teamMilitaryBases.push_back(Factory::buildBunker(TEAM_DELTA, Vector3(-815, 0, -12400)));
+	this->teamMilitaryBases[1]->transform.rotate(33 * DEG2RAD, Transform::UP);
+	this->root->addChild(this->teamMilitaryBases[1]);
+	this->dynamicObjects.push_back(this->teamMilitaryBases[1]);
 
 }
 
 void World::initTeams() {
 	assert(this->player);
-	int limit = this->numAIAirplanes / 4;
+	int limit = this->numAIAirplanes / this->numOfTeams;
 	if (this->player != NULL) {
 		for (int i = 0; i < this->numAIAirplanes; i++) {
 
@@ -112,25 +114,26 @@ void World::initTeams() {
 
 		for (int i = 0; i < this->numAIAirplanes; i++) {
 
-			/*
 			int probabilityOfFollowPath = rand() % 100;
 			char typeTarget = (probabilityOfFollowPath > 30) ? WAYPOINT : MILITARY_BASE;
-			int teamTarget = rand() % 4;
+			int teamTarget = rand() % this->numOfTeams;
+
+			teamTarget = (this->AIAirplanes[i]->team == teamTarget) ? (teamTarget + 1) % this->numOfTeams : teamTarget;
 
 			if (typeTarget == MILITARY_BASE) {
-
+				this->AIAirplanes[i]->target = this->teamMilitaryBases[teamTarget];
 			} else if (typeTarget == WAYPOINT) {
-
+				this->AIAirplanes[i]->target = this->AIAirplanes[i]->path.wayPoints[rand() % this->AIAirplanes[i]->path.wayPoints.size()];
 			}
-			*/
 
 			// Seleccionar un avion enemigo aleatorio dependiendo de tu equipo
 
+			/*
 			if (i < limit) {
 				int targetIndexOfAlfaTeam = limit + (rand() % numAIAirplanes - limit);
 				this->AIAirplanes[i]->target = this->AIAirplanes[targetIndexOfAlfaTeam];
-			} else if (i >= limit && i < limit * 2) {
-				int aux = rand() % (limit * 2);
+			} else if (i >= limit && i < limit * this->numOfTeams) {
+				int aux = rand() % (limit * this->numOfTeams);
 				int targetIndexOfDeltaTeam = (aux < limit) ? aux : limit * 2 + (rand() % (numAIAirplanes - limit * 2));
 				this->AIAirplanes[i]->target = this->AIAirplanes[targetIndexOfDeltaTeam];
 			} else if (i >= limit * 2 && i < limit * 3) {
@@ -141,6 +144,7 @@ void World::initTeams() {
 				int targetIndexOfGammaTeam = rand() % (numAIAirplanes - limit);
 				this->AIAirplanes[i]->target = this->AIAirplanes[targetIndexOfGammaTeam];
 			}
+			*/
 
 			//this->AIAirplanes[i]->target = this->player;
 			
@@ -155,16 +159,14 @@ void World::initTeams() {
 }
 
 void World::initTeamAlfa() {
-	float x = (rand() % 50) + 500 + this->player->highMesh->aabb_max.x;
+	Vector3 bunkerPos = this->teamMilitaryBases[0]->getGlobalPosition();
+	float x = (rand() % 50) + bunkerPos.x + this->player->highMesh->aabb_max.x;
 	float y = (rand() % 100) + 600 + this->player->highMesh->aabb_max.y;
-	float z = (rand() % 20) - 500 - this->player->highMesh->aabb_max.z;
+	float z = (rand() % 20) + bunkerPos.z + this->player->highMesh->aabb_max.z;
+
 	Airplane* enemy = Factory::buildAirplane(TEAM_ALFA, Vector3(x, y, z), 200);
 
-	//enemy->target = this->player;
-	Entity* auxEntity = new Entity(enemy->getGlobalPosition());
-	auxEntity->transform.translate(Vector3(0, 10, -20));
-	enemy->target = auxEntity;
-
+	enemy->path.createCircle(bunkerPos, 40, 200);
 	enemy->isPlayer = false;
 
 	enemy->controller = new AIController();
@@ -176,11 +178,14 @@ void World::initTeamAlfa() {
 }
 
 void World::initTeamDelta() {
-	float x = (rand() % 50) + 500 + this->player->highMesh->aabb_max.x;
+	Vector3 bunkerPos = this->teamMilitaryBases[1]->getGlobalPosition();
+	float x = (rand() % 50) + bunkerPos.x + this->player->highMesh->aabb_max.x;
 	float y = (rand() % 100) + 600 + this->player->highMesh->aabb_max.y;
-	float z = (rand() % 20) + 500 + this->player->highMesh->aabb_max.z;
+	float z = (rand() % 20) + bunkerPos.z + this->player->highMesh->aabb_max.z;
+	
 	Airplane* enemy = Factory::buildAirplane(TEAM_DELTA, Vector3(x, y, z), 200);
-
+	
+	enemy->path.createCircle(bunkerPos, 40, 200);
 	enemy->isPlayer = false;
 
 	enemy->controller = new AIController();
@@ -192,11 +197,14 @@ void World::initTeamDelta() {
 }
 
 void World::initTeamBeta() {
-	float x = (rand() % 50) - 500 - this->player->highMesh->aabb_max.x;
+	Vector3 bunkerPos = this->teamMilitaryBases[2]->getGlobalPosition();
+	float x = (rand() % 50) + bunkerPos.x + this->player->highMesh->aabb_max.x;
 	float y = (rand() % 100) + 600 + this->player->highMesh->aabb_max.y;
-	float z = (rand() % 20) - 500 - this->player->highMesh->aabb_max.z;
+	float z = (rand() % 20) + bunkerPos.z + this->player->highMesh->aabb_max.z;
+
 	Airplane* enemy = Factory::buildAirplane(TEAM_BETA, Vector3(x, y, z), 200);
 
+	enemy->path.createCircle(bunkerPos, 40, 200);
 	enemy->isPlayer = false;
 
 	enemy->controller = new AIController();
@@ -208,13 +216,16 @@ void World::initTeamBeta() {
 }
 
 void World::initTeamGamma() {
-	float x = (rand() % 50) - 500 - this->player->highMesh->aabb_max.x;
+	Vector3 bunkerPos = this->teamMilitaryBases[3]->getGlobalPosition();
+	float x = (rand() % 50) + bunkerPos.x + this->player->highMesh->aabb_max.x;
 	float y = (rand() % 100) + 600 + this->player->highMesh->aabb_max.y;
-	float z = (rand() % 20) + 500 + this->player->highMesh->aabb_max.z;
+	float z = (rand() % 20) + bunkerPos.z + this->player->highMesh->aabb_max.z;
+
 	Airplane* enemy = Factory::buildAirplane(TEAM_GAMMA, Vector3(x, y, z), 200);
 
+	enemy->path.createCircle(bunkerPos, 40, 200);
 	enemy->isPlayer = false;
-	enemy->team = TEAM_GAMMA;
+
 	enemy->controller = new AIController();
 	enemy->controller->airplane = enemy;
 
@@ -229,8 +240,8 @@ void World::initWorldMap() {
 	worldMap->uuid = 2;
 
 	Mesh * meshIsland = Mesh::Load("data/island/island.ASE");
-	float maxX = (meshIsland->aabb_max.x * 2) - 10;
-	float maxZ = (meshIsland->aabb_max.z * 2) - 10;
+	float maxX = (meshIsland->aabb_max.x * 2) - 5;
+	float maxZ = (meshIsland->aabb_max.z * 2) - 5;
 	//delete meshIsland;
 
 	for (int i = -2; i < 1; i++) {
@@ -386,11 +397,11 @@ void World::renderAirplanes(Camera* camera) {
 
 	if (airplanesTransform.size() > 0) {
 
-		int limit = numAIAirplanes / 4;
+		int limit = this->numAIAirplanes / this->numOfTeams;
 
 		if (shader != NULL) {
 
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < this->numOfTeams; i++) {
 
 				if (Airplane::airplanes.size() > 0) {
 					base = Airplane::airplanes[i * limit];
@@ -406,7 +417,7 @@ void World::renderAirplanes(Camera* camera) {
 					shader->setUniform("u_camera_position", camera->eye);
 					shader->setUniform("u_time", 1);
 
-					airplaneMesh->renderInstanced(GL_TRIANGLES, shader, &airplanesTransform[i * limit], airplanesTransform.size() - limit * 3);
+					airplaneMesh->renderInstanced(GL_TRIANGLES, shader, &airplanesTransform[i * limit], airplanesTransform.size() - limit * (this->numOfTeams - 1));
 
 					/* Si se eliminan los aviones, luego hay problema a la hora de renderizar, porque los valores cambian..
 					if (numAIAirplanes == airplanesTransform.size()) {

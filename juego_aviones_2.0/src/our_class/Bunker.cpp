@@ -4,7 +4,9 @@
 
 #include "BulletManager.h"
 #include "SoundManager.h"
-
+#include "EndStage.h"
+#include "World.h"
+#include "Airplane.h"
 
 // --- CONSTRUCTORES ---
 
@@ -14,6 +16,7 @@ Bunker::Bunker(const Transform transform, Mesh * highMesh, Material * material, 
 	this->state = BUNKER_LIVING;
 	this->team = team;
 	this->type = MILITARY_BASE;
+
 }
 
 Bunker::Bunker(const Transform transform, Mesh * highMesh, Mesh * lowMesh, Material * material, char team) : EntityCollider(transform, highMesh, lowMesh, material) {
@@ -39,19 +42,8 @@ void Bunker::update(float deltaTime) {
 
 		EntityCollider::update(deltaTime);
 
-		if (this->health <= 0) {
-			this->state = BUNKER_DESTROYED;
-		}
-
 	}
 
-}
-
-bool Bunker::detectStaticCollision() {
-	bool haveCollision = false;
-	Vector3 origin = this->lastPosition;
-	Vector3 direction = this->getPosition() - origin;
-	return EntityCollider::haveCollisionAgainstStaticObjects(origin, direction);
 }
 
 void Bunker::onBulletCollision(Bullet & bullet, Vector3 collision) {
@@ -63,6 +55,20 @@ void Bunker::onBulletCollision(Bullet & bullet, Vector3 collision) {
 
 	this->health -= bullet.damage;
 
+	if (this->health <= 0) {
+
+		std::cout << "I DESTROY THE BUNKER!!!!!! " << std::endl;
+		this->state = BUNKER_DESTROYED;
+
+		if (this->team != World::instance->player->team) {
+			EndStage::instance->success = true;
+		} else {
+			EndStage::instance->success = false;
+		}
+
+		EndStage::onChange("endStage");
+	}
+
 	//SoundManager::reproduceSound("damage.wav");
 
 	Mesh mesh;
@@ -72,7 +78,7 @@ void Bunker::onBulletCollision(Bullet & bullet, Vector3 collision) {
 	mesh.renderFixedPipeline(GL_POINTS);
 }
 
-void Bunker::collisionEffect() {
+void Bunker::collisionEffectAgainstDynamicEntity() {
 	this->material->color = Vector4(0, 0, 0, 1);
 	//this->state = AIRPLANE_DESTROYED;
 	//airplanesToDestroy.push_back(this);

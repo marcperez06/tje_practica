@@ -111,7 +111,7 @@ void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
 
 			EntityCollider* dynamicEntity = (EntityCollider*) dynamicEntities[j];
 
-			if (dynamicEntity == NULL) {
+			if (dynamicEntity == NULL || dynamicEntity->type == MILITARY_BASE) {
 				continue;
 			}
 
@@ -126,7 +126,7 @@ void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
 			//if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
 
 			if (collision_model->sphereCollision(origin.v, dynamicEntity->highMesh->box.halfsize.length() - 5) == true) {
-				dynamicEntity->collisionEffect();
+				dynamicEntity->collisionEffectAgainstStaticEntity();
 			}
 
 		}
@@ -187,14 +187,14 @@ void CollisionHandler::collisionDynamicEntitesAgainstDynamicEntiteis() {
 			//if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
 
 			if (collision_model->sphereCollision(origin.v, dynamicEntity2->highMesh->box.halfsize.length() - 5) == true) {
-				dynamicEntity2->collisionEffect();
+				dynamicEntity2->collisionEffectAgainstDynamicEntity();
 				haveCollision = true;
 			}
 
 		}
 
 		if (haveCollision == true) {
-			dynamicEntity->collisionEffect();
+			dynamicEntity->collisionEffectAgainstDynamicEntity();
 		}
 
 	}

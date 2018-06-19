@@ -39,6 +39,7 @@ Bunker* Factory::buildBunker(char team, const Vector3 pos) {
 	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
 
 	Transform transform = Transform(pos, Quaternion());
+	transform.matrixModel.scale(5, 5, 5);
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1), false, true, false);
 
 	Bunker* bunker = new Bunker(transform, highMesh, material, team);

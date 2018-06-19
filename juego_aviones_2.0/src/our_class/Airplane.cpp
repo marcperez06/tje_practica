@@ -6,6 +6,7 @@
 #include "Weapon.h"
 #include "AirplaneController.h"
 #include "SoundManager.h"
+#include "EndStage.h"
 
 // --- CONSTRUCTORES ---
 
@@ -93,10 +94,7 @@ void Airplane::update(float deltaTime) {
 			this->material->color = Vector4(1, 1, 1, 1);
 
 			if (this->isPlayer == true) {
-				/*if (this->detectStaticCollision() == true) {
-					std::cout << "Collision !!" << std::endl;
-					this->state = AIRPLANE_CRHASED;
-				}*/
+
 				this->fuell -= deltaTime;
 
 				if (this->fuell < 60) {
@@ -108,6 +106,10 @@ void Airplane::update(float deltaTime) {
 				}
 			}
 
+		}
+
+		if (this->getPosition().y < -100) {
+			this->state = AIRPLANE_DESTROYED;
 		}
 
 	}
@@ -199,6 +201,10 @@ void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 		this->state = AIRPLANE_CRASHED;
 		World::instance->createRandomPowerup();
 		SoundManager::reproduceSound("killingAirplane.wav");
+		if (this->isPlayer == true) {
+			EndStage::instance->success = false;
+			EndStage::onChange("endStage");
+		}
 	}
 
 	Mesh mesh;
@@ -208,9 +214,15 @@ void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 	mesh.renderFixedPipeline(GL_POINTS);
 }
 
-void Airplane::collisionEffect() {
+void Airplane::collisionEffectAgainstStaticEntity() {
 	this->material->color = Vector4(0, 0, 0, 1);
 	this->state = AIRPLANE_DESTROYED;
+	//airplanesToDestroy.push_back(this);
+}
+
+void Airplane::collisionEffectAgainstDynamicEntity() {
+	this->material->color = Vector4(0, 0, 0, 1);
+	this->state = AIRPLANE_CRASHED;
 	//airplanesToDestroy.push_back(this);
 }
 

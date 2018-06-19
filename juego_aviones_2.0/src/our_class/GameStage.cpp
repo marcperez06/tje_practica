@@ -14,6 +14,8 @@
 #include "..\rendertotexture.h"
 #include "..\input.h"
 
+GameStage* GameStage::instance = NULL;
+
 GameStage::GameStage() {
 	this->gameSpeed = 1;
 	this->world = new World();
@@ -92,6 +94,10 @@ void GameStage::render() {
 	//render the FPS
 	drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
 
+	Vector3 pos = this->world->player->getGlobalPosition();
+
+	std::string a = "pos X: " + std::to_string(pos.x) + " pos Z: " + std::to_string(pos.z);
+	drawText(20, 20, a, Vector3(1, 1, 1), 2);
 	glDisable(GL_DEPTH_TEST);
 }
 
@@ -127,3 +133,5 @@ void GameStage::update(float deltaTime) {
 	this->world->update(deltaTime * this->gameSpeed);
 
 }
+
+void GameStage::reset() {}

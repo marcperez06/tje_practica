@@ -24,7 +24,8 @@ class EntityCollider : public EntityMesh {
 		bool haveCollisionAgainstDynamicObjects(const Vector3 origin, const Vector3 direction);
 
 		virtual void onBulletCollision(const Bullet & bullet, Vector3 collision);
-		virtual void collisionEffect();
+		virtual void collisionEffectAgainstStaticEntity();
+		virtual void collisionEffectAgainstDynamicEntity();
 
 };
 

@@ -12,6 +12,7 @@
 #include "our_class\ControlStage.h"
 #include "our_class\HistoryStage.h"
 #include "our_class\GameStage.h"
+#include "our_class\EndStage.h"
 #include "our_class\World.h"
 
 #include "rendertotexture.h"
@@ -51,6 +52,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	Stage::addStage("controlStage", new ControlStage());
 	Stage::addStage("historyStage", new HistoryStage());
 	Stage::addStage("gameStage", new GameStage());
+	Stage::addStage("endStage", new EndStage());
 
 	Stage::instance->current = Stage::stages["menuStage"];
 

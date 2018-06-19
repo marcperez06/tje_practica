@@ -54,4 +54,5 @@ bool EntityCollider::haveCollisionAgainstDynamicObjects(const Vector3 origin, co
 }
 
 void EntityCollider::onBulletCollision(const Bullet & bullet, Vector3 collisionPoint) {}
-void EntityCollider::collisionEffect() {}
+void EntityCollider::collisionEffectAgainstStaticEntity() {}
+void EntityCollider::collisionEffectAgainstDynamicEntity() {}
