@@ -139,6 +139,24 @@
     <ClCompile Include="..\..\src\our_class\SoundManager.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\our_class\Stage.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\MenuStage.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\Bunker.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\ControlStage.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\HistoryStage.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\GameStage.cpp">
+      <Filter>our_class</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\camera.h" />
@@ -273,6 +291,24 @@
       <Filter>our_class</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\our_class\SoundManager.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\Stage.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\MenuStage.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\Bunker.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\ControlStage.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\HistoryStage.h">
+      <Filter>our_class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\GameStage.h">
       <Filter>our_class</Filter>
     </ClInclude>
   </ItemGroup>

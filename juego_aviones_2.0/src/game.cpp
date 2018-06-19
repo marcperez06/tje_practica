@@ -8,14 +8,11 @@
 
 #include <cmath>
 
-#include "our_class\Airplane.h"
+#include "our_class\MenuStage.h"
+#include "our_class\ControlStage.h"
+#include "our_class\HistoryStage.h"
+#include "our_class\GameStage.h"
 #include "our_class\World.h"
-#include "our_class\BulletManager.h"
-#include "our_class\ProjectileManager.h"
-#include "our_class\SoundManager.h"
-
-#include "our_class\GUI.h"
-#include "our_class\Weapon.h"
 
 #include "rendertotexture.h"
 #include "bass.h"
@@ -25,13 +22,6 @@ Mesh* mesh = NULL;
 Texture* texture = NULL;
 Shader* shader = NULL;
 float angle = 0;
-
-World* world = NULL;
-BulletManager* bulletManager = NULL;
-ProjectileManager* projectileManager = NULL;
-GUI* gui = NULL;
-RenderToTexture* rt = NULL;
-Shader* screenShader = NULL;
 
 float gameSpeed;
 
@@ -57,15 +47,12 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	
 	gameSpeed = 1;
 
-	// Build world.
-	world = new World();
-	bulletManager = new BulletManager();
-	projectileManager = new ProjectileManager();
-	gui = new GUI(this->window_width, this->window_height);
-	rt = new RenderToTexture();
-	rt->create(612, 612, true);
+	Stage::addStage("menuStage", new MenuStage());
+	Stage::addStage("controlStage", new ControlStage());
+	Stage::addStage("historyStage", new HistoryStage());
+	Stage::addStage("gameStage", new GameStage());
 
-	screenShader = Shader::Load("data/shaders/screen.vs", "data/shaders/screen.fs");
+	Stage::instance->current = Stage::stages["menuStage"];
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -74,124 +61,22 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 //what to do when the image has to be draw
 void Game::render(void)
 {
-	//set the clear color (the background color)
-	float red = 161.0 / 255.0;
-	float green = 192.0 / 255.0;
-	float blue = 203.0 / 255.0;
-	glClearColor(red, green, blue, 1.0);
 
-	// Clear the window and the depth buffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//set the camera as default
-	world->currentCamera->enable();
-
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-
-	rt->enable();
-	
-	glClearColor(red, green, blue, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	world->render(world->currentCamera);
-	
-	rt->disable();
-
-	glDisable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
-	screenShader->enable();
-	screenShader->setUniform("u_time", this->time);
-	screenShader->setUniform("texture_size", 612);
-	rt->toViewport(screenShader);
-	screenShader->disable();
-
-	for (int i = 0; i < world->AIAirplanes.size(); i++) {
-
-		if (world->player->team == world->AIAirplanes[i]->team) {
-			continue;
-		}
-
-		if (World::distanceBetween(world->player, world->AIAirplanes[i]) > 200) {
-			gui->highlightEntity(world->AIAirplanes[i]);
-		}
-
-	}
-
-	gui->render();
-
-	//Draw out world
-	//drawGrid();
-
-	//render the FPS
-	drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
-
-	glDisable(GL_DEPTH_TEST);
+	Stage::instance->current->render();
 
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
-
-	/*
-	
-	//create model matrix for cube
-	Matrix44 m;
-	m.rotate( (float)(angle * DEG2RAD), Vector3(0.0f,1.0f, 0.0f) ); //build a rotation matrix
-
-	Shader* current_shader = shader;
-
-	if(current_shader)
-	{
-		//enable shader
-		current_shader->enable();
-
-		//upload uniforms
-		current_shader->setUniform("u_color", Vector4(1,1,1,1));
-		current_shader->setUniform("u_viewprojection", freeCamera->viewprojection_matrix );
-		current_shader->setUniform("u_texture", texture);
-		current_shader->setUniform("u_model", m);
-		current_shader->setUniform("u_time", time);
-
-		//current_shader->setUniform("u_model", m);
-		mesh->render(GL_TRIANGLES, current_shader);
-
-		//disable shader
-		current_shader->disable();
-	}
-   
-	
-	player->render(currentCamera);
-
-	*/
-
 }
 
 void Game::update(double seconds_elapsed)
 {
-	float speed = seconds_elapsed * 10; //the speed is defined by the seconds_elapsed so it goes constant
 
-	//example
-	angle += (float)seconds_elapsed * 10.0f;
+	Stage::instance->current->update(seconds_elapsed);
 
-	//mouse input to rotate the cam
-	if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked ) //is left button pressed?
-	{
-		World::instance->freeCamera->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f,-1.0f,0.0f));
-		World::instance->freeCamera->rotate(Input::mouse_delta.y * 0.005f, World::instance->freeCamera->getLocalVector( Vector3(-1.0f,0.0f,0.0f)));
-	}
-
-	//async input to move the camera around
-	if(Input::isKeyPressed(SDL_SCANCODE_LSHIFT) ) speed *= 50; //move faster with left shift
-	if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) World::instance->freeCamera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
-	if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) World::instance->freeCamera->move(Vector3(0.0f, 0.0f,-1.0f) * speed);
-	if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) World::instance->freeCamera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
-	if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) World::instance->freeCamera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
-
-	world->update(seconds_elapsed * gameSpeed);
-	
 	//to navigate with the mouse fixed in the middle
 	if (mouse_locked)
 		Input::centerMouse();
+
 }
 
 //Keyboard event handler (sync input)
@@ -201,16 +86,6 @@ void Game::onKeyDown( SDL_KeyboardEvent event )
 	{
 		case SDLK_ESCAPE: must_exit = true; break; //ESC key, kill the app
 		case SDLK_F1: Shader::ReloadAll(); break; 
-		case SDLK_1:
-			World::instance->currentCamera = (World::instance->currentCamera == World::instance->freeCamera) ? World::instance->playerCamera : World::instance->freeCamera;
-			World::instance->freeCamera->eye = World::instance->playerCamera->eye;
-			gameSpeed = (World::instance->currentCamera == World::instance->playerCamera) ? 1 : 0.01;
-			break;
-		case SDLK_2: 
-			World::instance->player->state = 0; 
-			World::instance->player->health = 100;
-			World::instance->player->fuell = 500;
-			break;
 	}
 }
 

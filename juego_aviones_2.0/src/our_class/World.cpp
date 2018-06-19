@@ -59,7 +59,7 @@ void World::initCameras() {
 
 	this->playerCamera = new Camera();
 	this->playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp); //position the camera and point to 0,0,0
-	this->playerCamera->setPerspective(70.f, Game::instance->window_width / (float) Game::instance->window_height, 1, 10000.f); //set the projection, we want to be perspective
+	this->playerCamera->setPerspective(70.f, Game::instance->window_width / (float) Game::instance->window_height, 1, 15000.f); //set the projection, we want to be perspective
 
 	this->currentCamera = this->playerCamera;
 }

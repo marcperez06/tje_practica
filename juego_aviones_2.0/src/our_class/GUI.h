@@ -29,7 +29,6 @@ class GUI {
 		void drawMisil();
 		void drawDropBomb();
 		void drawShootGun();
-		void drawMachineGunFree();
 		void drawPlayerHealth();
 		void drawPlayerFuell();
 
