@@ -1,10 +1,10 @@
 #include "Factory.h"
-#include "Airplane.h"
-#include "MachineGun.h"
-#include "DropBomb.h"
-#include "RocketLauncher.h"
-#include "ShootGun.h"
-#include "Bunker.h"
+#include "entities/Airplane.h"
+#include "weapons/MachineGun.h"
+#include "weapons/DropBomb.h"
+#include "weapons/RocketLauncher.h"
+#include "weapons/ShootGun.h"
+#include "entities/Bunker.h"
 
 Airplane* Factory::buildAirplane(char team, const Vector3 pos, float speed) {
 
@@ -36,7 +36,7 @@ Bunker* Factory::buildBunker(char team, const Vector3 pos) {
 	Mesh* highMesh = Mesh::Load("data/terrain_props/fort_base.ASE");
 	//Mesh* lowMesh = Mesh::Load("data/terrain_props/spitfire_low.ASE");
 	Texture* texture = Texture::Load("data/terrain_props/bunkers_and_forts.tga");
-	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/texture.fs");
+	Shader* shader = Shader::Load("data/shaders/basic.vs", "data/shaders/world.fs");
 
 	Transform transform = Transform(pos, Quaternion());
 	transform.matrixModel.scale(5, 5, 5);

@@ -58,107 +58,107 @@
     <ClCompile Include="..\..\src\input.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\our_class\AIController.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Airplane.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\AirplaneController.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Bullet.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\BulletManager.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Clouds.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Collision.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\CollisionHandler.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\DropBomb.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Entity.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\EntityCollider.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\EntityMesh.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\our_class\Factory.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\our_class\GUI.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\our_class\MachineGun.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Material.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Path.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\PlayerController.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Powerup.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Projectile.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\ProjectileManager.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\RocketLauncher.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\ShootGun.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Transform.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Weapon.cpp">
-      <Filter>our_class</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\our_class\World.cpp">
       <Filter>our_class</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\our_class\SoundManager.cpp">
-      <Filter>our_class</Filter>
+    <ClCompile Include="..\..\src\our_class\managers\BulletManager.cpp">
+      <Filter>our_class\managers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Stage.cpp">
-      <Filter>our_class</Filter>
+    <ClCompile Include="..\..\src\our_class\managers\ProjectileManager.cpp">
+      <Filter>our_class\managers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\our_class\MenuStage.cpp">
-      <Filter>our_class</Filter>
+    <ClCompile Include="..\..\src\our_class\managers\SoundManager.cpp">
+      <Filter>our_class\managers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\our_class\Bunker.cpp">
-      <Filter>our_class</Filter>
+    <ClCompile Include="..\..\src\our_class\controllers\AIController.cpp">
+      <Filter>our_class\controllers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\our_class\ControlStage.cpp">
-      <Filter>our_class</Filter>
+    <ClCompile Include="..\..\src\our_class\controllers\AirplaneController.cpp">
+      <Filter>our_class\controllers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\our_class\HistoryStage.cpp">
-      <Filter>our_class</Filter>
+    <ClCompile Include="..\..\src\our_class\controllers\PlayerController.cpp">
+      <Filter>our_class\controllers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\our_class\GameStage.cpp">
-      <Filter>our_class</Filter>
+    <ClCompile Include="..\..\src\our_class\entities\Airplane.cpp">
+      <Filter>our_class\entities</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\our_class\EndStage.cpp">
-      <Filter>our_class</Filter>
+    <ClCompile Include="..\..\src\our_class\entities\Bunker.cpp">
+      <Filter>our_class\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\entities\Clouds.cpp">
+      <Filter>our_class\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\entities\Collision.cpp">
+      <Filter>our_class\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\entities\Entity.cpp">
+      <Filter>our_class\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\entities\EntityCollider.cpp">
+      <Filter>our_class\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\entities\EntityMesh.cpp">
+      <Filter>our_class\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\entities\Material.cpp">
+      <Filter>our_class\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\entities\Path.cpp">
+      <Filter>our_class\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\entities\Powerup.cpp">
+      <Filter>our_class\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\entities\Transform.cpp">
+      <Filter>our_class\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\stages\ControlStage.cpp">
+      <Filter>our_class\stages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\stages\EndStage.cpp">
+      <Filter>our_class\stages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\stages\GameStage.cpp">
+      <Filter>our_class\stages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\stages\HistoryStage.cpp">
+      <Filter>our_class\stages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\stages\MenuStage.cpp">
+      <Filter>our_class\stages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\stages\Stage.cpp">
+      <Filter>our_class\stages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\weapons\Bullet.cpp">
+      <Filter>our_class\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\weapons\DropBomb.cpp">
+      <Filter>our_class\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\weapons\MachineGun.cpp">
+      <Filter>our_class\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\weapons\Projectile.cpp">
+      <Filter>our_class\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\weapons\RocketLauncher.cpp">
+      <Filter>our_class\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\weapons\ShootGun.cpp">
+      <Filter>our_class\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\weapons\Weapon.cpp">
+      <Filter>our_class\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\our_class\managers\CollisionHandler.cpp">
+      <Filter>our_class\managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -215,107 +215,107 @@
     <ClInclude Include="..\..\src\input.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\our_class\AIController.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Airplane.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\AirplaneController.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Bullet.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\BulletManager.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Clouds.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Collision.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\CollisionHandler.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\DropBomb.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Entity.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\EntityCollider.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\EntityMesh.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\our_class\Factory.h">
       <Filter>our_class</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\our_class\GUI.h">
       <Filter>our_class</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\our_class\MachineGun.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Material.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Path.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\PlayerController.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Powerup.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Projectile.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\ProjectileManager.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\RocketLauncher.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\ShootGun.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Transform.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Weapon.h">
-      <Filter>our_class</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\our_class\World.h">
       <Filter>our_class</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\our_class\SoundManager.h">
-      <Filter>our_class</Filter>
+    <ClInclude Include="..\..\src\our_class\managers\BulletManager.h">
+      <Filter>our_class\managers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Stage.h">
-      <Filter>our_class</Filter>
+    <ClInclude Include="..\..\src\our_class\managers\ProjectileManager.h">
+      <Filter>our_class\managers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\our_class\MenuStage.h">
-      <Filter>our_class</Filter>
+    <ClInclude Include="..\..\src\our_class\managers\SoundManager.h">
+      <Filter>our_class\managers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\our_class\Bunker.h">
-      <Filter>our_class</Filter>
+    <ClInclude Include="..\..\src\our_class\controllers\AIController.h">
+      <Filter>our_class\controllers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\our_class\ControlStage.h">
-      <Filter>our_class</Filter>
+    <ClInclude Include="..\..\src\our_class\controllers\AirplaneController.h">
+      <Filter>our_class\controllers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\our_class\HistoryStage.h">
-      <Filter>our_class</Filter>
+    <ClInclude Include="..\..\src\our_class\controllers\PlayerController.h">
+      <Filter>our_class\controllers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\our_class\GameStage.h">
-      <Filter>our_class</Filter>
+    <ClInclude Include="..\..\src\our_class\entities\Airplane.h">
+      <Filter>our_class\entities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\our_class\EndStage.h">
-      <Filter>our_class</Filter>
+    <ClInclude Include="..\..\src\our_class\entities\Bunker.h">
+      <Filter>our_class\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\entities\Clouds.h">
+      <Filter>our_class\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\entities\Collision.h">
+      <Filter>our_class\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\entities\Entity.h">
+      <Filter>our_class\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\entities\EntityCollider.h">
+      <Filter>our_class\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\entities\EntityMesh.h">
+      <Filter>our_class\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\entities\Material.h">
+      <Filter>our_class\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\entities\Path.h">
+      <Filter>our_class\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\entities\Powerup.h">
+      <Filter>our_class\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\entities\Transform.h">
+      <Filter>our_class\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\stages\ControlStage.h">
+      <Filter>our_class\stages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\stages\EndStage.h">
+      <Filter>our_class\stages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\stages\GameStage.h">
+      <Filter>our_class\stages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\stages\HistoryStage.h">
+      <Filter>our_class\stages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\stages\MenuStage.h">
+      <Filter>our_class\stages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\stages\Stage.h">
+      <Filter>our_class\stages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\weapons\Bullet.h">
+      <Filter>our_class\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\weapons\DropBomb.h">
+      <Filter>our_class\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\weapons\MachineGun.h">
+      <Filter>our_class\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\weapons\Projectile.h">
+      <Filter>our_class\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\weapons\RocketLauncher.h">
+      <Filter>our_class\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\weapons\ShootGun.h">
+      <Filter>our_class\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\weapons\Weapon.h">
+      <Filter>our_class\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\managers\CollisionHandler.h">
+      <Filter>our_class\managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -333,6 +333,21 @@
     </Filter>
     <Filter Include="our_class">
       <UniqueIdentifier>{c295540f-dcdd-42d3-a0f4-a7a6bf06e2e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="our_class\stages">
+      <UniqueIdentifier>{2ec02525-eca6-4faa-8c17-98af270faecd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="our_class\managers">
+      <UniqueIdentifier>{9696a7e2-4aca-428c-ad79-acdc3c8938bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="our_class\entities">
+      <UniqueIdentifier>{8c07c777-752a-4835-b05a-dec36768629e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="our_class\weapons">
+      <UniqueIdentifier>{6233fbcb-eba6-41a4-837a-70be539b7e9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="our_class\controllers">
+      <UniqueIdentifier>{2f70bf9e-0589-4f3f-b578-d152c31ee10c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

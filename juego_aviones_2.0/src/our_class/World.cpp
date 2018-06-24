@@ -2,24 +2,25 @@
 #include "Factory.h"
 #include <stdlib.h>
 #include "../game.h";
-#include "BulletManager.h"
-#include "ProjectileManager.h"
-#include "CollisionHandler.h"
-#include "Airplane.h"
-#include "MachineGun.h"
-#include "DropBomb.h"
-#include "RocketLauncher.h"
-#include "ShootGun.h"
-#include "PlayerController.h"
-#include "AIController.h"
-#include "AirplaneController.h"
-#include "Clouds.h"
-#include "Powerup.h"
-#include "Bunker.h"
+#include "managers/BulletManager.h"
+#include "managers/ProjectileManager.h"
+#include "managers/CollisionHandler.h"
+#include "entities/Airplane.h"
+#include "weapons/MachineGun.h"
+#include "weapons/DropBomb.h"
+#include "weapons/RocketLauncher.h"
+#include "weapons/ShootGun.h"
+#include "controllers/PlayerController.h"
+#include "controllers/AIController.h"
+#include "controllers/AirplaneController.h"
+#include "entities/Clouds.h"
+#include "entities/Powerup.h"
+#include "entities/Bunker.h"
 
 World* World::instance = NULL;
 
-World::World() {
+World::World(int hardFactor) {
+	this->hardFactor = hardFactor;
 	this->root = new Entity(Vector3(0, 0, 0));
 	this->numAIAirplanes = 16;
 	this->numOfTeams = 2;
@@ -67,6 +68,7 @@ void World::initCameras() {
 
 void World::initPlayer() {
 	this->player = Factory::buildAirplane(TEAM_ALFA, Vector3(-1565, 600, 13655), 205);
+	this->player->fuell = this->player->fuell / this->hardFactor;
 	this->player->name = "player";
 	this->player->uuid = 1;
 
@@ -81,11 +83,14 @@ void World::initPlayer() {
 
 void World::initBunkers() {
 
-	this->teamMilitaryBases.push_back(Factory::buildBunker(TEAM_ALFA, Vector3(-1565, 0, 13070)));
+	Bunker* bunkerAlfa = Factory::buildBunker(TEAM_ALFA, Vector3(-1565, 0, 13070));
+	this->teamMilitaryBases.push_back(bunkerAlfa);
 	this->root->addChild(this->teamMilitaryBases[0]);
 	this->dynamicObjects.push_back(this->teamMilitaryBases[0]);
 
-	this->teamMilitaryBases.push_back(Factory::buildBunker(TEAM_DELTA, Vector3(-815, 0, -12400)));
+	Bunker* bunkerDelta = Factory::buildBunker(TEAM_DELTA, Vector3(-815, 0, -12400));
+	bunkerDelta->health = bunkerDelta->health * this->hardFactor;
+	this->teamMilitaryBases.push_back(bunkerDelta);
 	this->teamMilitaryBases[1]->transform.rotate(33 * DEG2RAD, Transform::UP);
 	this->root->addChild(this->teamMilitaryBases[1]);
 	this->dynamicObjects.push_back(this->teamMilitaryBases[1]);
@@ -165,7 +170,7 @@ void World::initTeamAlfa() {
 	float z = (rand() % 20) + bunkerPos.z + this->player->highMesh->aabb_max.z;
 
 	Airplane* enemy = Factory::buildAirplane(TEAM_ALFA, Vector3(x, y, z), 200);
-
+	enemy->health = enemy->health * this->hardFactor;
 	enemy->path.createCircle(bunkerPos, 40, 200);
 	enemy->isPlayer = false;
 
@@ -184,7 +189,7 @@ void World::initTeamDelta() {
 	float z = (rand() % 20) + bunkerPos.z + this->player->highMesh->aabb_max.z;
 	
 	Airplane* enemy = Factory::buildAirplane(TEAM_DELTA, Vector3(x, y, z), 200);
-	
+	enemy->health = enemy->health * this->hardFactor;
 	enemy->path.createCircle(bunkerPos, 40, 200);
 	enemy->isPlayer = false;
 
@@ -203,7 +208,7 @@ void World::initTeamBeta() {
 	float z = (rand() % 20) + bunkerPos.z + this->player->highMesh->aabb_max.z;
 
 	Airplane* enemy = Factory::buildAirplane(TEAM_BETA, Vector3(x, y, z), 200);
-
+	enemy->health = enemy->health * this->hardFactor;
 	enemy->path.createCircle(bunkerPos, 40, 200);
 	enemy->isPlayer = false;
 
@@ -222,7 +227,7 @@ void World::initTeamGamma() {
 	float z = (rand() % 20) + bunkerPos.z + this->player->highMesh->aabb_max.z;
 
 	Airplane* enemy = Factory::buildAirplane(TEAM_GAMMA, Vector3(x, y, z), 200);
-
+	enemy->health = enemy->health * this->hardFactor;
 	enemy->path.createCircle(bunkerPos, 40, 200);
 	enemy->isPlayer = false;
 

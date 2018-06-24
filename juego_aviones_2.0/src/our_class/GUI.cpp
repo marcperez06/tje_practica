@@ -1,7 +1,7 @@
 #include "GUI.h"
 #include "World.h"
-#include "Airplane.h"
-#include "Weapon.h"
+#include "entities/Airplane.h"
+#include "weapons/Weapon.h"
 #include "../utils.h"
 
 GUI::GUI(float windowWidth, float windowHeight) {

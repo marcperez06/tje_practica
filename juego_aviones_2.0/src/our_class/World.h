@@ -34,6 +34,7 @@ class World {
 		std::vector<Bunker*> teamMilitaryBases;
 		//std::vector<Powerup*> powerups;
 
+		int hardFactor;
 		int numAIAirplanes;
 		int numOfTeams;
 
@@ -45,7 +46,7 @@ class World {
 		std::vector<Entity*> staticObjects;
 		std::vector<Entity*> dynamicObjects;
 
-		World();
+		World(int hardFactor = 1);
 		~World();
 
 		Entity* getWorldMap();

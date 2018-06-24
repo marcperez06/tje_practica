@@ -1,9 +1,9 @@
 #ifndef FACTORY_H
 #define FACTORY_H
 
-#include "Bullet.h"
+#include "weapons/Bullet.h"
 #include "World.h"
-#include "Projectile.h"
+#include "weapons/Projectile.h"
 #include "../framework.h"
 
 class Airplane;

@@ -8,12 +8,13 @@
 
 #include <cmath>
 
-#include "our_class\MenuStage.h"
-#include "our_class\ControlStage.h"
-#include "our_class\HistoryStage.h"
-#include "our_class\GameStage.h"
-#include "our_class\EndStage.h"
-#include "our_class\World.h"
+//#include "our_class/stages/StartStage.h"
+#include "our_class/stages/MenuStage.h"
+#include "our_class/stages/ControlStage.h"
+#include "our_class/stages/HistoryStage.h"
+#include "our_class/stages/GameStage.h"
+#include "our_class/stages/EndStage.h"
+#include "our_class/World.h"
 
 #include "rendertotexture.h"
 #include "bass.h"
