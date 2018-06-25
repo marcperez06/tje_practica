@@ -7,7 +7,7 @@
 
 ControlStage::ControlStage() {
 	this->gui = new GUI(Game::instance->window_width, Game::instance->window_height);
-	this->controlTexture = Texture::Load("data/stage/controls.tga");
+	this->controlTexture = Texture::Load("data/stages/controls.tga");
 	ControlStage::instance = this;
 }
 
@@ -31,8 +31,9 @@ void ControlStage::render() {
 }
 
 void ControlStage::update(float deltaTime) {
-	if (Input::wasKeyPressed(SDL_SCANCODE_ESCAPE) == true
-		|| Input::wasKeyPressed(SDL_SCANCODE_RETURN) == true) {
+	if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) == true
+		|| Input::wasKeyPressed(SDL_SCANCODE_RETURN) == true
+		|| Input::wasButtonPressed(B_BUTTON) == true) {
 		Stage::onChange("menuStage");
 	}
 }

@@ -93,8 +93,8 @@ void Entity::removeChild(Entity* entity) {
 
 	for (int i = 0; i < this->children.size(); i++) {
 		if (this->children[i] == entity) {
-			this->children.erase(this->children.begin() + i);
 			this->children[i]->parent = NULL;
+			this->children.erase(this->children.begin() + i);
 		}
 	}
 }

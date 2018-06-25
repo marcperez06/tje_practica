@@ -123,8 +123,10 @@ void Game::onResize(int width, int height)
 {
     std::cout << "window resized: " << width << "," << height << std::endl;
 	glViewport( 0,0, width, height );
-	World::instance->freeCamera->aspect =  width / (float)height;
-	World::instance->playerCamera->aspect = width / (float)height;
+	if (World::instance != NULL) {
+		World::instance->freeCamera->aspect = width / (float)height;
+		World::instance->playerCamera->aspect = width / (float)height;
+	}
 	window_width = width;
 	window_height = height;
 }

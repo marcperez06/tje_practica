@@ -22,7 +22,7 @@ World* World::instance = NULL;
 World::World(int hardFactor) {
 	this->hardFactor = hardFactor;
 	this->root = new Entity(Vector3(0, 0, 0));
-	this->numAIAirplanes = 16;
+	this->numAIAirplanes = 24;
 	this->numOfTeams = 2;
 	this->initPlayer();
 	this->initBunkers();
@@ -41,12 +41,15 @@ World::World(int hardFactor) {
 World::~World() {
 	for (int i = 0; i < this->root->children.size(); i++) {
 		delete this->root->children[i];
-		this->root->children.erase(this->root->children.begin() + i);
 	}
 	delete this->sky;
 	delete this->sea;
 	delete this->clouds;
 	delete this->root;
+	this->player = NULL;
+	Airplane::airplanes.clear();
+	Airplane::airplanesToDestroy.clear();
+	Powerup::powerups.clear();
 }
 
 void World::initCameras() {

@@ -123,8 +123,6 @@ void CollisionHandler::collisionStaticEntitesAgainstDynamicEntiteis() {
 				continue;
 			}
 
-			//if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
-
 			if (collision_model->sphereCollision(origin.v, dynamicEntity->highMesh->box.halfsize.length() - 5) == true) {
 				dynamicEntity->collisionEffectAgainstStaticEntity();
 			}
@@ -183,8 +181,6 @@ void CollisionHandler::collisionDynamicEntitesAgainstDynamicEntiteis() {
 			if (World::distanceBetween(dynamicEntity, dynamicEntity2) > boundingBoxHalfSize.length()) {
 				continue;
 			}
-
-			//if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
 
 			if (collision_model->sphereCollision(origin.v, dynamicEntity2->highMesh->box.halfsize.length() - 5) == true) {
 				dynamicEntity2->collisionEffectAgainstDynamicEntity();
@@ -251,8 +247,6 @@ void CollisionHandler::bulletsCollisionAgainstStaticEntities(Bullet bullets[], i
 
 			if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
 				bullet.timeToLive = 0;
-				std::cout << "BUllet Destroy ..... " << std::endl;
-
 			}
 
 		}
@@ -296,7 +290,8 @@ void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], 
 
 			Bullet& bullet = bullets[j];
 
-			if ((bullet.timeToLive <= 0) || bullet.owner == dynamicEntity) {
+			if ((bullet.timeToLive <= 0) || bullet.owner == dynamicEntity
+				|| bullet.owner->team == dynamicEntity->team) {
 				continue;
 			}
 
@@ -308,13 +303,12 @@ void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], 
 			Vector3 direction = bullet.position - bullet.lastPosition;
 			float maxRayDistance = direction.length();
 
-			if (collision_model->sphereCollision(origin.v, dynamicEntity->highMesh->box.halfsize.length() + 10) == true) {
+			if (collision_model->sphereCollision(origin.v, dynamicEntity->highMesh->box.halfsize.length() + 5) == true) {
 
 				Vector3 collisionPoint;
 				collision_model->getCollisionPoint(collisionPoint.v, true);
 
 				bullet.timeToLive = 0;
-				std::cout << "BUllet Destroy ..... " << std::endl;
 				dynamicEntity->onBulletCollision(bullet, collisionPoint); // LLamar desde testDynamicCollision, para idicarle al avion de que una bala a colisionado con el.
 
 			}

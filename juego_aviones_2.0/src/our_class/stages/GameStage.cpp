@@ -19,25 +19,62 @@ GameStage* GameStage::instance = NULL;
 GameStage::GameStage() {
 	this->gameSpeed = 1;
 	this->hardFactor = 1;
+
+	this->world = NULL;
+	this->bulletManager = NULL;
+	this->projectileManager = NULL;
+	this->gui = NULL;
+	this->screenShader = NULL;
+
+	GameStage::instance = this;
+}
+
+GameStage::~GameStage() {
+	this->destroy();
+	Stage::removeStage("gameStage");
+}
+
+void GameStage::restart() {
+	this->destroy();
+	this->init();
+}
+
+void GameStage::destroy() {
+	if (this->gui != NULL) {
+		delete this->gui;
+		this->gui = NULL;
+	}
+
+	if (this->bulletManager != NULL) {
+		delete this->bulletManager;
+		this->bulletManager = NULL;
+	}
+
+	if (this->projectileManager != NULL) {
+		delete this->projectileManager;
+		this->projectileManager = NULL;
+	}
+
+	if (this->screenShader != NULL) {
+		this->screenShader->s_Shaders.erase("data/shaders/screen.vs,data/shaders/screen.fs");
+		delete this->screenShader;
+		this->screenShader = NULL;
+	}
+
+	if (this->world != NULL) {
+		delete this->world;
+		this->world = NULL;
+	}
+}
+
+void GameStage::init() {
 	this->world = new World(this->hardFactor);
 	this->bulletManager = new BulletManager();
 	this->projectileManager = new ProjectileManager();
 	this->gui = new GUI(Game::instance->window_width, Game::instance->window_height);
 	this->rt = new RenderToTexture();
 	this->rt->create(612, 612, true);
-
 	this->screenShader = Shader::Load("data/shaders/screen.vs", "data/shaders/screen.fs");
-
-	GameStage::instance = this;
-}
-
-GameStage::~GameStage() {
-	delete this->gui;
-	delete this->bulletManager;
-	delete this->projectileManager;
-	delete this->screenShader;
-	delete this->world;
-	Stage::removeStage("gameStage");
 }
 
 void GameStage::render() {
@@ -77,7 +114,9 @@ void GameStage::render() {
 
 	for (int i = 0; i < world->AIAirplanes.size(); i++) {
 
-		if (this->world->player->team == this->world->AIAirplanes[i]->team) {
+		if (this->world->player->team == this->world->AIAirplanes[i]->team
+			|| this->world->AIAirplanes[i]->state == AIRPLANE_CRASHED
+			|| this->world->AIAirplanes[i]->state == AIRPLANE_DESTROYED) {
 			continue;
 		}
 
@@ -98,7 +137,7 @@ void GameStage::render() {
 	Vector3 pos = this->world->player->getGlobalPosition();
 
 	std::string a = "pos X: " + std::to_string(pos.x) + " pos Z: " + std::to_string(pos.z);
-	drawText(20, 20, a, Vector3(1, 1, 1), 2);
+	drawText(30, 30, a, Vector3(1, 1, 1), 2);
 	glDisable(GL_DEPTH_TEST);
 }
 

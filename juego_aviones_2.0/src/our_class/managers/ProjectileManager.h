@@ -14,6 +14,7 @@ class ProjectileManager {
 		Projectile misils[maxMisils];
 
 		ProjectileManager();
+		~ProjectileManager();
 
 		void createProjectile(Matrix44 pos, Vector3 velocity, std::string type, Airplane* owner, int damage);
 

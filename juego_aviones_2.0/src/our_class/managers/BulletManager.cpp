@@ -11,6 +11,12 @@ BulletManager::BulletManager() {
 	this->instance = this;
 }
 
+BulletManager::~BulletManager() {
+	for (int i = 0; i < maxBullets; i++) {
+		this->bullets[i].timeToLive = 0;
+	}
+}
+
 void BulletManager::createBullet(Vector3 pos, Vector3 velocity, std::string type, Airplane* owner, int damage) {
 
 	Bullet bullet;

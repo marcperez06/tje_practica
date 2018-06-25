@@ -12,6 +12,16 @@ ProjectileManager::ProjectileManager() {
 	this->instance = this;
 }
 
+ProjectileManager::~ProjectileManager() {
+	for (int i = 0; i < maxBombs; i++) {
+		this->bombs[i].timeToLive = 0;
+	}
+
+	for (int i = 0; i < maxMisils; i++) {
+		this->misils[i].timeToLive = 0;
+	}
+}
+
 void ProjectileManager::createProjectile(Matrix44 pos, Vector3 velocity, std::string type, Airplane* owner, int damage) {
 
 	Projectile projectile;

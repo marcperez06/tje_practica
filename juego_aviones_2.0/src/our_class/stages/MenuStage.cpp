@@ -4,6 +4,7 @@
 #include "../../game.h"
 #include "../../texture.h"
 #include "../../input.h"
+#include "GameStage.h"
 
 MenuStage::MenuStage() {
 	this->gui = new GUI(Game::instance->window_width, Game::instance->window_height);
@@ -32,11 +33,17 @@ void MenuStage::render() {
 }
 
 void MenuStage::update(float deltaTime) {
-	if (Input::wasKeyPressed(SDL_SCANCODE_1) == true) {
+	if (Input::wasKeyPressed(SDL_SCANCODE_1) == true || Input::wasButtonPressed(A_BUTTON) == true) {
+		GameStage::instance->hardFactor = 1;
 		Stage::onChange("historyStage");
-	} else if (Input::wasKeyPressed(SDL_SCANCODE_2) == true) {
+		GameStage::instance->restart();
+	} else if (Input::wasKeyPressed(SDL_SCANCODE_2) == true || Input::wasButtonPressed(Y_BUTTON) == true) {
+		GameStage::instance->hardFactor = 2;
+		Stage::onChange("historyStage");
+		GameStage::instance->restart();
+	} else if (Input::wasKeyPressed(SDL_SCANCODE_3) == true || Input::wasButtonPressed(X_BUTTON) == true) {
 		Stage::onChange("controlStage");
-	} else if (Input::wasKeyPressed(SDL_SCANCODE_3) == true) {
+	} else if (Input::wasKeyPressed(SDL_SCANCODE_ESCAPE) == true || Input::wasButtonPressed(B_BUTTON) == true) {
 		exit(0);
 	}
 }

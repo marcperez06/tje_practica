@@ -21,6 +21,7 @@ void Stage::onChange(std::string stageName){
 		Stage::current = it->second;
 	}
 }
+
 void Stage::addStage(std::string stageName, Stage* stage) {
 	std::map<std::string, Stage*>::iterator it = Stage::stages.find(stageName);
 	if (it == Stage::stages.end()) {

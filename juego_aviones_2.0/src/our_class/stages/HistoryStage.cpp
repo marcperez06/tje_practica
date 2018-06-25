@@ -32,17 +32,23 @@ void HistoryStage::render() {
 }
 
 void HistoryStage::update(float deltaTime) {
-	if (Input::wasKeyPressed(SDL_SCANCODE_RIGHT) == true) {
+	if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) == true
+		|| Input::wasButtonPressed(A_BUTTON) == true) {
 		this->numSlide++;
-	} else if (Input::wasKeyPressed(SDL_SCANCODE_RIGHT) == true) {
+	} else if (Input::wasKeyPressed(SDL_SCANCODE_RETURN) == true
+				|| Input::wasButtonPressed(B_BUTTON) == true) {
 		this->numSlide--;
 	}
 
-	if (this->numSlide < 2) {
+	if (this->numSlide > 0 && this->numSlide < 2) {
 		std::string pathTexture = "data/stages/history/history" + std::to_string(this->numSlide);
 		pathTexture = pathTexture + ".tga";
 		this->historyTexture = Texture::Load(pathTexture.c_str());
+	} else if (this->numSlide <= 0) {
+		this->numSlide = 1;
+		Stage::onChange("menuStage");
 	} else {
+		this->numSlide = 1;
 		Stage::onChange("gameStage");
 	}
 }

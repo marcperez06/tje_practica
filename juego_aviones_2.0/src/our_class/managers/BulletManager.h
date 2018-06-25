@@ -11,6 +11,7 @@ class BulletManager {
 		Bullet bullets[maxBullets];
 
 		BulletManager();
+		~BulletManager();
 
 		void createBullet(Vector3 pos, Vector3 velocity, std::string type, Airplane* owner, int damage);
 

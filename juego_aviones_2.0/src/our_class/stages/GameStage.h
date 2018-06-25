@@ -26,6 +26,9 @@ class GameStage : public Stage {
 		GameStage();
 		~GameStage();
 
+		void init();
+		void destroy();
+		void restart();
 		virtual void render();
 		virtual void update(float deltaTime);
 
