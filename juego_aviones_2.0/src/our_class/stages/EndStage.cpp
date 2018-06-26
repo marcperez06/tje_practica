@@ -42,7 +42,9 @@ void EndStage::render() {
 }
 
 void EndStage::update(float deltaTime) {
-	if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) == true) {
+	if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) == true 
+		|| Input::wasButtonPressed(A_BUTTON) == true) {
+		
 		GameStage::instance->reset();
 		Stage::onChange("menuStage");
 		this->success = false;

@@ -11,6 +11,7 @@ class Material {
 
 		Texture* texture;
 		Texture* extraTexture;
+		Texture* normalTexture;
 
 		Shader* shader;
 		Vector4 color;

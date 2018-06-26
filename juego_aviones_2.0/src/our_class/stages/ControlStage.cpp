@@ -34,6 +34,7 @@ void ControlStage::update(float deltaTime) {
 	if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) == true
 		|| Input::wasKeyPressed(SDL_SCANCODE_RETURN) == true
 		|| Input::wasButtonPressed(B_BUTTON) == true) {
+		
 		Stage::onChange("menuStage");
 	}
 }

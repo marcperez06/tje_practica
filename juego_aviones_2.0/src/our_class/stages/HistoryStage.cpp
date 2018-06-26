@@ -32,11 +32,9 @@ void HistoryStage::render() {
 }
 
 void HistoryStage::update(float deltaTime) {
-	if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) == true
-		|| Input::wasButtonPressed(A_BUTTON) == true) {
+	if (Input::wasKeyPressed(SDL_SCANCODE_SPACE) == true || Input::wasButtonPressed(A_BUTTON) == true) {
 		this->numSlide++;
-	} else if (Input::wasKeyPressed(SDL_SCANCODE_RETURN) == true
-				|| Input::wasButtonPressed(B_BUTTON) == true) {
+	} else if (Input::wasKeyPressed(SDL_SCANCODE_RETURN) == true || Input::wasButtonPressed(B_BUTTON) == true) {
 		this->numSlide--;
 	}
 

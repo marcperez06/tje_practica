@@ -8,7 +8,7 @@
 
 #include <cmath>
 
-//#include "our_class/stages/StartStage.h"
+#include "our_class/stages/StartStage.h"
 #include "our_class/stages/MenuStage.h"
 #include "our_class/stages/ControlStage.h"
 #include "our_class/stages/HistoryStage.h"
@@ -49,13 +49,14 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	
 	gameSpeed = 1;
 
+	Stage::addStage("startStage", new StartStage());
 	Stage::addStage("menuStage", new MenuStage());
 	Stage::addStage("controlStage", new ControlStage());
 	Stage::addStage("historyStage", new HistoryStage());
 	Stage::addStage("gameStage", new GameStage());
 	Stage::addStage("endStage", new EndStage());
 
-	Stage::instance->current = Stage::stages["menuStage"];
+	Stage::instance->current = Stage::stages["startStage"];
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse

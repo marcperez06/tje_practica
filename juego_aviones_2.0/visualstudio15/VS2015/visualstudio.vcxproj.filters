@@ -160,6 +160,9 @@
     <ClCompile Include="..\..\src\our_class\managers\CollisionHandler.cpp">
       <Filter>our_class\managers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\our_class\stages\StartStage.cpp">
+      <Filter>our_class\stages</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\camera.h" />
@@ -316,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\our_class\managers\CollisionHandler.h">
       <Filter>our_class\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\stages\StartStage.h">
+      <Filter>our_class\stages</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

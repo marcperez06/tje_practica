@@ -129,6 +129,7 @@
     <ClCompile Include="..\..\src\our_class\stages\HistoryStage.cpp" />
     <ClCompile Include="..\..\src\our_class\stages\MenuStage.cpp" />
     <ClCompile Include="..\..\src\our_class\stages\Stage.cpp" />
+    <ClCompile Include="..\..\src\our_class\stages\StartStage.cpp" />
     <ClCompile Include="..\..\src\our_class\weapons\Bullet.cpp" />
     <ClCompile Include="..\..\src\our_class\weapons\DropBomb.cpp" />
     <ClCompile Include="..\..\src\our_class\weapons\MachineGun.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="..\..\src\our_class\stages\HistoryStage.h" />
     <ClInclude Include="..\..\src\our_class\stages\MenuStage.h" />
     <ClInclude Include="..\..\src\our_class\stages\Stage.h" />
+    <ClInclude Include="..\..\src\our_class\stages\StartStage.h" />
     <ClInclude Include="..\..\src\our_class\weapons\Bullet.h" />
     <ClInclude Include="..\..\src\our_class\weapons\DropBomb.h" />
     <ClInclude Include="..\..\src\our_class\weapons\MachineGun.h" />

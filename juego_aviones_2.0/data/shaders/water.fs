@@ -15,26 +15,32 @@ uniform vec3 u_camera_pos;
 void main()
 {
 
+	float time = u_time * 0.9;
+	float u_offset = 0;
+	
 	vec2 uv = v_uv;
 	uv = v_world_position.xz * 0.001;
 	//uv.x += sin(u_time + (uv.x)) * 0.05; 
 	//uv.x += u_time * 0.5;
 	
-	vec2 uvDeltaMoveX = uv + vec2(sin(u_time * 0.1) + 1, cos(u_time * 0.08));
-	vec2 uvDeltaMoveY = uv + vec2(cos(u_time * 0.08), sin(u_time * 0.1));
+	vec2 uvDeltaMoveX = uv + vec2(sin(time * 0.3) + 1, cos(time * 0.01));
+	vec2 uvDeltaMoveY = uv + vec2(cos(time * 0.1), sin(time * 0.03));
 
-	vec4 color = texture2D( u_texture, uv);
+	vec4 color = texture2D(u_normal_texture, uv * 0.00001);
+	
 	
 	//uv = v_world_position.xz * 0.001;
 	//uv.y += u_time * 0.5; 
 
 	vec3 N = normalize(v_normal);
-	N = texture2D(u_extra_texture, uvDeltaMoveX).xzy * vec3(2.0) - vec3(1.0);
-	N = texture2D(u_extra_texture, uvDeltaMoveY).xzy * vec3(2.0) - vec3(1.0);
+	N = texture2D(u_normal_texture, uvDeltaMoveX).xzy * vec3(2.0) - vec3(1.0);
+	N += texture2D(u_normal_texture, uvDeltaMoveY).xzy * vec3(2.0) - vec3(1.0);
 	N = normalize(N);
+	
 	vec3 E = v_world_position - u_camera_pos;
 	float E_distance = E.length();
 	E = E / E_distance;
+	E = normalize(E);
 	
 	//compute eye reflected vector
 	vec3 R = reflect(E, N);
@@ -47,21 +53,20 @@ void main()
 	float pitch = asin(R.y) / 1.57079633; //0 means bottom, 1 means top
 
 	//build the UV vector for hemisphere (in case pitch is negative, clamp it to 0)
-	vec2 uv_reflection = vec2(yaw, clamp(pitch, 0.0, 1.0) );
+	//vec2 uv_reflection = vec2(yaw, clamp(pitch, 0.0, 1.0) );
+	vec2 uv_reflection = vec2(yaw, abs(pitch));
 
 	//read the sky texture (ignoring mipmaps to avoid problems)
-	vec4 sky_color = texture2DLod(u_extra_texture, uv_reflection, 1.0);
+	vec4 sky_color = texture2DLod(u_extra_texture, uv_reflection, 0.0);
 	//vec4 sky_color = texture2D(u_extra_texture, uv_reflection);
 
-	float fresnel = 1.0 - clamp(dot(E, N), 0.0, 1.0);
-	//float fresnel = 0.75;
+	float fresnel = clamp(1.0 - dot(E, N), 0.0, 1.0);
 	
-	//color = color * sky_color * fresnel;
-	color = color * u_color + sky_color;
-
+	color = (1 - fresnel) * color + (fresnel * sky_color);
+	
 	float distance = length(u_camera_pos - v_world_position);
 	float fogMaxDistance = 35000.0;
-	float fogMinDistance = 0.0;
+	float fogMinDistance = 1.0;
 	float fogDiferenceDistance = fogMaxDistance - distance;
 	float fogDiferenceMaxMin = fogMaxDistance - fogMinDistance;
 	float fogFactor = clamp(1.0 - (fogDiferenceDistance / fogDiferenceMaxMin) , 0.0, 1.0);
@@ -73,8 +78,8 @@ void main()
 	vec4 fogColor = vec4(red, green, blue, 0.10);
 	
 	color = mix(color, fogColor, fogFactor);
-	color = color - vec4(0.5, 0.5, 0.5, 0.0);
+	color = color - vec4(0.2, 0.2, 0.2, 0.0);
 	color.a = 0.8;
 	
-	gl_FragColor = color;
+	gl_FragColor = color * u_color;
 }

@@ -73,6 +73,11 @@ void EntityMesh::renderMesh(Camera * camera, Matrix44 globalMatrix) {
 		if (this->material->extraTexture != NULL) {
 			shader->setUniform("u_extra_texture", this->material->extraTexture);
 		}
+
+		if (this->material->extraTexture != NULL) {
+			shader->setUniform("u_normal_texture", this->material->normalTexture);
+		}
+
 		shader->setUniform("u_model", globalMatrix);
 		shader->setUniform("u_camera_position", camera->eye);
 		shader->setUniform("u_time", Game::instance->time);
