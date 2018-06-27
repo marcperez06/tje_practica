@@ -34,6 +34,9 @@ class ParticleSystem : EntityMesh {
 		void setTexture(const char * fileTexture);
 		void setMaterial(Material* material);
 
+		static ParticleSystem* createExplosion(Matrix44 model, bool looping = false);
+		static ParticleSystem* createSmoke(Matrix44 model, bool looping = true);
+
 };
 
 #endif

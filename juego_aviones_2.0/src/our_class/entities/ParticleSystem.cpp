@@ -174,3 +174,31 @@ void ParticleSystem::setTexture(const char * fileName) {
 void ParticleSystem::setMaterial(Material* material) {
 	this->material = material;
 }
+
+ParticleSystem* ParticleSystem::createExplosion(Matrix44 model, bool looping) {
+	Texture* texture = Texture::Load("data/clouds/clouds.tga");
+	Shader* shader = Shader::Load("data/shaders/clouds.vs", "data/shaders/clouds.fs");
+	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1));
+
+	ParticleSystem* explosion = new ParticleSystem(20);
+	explosion->duration = 10;
+	explosion->fixedDuration = explosion->duration;
+	explosion->setMaterial(material);
+	explosion->looping = looping;
+	explosion->initParticles(model.rotateVector(Transform::UP));
+	return explosion;
+}
+
+ParticleSystem* ParticleSystem::createSmoke(Matrix44 model, bool looping) {
+	ParticleSystem* smoke = new ParticleSystem(20);
+	smoke->duration = 10;
+	smoke->fixedDuration = smoke->duration;
+	Texture* texture = Texture::Load("data/clouds/clouds.tga");
+	Shader* shader = Shader::Load("data/shaders/clouds.vs", "data/shaders/clouds.fs");
+
+	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1));
+	
+	smoke->looping = looping;
+
+	return smoke;
+}

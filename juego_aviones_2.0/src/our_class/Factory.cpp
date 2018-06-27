@@ -210,27 +210,3 @@ ShootGun* Factory::buildShootGun(Airplane* owner) {
 	shootGun->fireRate = 10;
 	return shootGun;
 }
-
-ParticleSystem* Factory::buildExplosion() {
-	Texture* texture = Texture::Load("data/clouds/clouds.tga");
-	Shader* shader = Shader::Load("data/shaders/clouds.vs", "data/shaders/clouds.fs");
-	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1));
-
-	ParticleSystem* explosion = new ParticleSystem(20);
-	explosion->duration = 10;
-	explosion->fixedDuration = explosion->duration;
-	explosion->setMaterial(material);
-	explosion->initParticles(Transform::UP);
-	return explosion;
-}
-
-ParticleSystem* Factory::buildSmoke() {
-	ParticleSystem* smoke = new ParticleSystem(20);
-	smoke->duration = 10;
-	smoke->fixedDuration = smoke->duration;
-	Texture* texture = Texture::Load("data/clouds/clouds.tga");
-	Shader* shader = Shader::Load("data/shaders/clouds.vs", "data/shaders/clouds.fs");
-
-	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1));
-	return smoke;
-}

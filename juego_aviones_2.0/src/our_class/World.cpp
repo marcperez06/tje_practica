@@ -34,7 +34,6 @@ World::World(int hardFactor) {
 	this->initSky();
 	this->initSea();
 	this->clouds = new Clouds();
-	this->particle = Factory::buildExplosion();
 
 	this->createRandomPowerup();
 
@@ -73,11 +72,11 @@ void World::initCameras() {
 }
 
 void World::initPlayer() {
-	//this->player = Factory::buildAirplane(TEAM_ALFA, Vector3(-1565, 600, 13655), 205);
-	this->player = Factory::buildAirplane(TEAM_ALFA, Vector3(0, 0, 50), 2);
+	this->player = Factory::buildAirplane(TEAM_ALFA, Vector3(-1565, 600, 13655), 205);
 	this->player->fuell = this->player->fuell / this->hardFactor;
 	this->player->name = "player";
 	this->player->uuid = 1;
+	this->player->health = 45;
 
 	this->player->currentWepon = 0;
 	this->player->isPlayer = true;
@@ -289,30 +288,28 @@ void World::render(Camera* camera) {
 	if (this->sky != NULL) {
 		this->sky->transform.matrixModel.setTranslation(camera->eye.x, camera->eye.y - 40, camera->eye.z);
 		glDisable(GL_DEPTH_TEST);
-		//this->sky->render(camera);
+		this->sky->render(camera);
 		glEnable(GL_DEPTH_TEST);
 	}
 
 	if (this->sea != NULL) {
 		this->sea->transform.matrixModel.setTranslation(camera->eye.x, -100, camera->eye.z);
-		//this->sea->render(camera);
+		this->sea->render(camera);
 	}
 
 	if (this->getWorldMap() != NULL) {
-		//this->renderWorldMap(camera);
+		this->renderWorldMap(camera);
 	}
 
 	if (this->player != NULL) {
 		this->player->render(camera);
 	}
 
-	//this->renderAirplanes(camera);
+	this->renderAirplanes(camera);
 
-	//this->renderBunkers(camera);
+	this->renderBunkers(camera);
 
-	//this->clouds->render(camera);
-
-	this->particle->render(camera);
+	this->clouds->render(camera);
 
 	this->renderPowerups(camera);
 
@@ -519,8 +516,6 @@ void World::update(float deltaTime) {
 	this->cameraFollowEntity(this->playerCamera, this->player);
 
 	this->updatePowerups(deltaTime);
-
-	this->particle->update(deltaTime);
 
 	BulletManager::instance->update(deltaTime);
 	ProjectileManager::instance->update(deltaTime);

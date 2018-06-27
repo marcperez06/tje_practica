@@ -79,6 +79,10 @@ void Airplane::removeWeapons() {
 
 void Airplane::render(Camera* camera) {
 	EntityMesh::render(camera);
+
+	if (this->particleSystem != NULL) {
+		this->particleSystem->render(camera);
+	}
 }
 
 void Airplane::update(float deltaTime) {
@@ -96,6 +100,18 @@ void Airplane::update(float deltaTime) {
 			this->controller->update(deltaTime);
 
 			this->material->color = Vector4(1, 1, 1, 1);
+
+			if (this->particleSystem != NULL) {
+				this->particleSystem->update(deltaTime);
+			}
+
+			if (this->health <= 50) {
+				if (this->particleSystem != NULL) {
+					delete this->particleSystem;
+					this->particleSystem = NULL;
+				}
+				this->particleSystem = ParticleSystem::createExplosion(this->transform.matrixModel);
+			}
 
 			if (this->isPlayer == true) {
 

@@ -30,8 +30,6 @@ class Factory {
 		static MachineGun* buildMachineGun(Airplane* owner);
 		static DropBomb* buildDropBomb(Airplane* owner);
 		static ShootGun* buildShootGun(Airplane* owner);
-		static ParticleSystem* buildExplosion();
-		static ParticleSystem* buildSmoke();
 
 	private:
 
