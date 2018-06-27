@@ -3,6 +3,8 @@
 
 #include "EntityMesh.h"
 
+const unsigned maxParticles = 50;
+
 class ParticleSystem : EntityMesh {
 
 	public:
@@ -19,13 +21,12 @@ class ParticleSystem : EntityMesh {
 		float duration;
 		float fixedDuration;
 		bool looping;
-		int maxParticles;
 		float generalSpeed;
 		Matrix44 ownerModel;
 
-		std::vector<Particle> particles;
+		Particle particles[maxParticles];
 
-		ParticleSystem(Matrix44 model = Matrix44(), int maxParticles = 30, Vector3 direction = Vector3());
+		ParticleSystem(Matrix44 model = Matrix44(), Vector3 direction = Vector3());
 		~ParticleSystem();
 
 		virtual void render(Camera* camera);
@@ -35,6 +36,9 @@ class ParticleSystem : EntityMesh {
 		void restartParticle(Particle & particle);
 		void setTexture(const char * fileTexture);
 		void setMaterial(Material* material);
+
+		void clearParticles();
+		int particlesSize();
 
 		static ParticleSystem* createExplosion(Matrix44 model, bool looping = false);
 		static ParticleSystem* createSmoke(Matrix44 model, bool looping = true);

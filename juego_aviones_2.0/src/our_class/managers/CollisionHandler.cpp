@@ -290,14 +290,16 @@ void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], 
 
 			Bullet& bullet = bullets[j];
 
-			if ((bullet.timeToLive <= 0) || bullet.owner == dynamicEntity
-				|| bullet.owner->team == dynamicEntity->team) {
-				continue;
-			}
+			try {
+				if (bullet.timeToLive <= 0 || bullet.owner == NULL || bullet.owner == dynamicEntity
+					|| bullet.owner->team == dynamicEntity->team) {
+					continue;
+				}
 
-			if (bullet.position.distance(boundingBoxCenter) > boundingBoxHalfSize.length()) {
-				continue;
-			}
+				if (bullet.position.distance(boundingBoxCenter) > boundingBoxHalfSize.length()) {
+					continue;
+				}
+			} catch (std::exception e) { continue; }
 
 			Vector3 origin = bullet.lastPosition;
 			Vector3 direction = bullet.position - bullet.lastPosition;

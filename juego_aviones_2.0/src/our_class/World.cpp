@@ -24,7 +24,7 @@ World* World::instance = NULL;
 World::World(int hardFactor) {
 	this->hardFactor = hardFactor;
 	this->root = new Entity(Vector3(0, 0, 0));
-	this->numAIAirplanes = 24;
+	this->numAIAirplanes = 2;
 	this->numOfTeams = 2;
 	this->initPlayer();
 	this->initBunkers();
@@ -114,12 +114,8 @@ void World::initTeams() {
 
 			if (i < limit) {
 				initTeamAlfa();
-			} else if (i >= limit && i < limit * 2) {
-				initTeamDelta();
-			} else if (i >= limit * 2 && i < limit * 3) {
-				initTeamBeta();
 			} else {
-				initTeamGamma();
+				initTeamDelta();
 			}
 
 		}
@@ -210,6 +206,7 @@ void World::initTeamDelta() {
 	this->dynamicObjects.push_back(enemy);
 }
 
+/*
 void World::initTeamBeta() {
 	Vector3 bunkerPos = this->teamMilitaryBases[2]->getGlobalPosition();
 	float x = (rand() % 50) + bunkerPos.x + this->player->highMesh->aabb_max.x;
@@ -247,6 +244,7 @@ void World::initTeamGamma() {
 	this->AIAirplanes.push_back(enemy);
 	this->dynamicObjects.push_back(enemy);
 }
+*/
 
 void World::initWorldMap() {
 	Entity* worldMap = new Entity(Vector3(0, 0, 0));

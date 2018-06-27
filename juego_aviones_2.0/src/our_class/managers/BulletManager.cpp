@@ -81,6 +81,5 @@ void BulletManager::update(float deltaTime) {
 
 	CollisionHandler::bulletsCollisionAgainstStaticEntities(this->bullets, maxBullets);
 	CollisionHandler::bulletsCollisionAgainstDynamicEntities(this->bullets, maxBullets);
-	//this->testDynamicCollisions();
 
 }

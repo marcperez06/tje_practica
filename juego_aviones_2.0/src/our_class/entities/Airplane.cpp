@@ -84,11 +84,15 @@ void Airplane::render(Camera* camera) {
 		this->particleSystem->render(camera);
 	}
 
+	#ifndef DEBUG
+
 	Mesh m;
 	for (int i = 0; i < path.wayPoints.size(); ++i) {
 		m.vertices.push_back(path.wayPoints[i]->getPosition());
 	}
-	if(m.vertices.size()>0) m.renderFixedPipeline(GL_LINE_STRIP);
+	if (m.vertices.size()>0) m.renderFixedPipeline(GL_LINE_STRIP);
+
+	#endif
 }
 
 void Airplane::update(float deltaTime) {
