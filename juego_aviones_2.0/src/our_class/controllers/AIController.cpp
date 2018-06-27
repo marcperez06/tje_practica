@@ -31,7 +31,7 @@ void AIController::update(float deltaTime) {
 				//this->escape();
 				break;
 			case PATROL:
-				//this->patrol();
+				this->patrol(deltaTime);
 				break;
 		}
 
@@ -50,7 +50,7 @@ void AIController::update(float deltaTime) {
 }
 
 char AIController::checkBehaviour() {
-
+	//return PATROL;
 	if (this->airplane->health <= 10) {
 		return ESCAPE;
 	}
@@ -75,9 +75,8 @@ char AIController::checkBehaviour() {
 		} else {
 			return FOLLOW;
 		}
-	} else if (World::distanceBetween(this->airplane, this->airplane->target) < 1000
-				|| World::distanceBetween(this->airplane, this->airplane->target) > 1500) {
-		return FOLLOW;
+	} else if (World::distanceBetween(this->airplane, this->airplane->target) < 1000 /*|| World::distanceBetween(this->airplane, this->airplane->target) > 1500*/) {
+		return PATROL;
 	}
 	
 
@@ -104,11 +103,12 @@ void AIController::selectTarget(Entity* entity) {
 
 	if (entity->type == AIRPLANE) {
 		Airplane* target = (Airplane*) entity;
-		if (target->state == AIRPLANE_CRASHED || target->state == AIRPLANE_DESTROYED
-			|| target->team == this->airplane->team) {
-
+		if (target->state == AIRPLANE_CRASHED || target->state == AIRPLANE_DESTROYED || target->team == this->airplane->team) {
 			return;
 		}
+	}
+	else if (entity->type == WAYPOINT) {
+
 	}
 
 	if (this->airplane->target != NULL) {
@@ -177,6 +177,46 @@ void AIController::followTarget(float deltaTime) {
 	toTarget.normalize();
 
 	float cos_angle = 1.0 - myFront.dot(toTarget);
+	Vector3 axis = toTarget.cross(myFront);
+
+	axis = modelInverse.rotateVector(axis);
+	this->airplane->transform.rotate(cos_angle * deltaTime * 3.5, axis);
+
+}
+
+
+void AIController::patrol(float deltaTime) {
+
+	if (this->airplane->target == NULL) {
+		return;
+	}
+
+	if (this->airplane->target->type != WAYPOINT) {
+		return;
+	}
+
+	if (this->airplane->target->getPosition().length() < 0.005) {
+		this->airplane->target = this->airplane->path.selectNextWaypoint(this->airplane->target);
+	}
+		
+
+	Matrix44 modelInverse = this->airplane->getGlobalMatrix();
+	modelInverse.inverse();
+
+	Vector3 myFront = this->airplane->getFront();
+
+	Vector3 pos = this->airplane->getPosition();
+	Vector3 targetPos = this->airplane->target->getPosition();
+	Vector3 toTarget = (targetPos - pos);
+
+	if (abs(toTarget.length()) < 0.0005) {
+		return;
+	}
+
+	toTarget.normalize();
+
+	float cos_angle = 1.0 - myFront.dot(toTarget);
+	
 	Vector3 axis = toTarget.cross(myFront);
 
 	axis = modelInverse.rotateVector(axis);
