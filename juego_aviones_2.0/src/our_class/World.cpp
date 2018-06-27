@@ -17,6 +17,8 @@
 #include "entities/Powerup.h"
 #include "entities/Bunker.h"
 
+#include "entities/ParticleSystem.h"
+
 World* World::instance = NULL;
 
 World::World(int hardFactor) {
@@ -32,7 +34,8 @@ World::World(int hardFactor) {
 	this->initSky();
 	this->initSea();
 	this->clouds = new Clouds();
-	
+	this->particle = Factory::buildExplosion();
+
 	this->createRandomPowerup();
 
 	World::instance = this;
@@ -64,13 +67,14 @@ void World::initCameras() {
 
 	this->playerCamera = new Camera();
 	this->playerCamera->lookAt(cameraPosition, cameraCenter, cameraUp); //position the camera and point to 0,0,0
-	this->playerCamera->setPerspective(70.f, Game::instance->window_width / (float) Game::instance->window_height, 1, 15000.f); //set the projection, we want to be perspective
+	this->playerCamera->setPerspective(70.f, Game::instance->window_width / (float) Game::instance->window_height, 1, 10000.f); //set the projection, we want to be perspective
 
 	this->currentCamera = this->playerCamera;
 }
 
 void World::initPlayer() {
-	this->player = Factory::buildAirplane(TEAM_ALFA, Vector3(-1565, 600, 13655), 205);
+	//this->player = Factory::buildAirplane(TEAM_ALFA, Vector3(-1565, 600, 13655), 205);
+	this->player = Factory::buildAirplane(TEAM_ALFA, Vector3(0, 0, 50), 2);
 	this->player->fuell = this->player->fuell / this->hardFactor;
 	this->player->name = "player";
 	this->player->uuid = 1;
@@ -123,7 +127,7 @@ void World::initTeams() {
 		for (int i = 0; i < this->numAIAirplanes; i++) {
 
 			int probabilityOfFollowPath = rand() % 100;
-			char typeTarget = (probabilityOfFollowPath > 30) ? WAYPOINT : MILITARY_BASE;
+			char typeTarget = (probabilityOfFollowPath > 60) ? WAYPOINT : MILITARY_BASE;
 			int teamTarget = rand() % this->numOfTeams;
 
 			teamTarget = (this->AIAirplanes[i]->team == teamTarget) ? (teamTarget + 1) % this->numOfTeams : teamTarget;
@@ -285,29 +289,30 @@ void World::render(Camera* camera) {
 	if (this->sky != NULL) {
 		this->sky->transform.matrixModel.setTranslation(camera->eye.x, camera->eye.y - 40, camera->eye.z);
 		glDisable(GL_DEPTH_TEST);
-		this->sky->render(camera);
+		//this->sky->render(camera);
 		glEnable(GL_DEPTH_TEST);
 	}
 
 	if (this->sea != NULL) {
 		this->sea->transform.matrixModel.setTranslation(camera->eye.x, -100, camera->eye.z);
-		this->sea->render(camera);
+		//this->sea->render(camera);
 	}
 
 	if (this->getWorldMap() != NULL) {
-		this->renderWorldMap(camera);
+		//this->renderWorldMap(camera);
 	}
 
 	if (this->player != NULL) {
 		this->player->render(camera);
 	}
 
-	this->renderAirplanes(camera);
+	//this->renderAirplanes(camera);
 
-	this->renderBunkers(camera);
+	//this->renderBunkers(camera);
 
+	//this->clouds->render(camera);
 
-	this->clouds->render(camera);
+	this->particle->render(camera);
 
 	this->renderPowerups(camera);
 
@@ -514,6 +519,8 @@ void World::update(float deltaTime) {
 	this->cameraFollowEntity(this->playerCamera, this->player);
 
 	this->updatePowerups(deltaTime);
+
+	this->particle->update(deltaTime);
 
 	BulletManager::instance->update(deltaTime);
 	ProjectileManager::instance->update(deltaTime);

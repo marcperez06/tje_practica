@@ -22,10 +22,10 @@ Clouds::Clouds() : EntityMesh() {
 		CloudProperties & cloud = this->clouds[i];
 		cloud.id = i;
 		cloud.pos = Vector3();
-		cloud.pos.random(Vector3(100000, 200, 10000));
+		cloud.pos.random(Vector3(100000, 300, 10000));
 		//cloud.pos.x *= 0.5;
-		cloud.pos = cloud.pos + Vector3(0, 600, 0);
-		cloud.size = 400 + (random() * 100);
+		cloud.pos = cloud.pos + Vector3(0, 900, 0);
+		cloud.size = 700 + (random() * 200);
 	}
 }
 
@@ -89,23 +89,25 @@ void Clouds::render(Camera* camera) {
 		mesh.vertices.push_back(topLeft);
 		mesh.uvs.push_back(Vector2(0, 0) + offset);
 
+	}
+
+	if (mesh.vertices.size() > 0) {
 		shader->enable();
 
 		shader->setUniform("u_color", this->material->color);
 		shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 		shader->setUniform("u_texture", this->material->texture);
-		
 		shader->setUniform("u_model", Matrix44());
 		shader->setUniform("u_camera_position", camera->eye);
 		shader->setUniform("u_time", Game::instance->time);
 
 		glEnable(GL_BLEND);
 		glDisable(GL_CULL_FACE);
+
 		mesh.render(GL_TRIANGLES, shader);
-		
+
 		glDisable(GL_BLEND);
 		glEnable(GL_CULL_FACE);
 		shader->disable();
-
 	}
 }

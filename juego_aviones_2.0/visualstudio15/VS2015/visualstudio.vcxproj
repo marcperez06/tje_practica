@@ -114,6 +114,7 @@
     <ClCompile Include="..\..\src\our_class\entities\EntityCollider.cpp" />
     <ClCompile Include="..\..\src\our_class\entities\EntityMesh.cpp" />
     <ClCompile Include="..\..\src\our_class\entities\Material.cpp" />
+    <ClCompile Include="..\..\src\our_class\entities\ParticleSystem.cpp" />
     <ClCompile Include="..\..\src\our_class\entities\Path.cpp" />
     <ClCompile Include="..\..\src\our_class\entities\Powerup.cpp" />
     <ClCompile Include="..\..\src\our_class\entities\Transform.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="..\..\src\our_class\entities\EntityCollider.h" />
     <ClInclude Include="..\..\src\our_class\entities\EntityMesh.h" />
     <ClInclude Include="..\..\src\our_class\entities\Material.h" />
+    <ClInclude Include="..\..\src\our_class\entities\ParticleSystem.h" />
     <ClInclude Include="..\..\src\our_class\entities\Path.h" />
     <ClInclude Include="..\..\src\our_class\entities\Powerup.h" />
     <ClInclude Include="..\..\src\our_class\entities\Transform.h" />

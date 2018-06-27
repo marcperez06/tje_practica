@@ -5,6 +5,7 @@
 #include "weapons/RocketLauncher.h"
 #include "weapons/ShootGun.h"
 #include "entities/Bunker.h"
+#include "entities/ParticleSystem.h"
 
 Airplane* Factory::buildAirplane(char team, const Vector3 pos, float speed) {
 
@@ -155,7 +156,7 @@ EntityMesh* Factory::buildSky(const Vector3 initialPos) {
 
 EntityMesh* Factory::buildSea(const Vector3 initialPos) {
 	Mesh* highMesh = new Mesh();
-	highMesh->createSubdividedPlane(130000, 100, true);
+	highMesh->createSubdividedPlane(130000, 50, true);
 	//Texture* texture = Texture::Load("data/water/water_normalmap.tga");
 	//Texture* texture = Texture::Load("data/cielo/cielo.tga");
 	Texture* texture = Texture::Load("data/water/agua.tga");
@@ -208,4 +209,28 @@ ShootGun* Factory::buildShootGun(Airplane* owner) {
 	shootGun->cooldown = 0;
 	shootGun->fireRate = 10;
 	return shootGun;
+}
+
+ParticleSystem* Factory::buildExplosion() {
+	Texture* texture = Texture::Load("data/clouds/clouds.tga");
+	Shader* shader = Shader::Load("data/shaders/clouds.vs", "data/shaders/clouds.fs");
+	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1));
+
+	ParticleSystem* explosion = new ParticleSystem(20);
+	explosion->duration = 10;
+	explosion->fixedDuration = explosion->duration;
+	explosion->setMaterial(material);
+
+	return explosion;
+}
+
+ParticleSystem* Factory::buildSmoke() {
+	ParticleSystem* smoke = new ParticleSystem(20);
+	smoke->duration = 10;
+	smoke->fixedDuration = smoke->duration;
+	Texture* texture = Texture::Load("data/clouds/clouds.tga");
+	Shader* shader = Shader::Load("data/shaders/clouds.vs", "data/shaders/clouds.fs");
+
+	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1));
+	return smoke;
 }

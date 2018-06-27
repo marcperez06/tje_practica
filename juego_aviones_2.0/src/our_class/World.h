@@ -8,6 +8,7 @@ class Airplane;
 class Camera;
 class Clouds;
 class Bunker;
+class ParticleSystem;
 
 enum Team {
 	TEAM_DELTA,
@@ -41,6 +42,7 @@ class World {
 		EntityMesh* sky;
 		EntityMesh* sea;
 		Clouds* clouds;
+		ParticleSystem* particle;
 
 		// Vectores para almacenar las entidades, para comprobar collisiones.
 		std::vector<Entity*> staticObjects;

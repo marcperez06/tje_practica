@@ -5,6 +5,7 @@
 #include "World.h"
 #include "weapons/Projectile.h"
 #include "../framework.h"
+#include "entities/ParticleSystem.h"
 
 class Airplane;
 class EntityMesh;
@@ -13,6 +14,7 @@ class DropBomb;
 class RocketLauncher;
 class ShootGun;
 class Bunker;
+class ParticleSystem;
 
 class Factory {
 
@@ -28,6 +30,8 @@ class Factory {
 		static MachineGun* buildMachineGun(Airplane* owner);
 		static DropBomb* buildDropBomb(Airplane* owner);
 		static ShootGun* buildShootGun(Airplane* owner);
+		static ParticleSystem* buildExplosion();
+		static ParticleSystem* buildSmoke();
 
 	private:
 
@@ -35,7 +39,7 @@ class Factory {
 		static Airplane* buildBomber(const Vector3 pos, float speed);
 		static Airplane* buildFighterPlaneP38(const Vector3 pos, float speed);
 		static Airplane* buildWildcat(const Vector3 pos, float speed);
-
+		
 };
 
 #endif // !FACTORY_H

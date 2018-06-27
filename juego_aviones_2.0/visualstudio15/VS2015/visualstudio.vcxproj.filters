@@ -163,6 +163,9 @@
     <ClCompile Include="..\..\src\our_class\stages\StartStage.cpp">
       <Filter>our_class\stages</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\our_class\entities\ParticleSystem.cpp">
+      <Filter>our_class\entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\camera.h" />
@@ -322,6 +325,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\our_class\stages\StartStage.h">
       <Filter>our_class\stages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\our_class\entities\ParticleSystem.h">
+      <Filter>our_class\entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
