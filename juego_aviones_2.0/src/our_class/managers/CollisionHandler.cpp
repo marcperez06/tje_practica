@@ -288,7 +288,7 @@ void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], 
 
 		for (int j = 0; j < bulletsSize; j++) {
 
-			Bullet& bullet = bullets[j];
+			Bullet & bullet = bullets[j];
 
 			try {
 				if (bullet.timeToLive <= 0 || bullet.owner == NULL || bullet.owner == dynamicEntity

@@ -14,6 +14,7 @@ BulletManager::BulletManager() {
 BulletManager::~BulletManager() {
 	for (int i = 0; i < maxBullets; i++) {
 		this->bullets[i].timeToLive = 0;
+		this->bullets[i].owner = NULL;
 	}
 }
 

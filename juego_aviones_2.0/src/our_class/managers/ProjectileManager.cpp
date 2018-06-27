@@ -15,10 +15,12 @@ ProjectileManager::ProjectileManager() {
 ProjectileManager::~ProjectileManager() {
 	for (int i = 0; i < maxBombs; i++) {
 		this->bombs[i].timeToLive = 0;
+		this->bombs[i].owner = NULL;
 	}
 
 	for (int i = 0; i < maxMisils; i++) {
 		this->misils[i].timeToLive = 0;
+		this->misils[i].owner = NULL;
 	}
 }
 

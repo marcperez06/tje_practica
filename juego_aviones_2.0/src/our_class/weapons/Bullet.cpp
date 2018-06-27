@@ -8,6 +8,7 @@ Bullet::Bullet() {
 	this->timeToLive = 0;
 	this->type = "none";
 	this->damage = 0;
+	this->owner = NULL;
 }
 
 void Bullet::setProperties(const Vector3 pos, const Vector3 velocity, float timeToLive, std::string type, Airplane* owner, int damage) {

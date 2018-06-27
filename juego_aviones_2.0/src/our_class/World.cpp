@@ -504,9 +504,37 @@ void World::renderPowerups(Camera* camera) {
 
 void World::update(float deltaTime) {
 
+	/*
 	if (this->root != NULL) {
 		this->root->update(deltaTime);
 	}
+
+	for (int i = 0; i < this->AIAirplanes.size(); i++) {
+		this->AIAirplanes[i]->update(deltaTime);
+	}
+
+	if (this->getWorldMap() != NULL) {
+		this->getWorldMap()->update(deltaTime);
+	}
+
+	if (this->player != NULL) {
+		this->player->update(deltaTime);
+	}
+	*/
+
+	for (int i = 0; i < this->dynamicObjects.size(); i++) {
+		this->dynamicObjects[i]->update(deltaTime);
+	}
+
+	for (int i = 0; i < this->staticObjects.size(); i++) {
+		this->staticObjects[i]->update(deltaTime);
+	}
+
+	/*
+	for (int i = 0; i < this->teamMilitaryBases.size(); i++) {
+		this->teamMilitaryBases[i]->update(deltaTime);
+	}
+	*/
 
 	if (this->AIAirplanes.size() > 0) {
 		
