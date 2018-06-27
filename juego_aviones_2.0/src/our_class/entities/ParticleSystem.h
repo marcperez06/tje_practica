@@ -21,14 +21,16 @@ class ParticleSystem : EntityMesh {
 		bool looping;
 		int maxParticles;
 		float generalSpeed;
+		Matrix44 ownerModel;
 
 		std::vector<Particle> particles;
 
-		ParticleSystem(int maxParticles = 30, Vector3 direction = Vector3());
+		ParticleSystem(Matrix44 model = Matrix44(), int maxParticles = 30, Vector3 direction = Vector3());
 		~ParticleSystem();
 
 		virtual void render(Camera* camera);
-		virtual void update(float deltaTime);
+		virtual void update(float deltaTime, Matrix44 model = Matrix44());
+
 		void initParticles(Vector3 direction);
 		void restartParticle(Particle & particle);
 		void setTexture(const char * fileTexture);

@@ -51,6 +51,7 @@ class Entity {
 
 		void addChild(Entity* entity);
 		void removeChild(Entity* entity);
+		bool existChild(Entity* entity);
 
 		/*
 		bool haveRayCollision(Vector3 origin, Vector3 direction);

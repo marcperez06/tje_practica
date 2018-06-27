@@ -8,7 +8,7 @@ bool sortParticleSystem(const ParticleSystem::Particle & particleA, const Partic
 	return !(particleA.distance <= particleB.distance);
 }
 
-ParticleSystem::ParticleSystem(int maxParticles, Vector3 direction) : EntityMesh() {
+ParticleSystem::ParticleSystem(Matrix44 model, int maxParticles, Vector3 direction) : EntityMesh() {
 	this->maxParticles = maxParticles;
 	this->generalSpeed = 10;
 	this->duration = 0;
@@ -67,9 +67,9 @@ void ParticleSystem::render(Camera* camera) {
 
 		Particle & particle = this->particles[i];
 
-		if (camera->testSphereInFrustum(particle.pos, 250) == false || particle.timeToLive <= 0) {
-			continue;
-		}
+		//if (camera->testSphereInFrustum(particle.pos, 250) == false || particle.timeToLive <= 0) {
+			//continue;
+		//}
 
 		Vector2 offset(0, 0);
 
@@ -126,7 +126,9 @@ void ParticleSystem::render(Camera* camera) {
 	}
 }
 
-void ParticleSystem::update(float deltaTime) {
+void ParticleSystem::update(float deltaTime, Matrix44 model) {
+
+	this->ownerModel = model;
 
 	if (this->particles.size() <= 0) {
 		return;
@@ -148,6 +150,8 @@ void ParticleSystem::update(float deltaTime) {
 			}
 
 			particle.timeToLive -= deltaTime;
+
+			particle.pos = model * particle.pos;
 
 			particle.pos = particle.pos + particle.direction * particle.speed * deltaTime;
 
@@ -180,7 +184,7 @@ ParticleSystem* ParticleSystem::createExplosion(Matrix44 model, bool looping) {
 	Shader* shader = Shader::Load("data/shaders/clouds.vs", "data/shaders/clouds.fs");
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1));
 
-	ParticleSystem* explosion = new ParticleSystem(20);
+	ParticleSystem* explosion = new ParticleSystem(model, 20);
 	explosion->duration = 10;
 	explosion->fixedDuration = explosion->duration;
 	explosion->setMaterial(material);
@@ -190,7 +194,7 @@ ParticleSystem* ParticleSystem::createExplosion(Matrix44 model, bool looping) {
 }
 
 ParticleSystem* ParticleSystem::createSmoke(Matrix44 model, bool looping) {
-	ParticleSystem* smoke = new ParticleSystem(20);
+	ParticleSystem* smoke = new ParticleSystem(model, 20);
 	smoke->duration = 10;
 	smoke->fixedDuration = smoke->duration;
 	Texture* texture = Texture::Load("data/clouds/clouds.tga");

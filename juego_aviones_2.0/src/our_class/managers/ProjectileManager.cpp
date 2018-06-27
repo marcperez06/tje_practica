@@ -22,12 +22,12 @@ ProjectileManager::~ProjectileManager() {
 	}
 }
 
-void ProjectileManager::createProjectile(Matrix44 pos, Vector3 velocity, std::string type, Airplane* owner, int damage) {
+void ProjectileManager::createProjectile(const Matrix44 transform, Vector3 velocity, std::string type, Airplane* owner, int damage) {
 
 	Projectile projectile;
 
 	if (type.compare("bomb") == 0) {
-		projectile.setProperties(pos, velocity, 300, type, owner, damage);
+		projectile.setProperties(transform, velocity, 300, type, owner, damage);
 
 		for (int i = 0; i < maxBombs; i++) {
 			Projectile& auxBomb = this->bombs[i];
@@ -40,7 +40,7 @@ void ProjectileManager::createProjectile(Matrix44 pos, Vector3 velocity, std::st
 		}
 
 	} else {
-		projectile.setProperties(pos, velocity, 30, type, owner, damage);
+		projectile.setProperties(transform, velocity, 30, type, owner, damage);
 
 		for (int i = 0; i < maxMisils; i++) {
 			Projectile& auxMisil = this->misils[i];

@@ -16,7 +16,7 @@ class ProjectileManager {
 		ProjectileManager();
 		~ProjectileManager();
 
-		void createProjectile(Matrix44 pos, Vector3 velocity, std::string type, Airplane* owner, int damage);
+		void createProjectile(const Matrix44 transform, Vector3 velocity, std::string type, Airplane* owner, int damage);
 
 		void render();
 		void update(float deltaTime);
