@@ -31,6 +31,7 @@ class AIController : public AirplaneController{
 
 		void selectTarget(Entity* entity);
 		void followTarget(float deltaTime);
+		void patrol(float deltaTime);
 
 
 };

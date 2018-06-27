@@ -78,6 +78,8 @@ void World::initPlayer() {
 	this->player->uuid = 1;
 	this->player->health = 45;
 
+	this->player->path.createCircle(Vector3(-1565, 0, 13070), 600, 400);
+
 	this->player->currentWepon = 0;
 	this->player->isPlayer = true;
 	this->player->controller = new PlayerController();
@@ -85,6 +87,7 @@ void World::initPlayer() {
 
 	this->root->addChild(this->player);
 	this->dynamicObjects.push_back(this->player);
+
 }
 
 void World::initBunkers() {
@@ -196,7 +199,7 @@ void World::initTeamDelta() {
 	
 	Airplane* enemy = Factory::buildAirplane(TEAM_DELTA, Vector3(x, y, z), 200);
 	enemy->health = enemy->health * this->hardFactor;
-	enemy->path.createCircle(bunkerPos, 40, 200);
+	enemy->path.createCircle(bunkerPos, 600, 400);
 	enemy->isPlayer = false;
 
 	enemy->controller = new AIController();
@@ -215,7 +218,7 @@ void World::initTeamBeta() {
 
 	Airplane* enemy = Factory::buildAirplane(TEAM_BETA, Vector3(x, y, z), 200);
 	enemy->health = enemy->health * this->hardFactor;
-	enemy->path.createCircle(bunkerPos, 40, 200);
+	enemy->path.createCircle(bunkerPos, 600, 400);
 	enemy->isPlayer = false;
 
 	enemy->controller = new AIController();

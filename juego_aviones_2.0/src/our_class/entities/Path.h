@@ -15,6 +15,7 @@ public:
 
 	void createCircle(Vector3 center, int radius, int heigth);
 	void createWayPoint(Vector3 pos);
+	Entity* selectNextWaypoint(Entity* wp);
 
 };
 
