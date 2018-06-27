@@ -19,7 +19,6 @@ class ParticleSystem : EntityMesh {
 		float duration;
 		float fixedDuration;
 		bool looping;
-		float startDelay;
 		int maxParticles;
 		float generalSpeed;
 
@@ -30,6 +29,7 @@ class ParticleSystem : EntityMesh {
 
 		virtual void render(Camera* camera);
 		virtual void update(float deltaTime);
+		void initParticles(Vector3 direction);
 		void restartParticle(Particle & particle);
 		void setTexture(const char * fileTexture);
 		void setMaterial(Material* material);

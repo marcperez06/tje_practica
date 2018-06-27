@@ -9,36 +9,43 @@ bool sortParticleSystem(const ParticleSystem::Particle & particleA, const Partic
 }
 
 ParticleSystem::ParticleSystem(int maxParticles, Vector3 direction) : EntityMesh() {
-
 	this->maxParticles = maxParticles;
 	this->generalSpeed = 10;
 	this->duration = 0;
 	this->fixedDuration = 0;
 	this->looping = false;
-
-	this->particles.resize(this->maxParticles);
-	for (int i = 0; i < this->particles.size(); i++) {
-		Particle & particle = this->particles[i];
-		
-		particle.id = i;
-		Vector3 desviation = Vector3();
-		desviation.random(5);
-		particle.direction = direction + desviation;
-		
-		this->restartParticle(particle);
-	}
 }
 
 ParticleSystem::~ParticleSystem() {}
 
+void ParticleSystem::initParticles(Vector3 direction) {
+	this->particles.clear();
+	this->particles.resize(this->maxParticles);
+	for (int i = 0; i < this->particles.size(); i++) {
+		Particle & particle = this->particles[i];
+
+		particle.id = i;
+		Vector3 desviation = Vector3();
+		desviation.random(Vector3(0.25, 0, 0.25));
+		particle.direction = direction + desviation;
+
+		this->restartParticle(particle);
+	}
+}
+
 void ParticleSystem::restartParticle(Particle & particle) {
 	particle.pos = Vector3();
-	particle.size = 10 + (random() * 20);
+	particle.size = 5 + (random() * 2);
 	particle.timeToLive = 1;
 	particle.speed = this->generalSpeed;
 }
 
 void ParticleSystem::render(Camera* camera) {
+
+	if (this->particles.size() <= 0) {
+		return;
+	}
+
 	Shader* shader = this->material->shader;
 	Texture* texture = this->material->texture;
 
@@ -120,6 +127,10 @@ void ParticleSystem::render(Camera* camera) {
 }
 
 void ParticleSystem::update(float deltaTime) {
+
+	if (this->particles.size() <= 0) {
+		return;
+	}
 
 	this->duration -= deltaTime;
 

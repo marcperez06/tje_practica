@@ -6,6 +6,7 @@
 
 class Weapon;
 class AirplaneController;
+class ParticleSystem;
 
 enum States {
 	AIRPLANE_FLYING,
@@ -35,6 +36,7 @@ class Airplane : public EntityCollider {
 		Entity* target;
 		AirplaneController* controller;
 		Path path;
+		ParticleSystem* particleSystem;
 
 		// --- CONSTRUCTORES ---
 

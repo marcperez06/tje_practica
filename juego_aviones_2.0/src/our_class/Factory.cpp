@@ -220,7 +220,7 @@ ParticleSystem* Factory::buildExplosion() {
 	explosion->duration = 10;
 	explosion->fixedDuration = explosion->duration;
 	explosion->setMaterial(material);
-
+	explosion->initParticles(Transform::UP);
 	return explosion;
 }
 

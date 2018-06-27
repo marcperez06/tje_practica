@@ -7,6 +7,7 @@
 #include "../controllers/AirplaneController.h"
 #include "../managers/SoundManager.h"
 #include "../stages/EndStage.h"
+#include "ParticleSystem.h"
 
 // --- CONSTRUCTORES ---
 
@@ -22,6 +23,7 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mate
 	this->isPlayer = false;
 	this->team = TEAM_DELTA;
 	this->type = AIRPLANE;
+	this->particleSystem = NULL;
 	airplanes.push_back(this);
 }
 
@@ -35,10 +37,12 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mesh
 	this->isPlayer = false;
 	this->team = TEAM_DELTA;
 	this->type = AIRPLANE;
+	this->particleSystem = NULL;
 	airplanes.push_back(this);
 }
 
 Airplane::~Airplane() {
+	delete this->particleSystem; 
 	delete this->controller;
 	this->removeAirplane(this);
 	this->removeAirplaneToDestroy(this);

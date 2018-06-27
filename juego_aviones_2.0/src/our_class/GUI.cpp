@@ -160,7 +160,7 @@ void GUI::highlightEntity(Entity* entity) {
 	Vector2 start = Vector2(pos2D.x, pos2D.y);
 	Vector2 size = Vector2(30, 30);
 
-	Texture* texture = Texture::Load("data/gui/highlight.tga");
+	Texture* texture = Texture::Load("data/gui/highlight.png");
 	
 	if (pos2D.z < 1) {
 		this->drawGUIElement(texture, start, size);
