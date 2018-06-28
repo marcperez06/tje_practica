@@ -145,6 +145,8 @@ void ParticleSystem::render(Camera* camera) {
 
 void ParticleSystem::update(float deltaTime, Matrix44 model) {
 
+	model.translate(0, 0, 4);
+
 	this->ownerModel = model;
 
 	if (this->particlesSize() <= 0) {

@@ -25,7 +25,7 @@ void PlayerController::rotateAirplane(float deltaTime) {
 
 	float deltaMove = this->airplane->speed * deltaTime * 0.03;
 	this->rotateRollDirection(deltaMove * 0.3);
-	this->rotatePitchDirection(deltaMove * 0.2);
+	this->rotatePitchDirection(deltaMove * 0.1);
 	this->rotateYawDirection(deltaMove * 0.1);
 }
 

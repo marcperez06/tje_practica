@@ -24,15 +24,15 @@ void AIController::update(float deltaTime) {
 			case SHOOT:
 				this->airplane->shoot();
 				break;
-			case EVADE:
+			case PATROL:
+				this->patrol(deltaTime);
+				break;
+		  /*case EVADE:
 				//this->evade();
 				break;
 			case ESCAPE:
 				//this->escape();
-				break;
-			case PATROL:
-				this->patrol(deltaTime);
-				break;
+				break;*/
 		}
 
 		/*
@@ -114,8 +114,7 @@ void AIController::selectTarget(Entity* entity) {
 	if (this->airplane->target != NULL) {
 		if (this->airplane->target->type == AIRPLANE) {
 			Airplane* target = (Airplane*) this->airplane->target;
-			if (target->state == AIRPLANE_CRASHED || target->state == AIRPLANE_DESTROYED
-				|| target->team == this->airplane->team) {
+			if (target->state == AIRPLANE_CRASHED || target->state == AIRPLANE_DESTROYED || target->team == this->airplane->team) {
 				this->airplane->target == NULL;
 			}
 		}
@@ -191,7 +190,7 @@ void AIController::patrol(float deltaTime) {
 		return;
 	}
 
-	if (this->airplane->target->type != WAYPOINT) {
+	if (this->airplane->target->type == WAYPOINT) {
 		return;
 	}
 

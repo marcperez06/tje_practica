@@ -19,12 +19,12 @@ Airplane* Factory::buildAirplane(char team, const Vector3 pos, float speed) {
 		case TEAM_DELTA:
 			airplane = Factory::buildWildcat(pos, speed);
 			break;
-		case TEAM_BETA:
+		/*case TEAM_BETA:
 			airplane = Factory::buildFighterPlaneP38(pos, speed);
 			break;
 		case TEAM_GAMMA:
 			airplane = Factory::buildBomber(pos, speed);
-			break;
+			break;*/
 
 	}
 
