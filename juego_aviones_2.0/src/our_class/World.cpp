@@ -56,7 +56,8 @@ World::~World() {
 
 void World::initCameras() {
 	Vector3 cameraPosition = this->player->transform.matrixModel * Vector3(0, 3, 9);
-	Vector3 cameraCenter = this->player->transform.matrixModel * (this->player->highMesh->box.center + Vector3(0, 0, 1));
+	//Vector3 cameraCenter = this->player->transform.matrixModel * (this->player->highMesh->box.center + Vector3(0, 0, 1));
+	Vector3 cameraCenter = this->player->transform.matrixModel * this->player->getFront();
 	Vector3 cameraUp = this->player->transform.matrixModel.rotateVector(Transform::UP);
 
 	//create our free camera
@@ -76,10 +77,7 @@ void World::initPlayer() {
 	this->player->fuell = this->player->fuell / this->hardFactor;
 	this->player->name = "player";
 	this->player->uuid = 1;
-	this->player->health = 45;
-
 	this->player->path.createCircle(Vector3(-1565, 0, 13070), 600, 400);
-
 	this->player->currentWepon = 0;
 	this->player->isPlayer = true;
 	this->player->controller = new PlayerController();
@@ -125,7 +123,7 @@ void World::initTeams() {
 		for (int i = 0; i < this->numAIAirplanes; i++) {
 
 			int probabilityOfFollowPath = rand() % 100;
-			char typeTarget = (probabilityOfFollowPath > 60) ? WAYPOINT : MILITARY_BASE;
+			char typeTarget = WAYPOINT; // (probabilityOfFollowPath > 60) ? WAYPOINT : MILITARY_BASE;
 			int teamTarget = rand() % this->numOfTeams;
 
 			teamTarget = (this->AIAirplanes[i]->team == teamTarget) ? (teamTarget + 1) % this->numOfTeams : teamTarget;
@@ -451,43 +449,10 @@ void World::renderAirplanes(Camera* camera) {
 }
 
 void World::renderBunkers(Camera* camera) {
-	Bunker* base;
-	//std::vector<Matrix44> bunkersTransform;
-	//Mesh* bunkerMesh = NULL;
-	Shader* shader = Shader::Load("data/shaders/texture.vs", "data/shaders/world.fs");
 
-	/*for (int i = 1; i < this->teamMilitaryBases.size; i++) {
-		bunkersTransform.push_back(this->teamMilitaryBases[i]->getGlobalMatrix());
-	}
+	for (int i = 0; i < teamMilitaryBases.size(); i++) {
 
-	if (bunkersTransform.size() > 0) {*/
-
-		if (shader != NULL) {
-
-			for (int i = 0; i < 2; i++) {
-
-				this->teamMilitaryBases[i]->render(camera);
-
-				/*if (this->teamMilitaryBases.size() > 0) {
-					bunkerMesh = this->teamMilitaryBases[i]->highMesh;
-				}
-
-				shader->enable();
-
-				if (bunkerMesh != NULL) {
-					shader->setUniform("u_color", base->material->color);
-					shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
-					shader->setUniform("u_texture", base->material->texture);
-					shader->setUniform("u_camera_position", camera->eye);
-					shader->setUniform("u_time", 1);
-
-					bunkerMesh->renderInstanced(GL_TRIANGLES, shader, &bunkersTransform[i], bunkersTransform.size());
-				}
-
-				shader->disable();*/
-
-			}
-		//}
+		this->teamMilitaryBases[i]->render(camera);
 
 	}
 
@@ -508,18 +473,6 @@ void World::update(float deltaTime) {
 	if (this->root != NULL) {
 		this->root->update(deltaTime);
 	}
-
-	for (int i = 0; i < this->AIAirplanes.size(); i++) {
-		this->AIAirplanes[i]->update(deltaTime);
-	}
-
-	if (this->getWorldMap() != NULL) {
-		this->getWorldMap()->update(deltaTime);
-	}
-
-	if (this->player != NULL) {
-		this->player->update(deltaTime);
-	}
 	*/
 
 	for (int i = 0; i < this->dynamicObjects.size(); i++) {
@@ -530,21 +483,13 @@ void World::update(float deltaTime) {
 		this->staticObjects[i]->update(deltaTime);
 	}
 
-	/*
-	for (int i = 0; i < this->teamMilitaryBases.size(); i++) {
-		this->teamMilitaryBases[i]->update(deltaTime);
-	}
-	*/
-
 	if (this->AIAirplanes.size() > 0) {
 		
 		//this->cameraFollowEntity(this->playerCamera, AIAirplanes[0]);
 		
 	}
 
-	//this->cameraFollowEntity(this->playerCamera, this->player);
-
-
+	this->cameraFollowEntity(this->playerCamera, this->player);
 
 	this->updatePowerups(deltaTime);
 
@@ -560,7 +505,8 @@ void World::cameraFollowEntity(Camera* camera, Entity* entity) {
 	Vector3 cameraPosition = entity->transform.matrixModel * Vector3(0, 3, 9);
 	Vector3 cameraCenter = entity->transform.matrixModel * Vector3(0, 0, 0);
 	if (entity->type != ENTITY) {
-		cameraCenter = entity->transform.matrixModel * ((EntityMesh*)entity)->highMesh->box.center + Vector3(0, 0, 1);
+		//cameraCenter = entity->transform.matrixModel * ((EntityMesh*)entity)->highMesh->box.center + Vector3(0, 0, 1);
+		cameraCenter = entity->transform.matrixModel * entity->getFront();
 	}
 	Vector3 cameraUp = entity->transform.matrixModel.rotateVector(Transform::UP);
 	camera->lookAt(cameraPosition, cameraCenter, cameraUp);

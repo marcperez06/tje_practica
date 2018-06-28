@@ -7,6 +7,7 @@
 class Entity;
 class EntityMesh;
 class Bullet;
+class Projectile;
 
 class CollisionHandler {
 	public:
@@ -22,6 +23,9 @@ class CollisionHandler {
 
 		static void bulletsCollisionAgainstStaticEntities(Bullet bullets[], int bulletsSize);
 		static void bulletsCollisionAgainstDynamicEntities(Bullet bullets[], int bulletsSize);
+
+		static void projectilesCollisionAgainstStaticEntities(Projectile projectiles[], int projectilesSize);
+		static void projectilesCollisionAgainstDynamicEntities(Projectile projectiles[], int projectilesSize);
 };
 
 #endif

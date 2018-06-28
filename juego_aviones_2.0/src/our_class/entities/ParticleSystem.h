@@ -3,6 +3,12 @@
 
 #include "EntityMesh.h"
 
+enum ParticleType {
+	SMOKE,
+	EXPLOSION
+
+};
+
 const unsigned maxParticles = 50;
 
 class ParticleSystem : EntityMesh {
@@ -16,6 +22,7 @@ class ParticleSystem : EntityMesh {
 			float distance;
 			float speed;
 			float timeToLive;
+			char type;
 		};
 
 		float duration;

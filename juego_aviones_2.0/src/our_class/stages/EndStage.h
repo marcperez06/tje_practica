@@ -19,6 +19,9 @@ class EndStage : public Stage {
 
 		virtual void render();
 		virtual void update(float deltaTime);
+
+		void lose();
+		void win();
 };
 
 #endif

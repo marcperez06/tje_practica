@@ -1,6 +1,8 @@
 #ifndef AIRPLANE_H
 #define AIRPLANE_H
 
+#pragma once
+
 #include "EntityCollider.h"
 #include "Path.h"
 

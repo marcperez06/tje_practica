@@ -23,18 +23,17 @@ void main()
 	//uv.x += sin(u_time + (uv.x)) * 0.05; 
 	//uv.x += u_time * 0.5;
 	
-	vec2 uvDeltaMoveX = uv + vec2(sin(time * 0.3) + 1, cos(time * 0.01));
-	vec2 uvDeltaMoveY = uv + vec2(cos(time * 0.1), sin(time * 0.03));
+	vec2 uvDeltaMoveX = uv + vec2(sin(time * 0.3) + 1, sin(time * 0.1));
+	vec2 uvDeltaMoveY = uv + vec2(sin(time * 0.1), sin(time * 0.3));
 
 	vec4 color = texture2D(u_normal_texture, uv * 0.00001);
-	
 	
 	//uv = v_world_position.xz * 0.001;
 	//uv.y += u_time * 0.5; 
 
 	vec3 N = normalize(v_normal);
-	N = texture2D(u_normal_texture, uvDeltaMoveX).xzy * vec3(2.0) - vec3(1.0);
-	N += texture2D(u_normal_texture, uvDeltaMoveY).xzy * vec3(2.0) - vec3(1.0);
+	N = texture2D(u_normal_texture, uvDeltaMoveX).xzy * vec3(2.0) - vec3(0.025);
+	N += texture2D(u_normal_texture, uvDeltaMoveY).xzy * vec3(2.0) - vec3(0.025);
 	N = normalize(N);
 	
 	vec3 E = v_world_position - u_camera_pos;
@@ -65,8 +64,8 @@ void main()
 	color = (1 - fresnel) * color + (fresnel * sky_color);
 	
 	float distance = length(u_camera_pos - v_world_position);
-	float fogMaxDistance = 35000.0;
-	float fogMinDistance = 1.0;
+	float fogMaxDistance = 20000.0;
+	float fogMinDistance = 9000.0;
 	float fogDiferenceDistance = fogMaxDistance - distance;
 	float fogDiferenceMaxMin = fogMaxDistance - fogMinDistance;
 	float fogFactor = clamp(1.0 - (fogDiferenceDistance / fogDiferenceMaxMin) , 0.0, 1.0);

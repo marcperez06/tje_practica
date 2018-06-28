@@ -23,6 +23,6 @@ void DropBomb::shoot() {
 		this->cooldown = 10;
 		this->ammounition -= 1;
 
-		SoundManager::reproduceSound("normal_shoot.wav");
+		SoundManager::reproduceSound("drop_bomb.wav");
 	}
 }

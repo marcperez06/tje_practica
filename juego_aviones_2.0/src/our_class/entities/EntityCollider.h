@@ -1,6 +1,8 @@
 #ifndef ENTITY_COLLIDER_H
 #define ENTITY_COLLIDER_H
 
+#pragma once
+
 #include "EntityMesh.h"
 #include "Collision.h"
 

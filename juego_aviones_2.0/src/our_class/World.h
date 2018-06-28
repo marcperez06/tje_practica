@@ -42,7 +42,6 @@ class World {
 		EntityMesh* sky;
 		EntityMesh* sea;
 		Clouds* clouds;
-		ParticleSystem* particle;
 
 		// Vectores para almacenar las entidades, para comprobar collisiones.
 		std::vector<Entity*> staticObjects;

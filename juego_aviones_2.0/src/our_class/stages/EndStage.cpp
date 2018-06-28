@@ -50,3 +50,15 @@ void EndStage::update(float deltaTime) {
 		this->success = false;
 	}
 }
+
+void EndStage::lose() {
+	SoundManager::reproduceSound("gameover.wav");
+	this->instance->success = false;
+	this->onChange("endStage");
+}
+
+void EndStage::win() {
+	SoundManager::reproduceSound("success.wav");
+	this->instance->success = true;
+	this->onChange("endStage");
+}

@@ -120,6 +120,7 @@ void ProjectileManager::renderMisils() {
 		if (misil.timeToLive > 0) {
 			misilsTransform.push_back(misil.transform);
 
+			/*
 			std::cout << "Projectile X " << misil.position.x << std::endl;
 			std::cout << "Projectile XX " << misil.transform.getTranslation().x << std::endl;
 
@@ -128,7 +129,7 @@ void ProjectileManager::renderMisils() {
 
 			std::cout << "Projectile Z " << misil.position.z << std::endl;
 			std::cout << "Projectile ZZ " << misil.transform.getTranslation().z << std::endl;
-
+			*/
 		}
 	}
 
@@ -162,17 +163,17 @@ void ProjectileManager::updateBombs(float deltaTime) {
 			continue;
 		}
 
-		Vector3 newPos = bomb.velocity * deltaTime;
+		Vector3 translation = bomb.velocity * deltaTime;
 		bomb.lastPosition = bomb.transform.getTranslation();
-		bomb.transform.setTranslation(newPos.x, newPos.y, newPos.z);
+		bomb.transform.translate(translation.x, translation.y, translation.z);
 		bomb.position = bomb.transform.getTranslation();
 		bomb.velocity = bomb.velocity + Vector3(0, -9.8, 0) * deltaTime; // aplicar gravedad
 		bomb.timeToLive -= deltaTime;
 
 	}
 
-	CollisionHandler::bulletsCollisionAgainstStaticEntities(this->bombs, maxBombs);
-	CollisionHandler::bulletsCollisionAgainstDynamicEntities(this->bombs, maxBombs);
+	CollisionHandler::projectilesCollisionAgainstStaticEntities(this->bombs, maxBombs);
+	CollisionHandler::projectilesCollisionAgainstDynamicEntities(this->bombs, maxBombs);
 }
 
 void ProjectileManager::updateMisils(float deltaTime) {
@@ -183,9 +184,9 @@ void ProjectileManager::updateMisils(float deltaTime) {
 			continue;
 		}
 
-		Vector3 newPos = misil.velocity * deltaTime;
+		Vector3 translation = misil.velocity * deltaTime;
 		misil.lastPosition = misil.transform.getTranslation();
-		misil.transform.setTranslation(newPos.x, newPos.y, newPos.z);
+		misil.transform.translate(translation.x, translation.y, translation.z);
 		misil.position = misil.transform.getTranslation();
 		misil.velocity = misil.velocity + Vector3(0, -2, 0) * deltaTime; // aplicar gravedad
 		misil.velocity = misil.velocity * 0.99999995;
@@ -193,6 +194,6 @@ void ProjectileManager::updateMisils(float deltaTime) {
 
 	}
 
-	CollisionHandler::bulletsCollisionAgainstStaticEntities(this->misils, maxMisils);
-	CollisionHandler::bulletsCollisionAgainstDynamicEntities(this->misils, maxMisils);
+	CollisionHandler::projectilesCollisionAgainstStaticEntities(this->misils, maxMisils);
+	CollisionHandler::projectilesCollisionAgainstDynamicEntities(this->misils, maxMisils);
 }

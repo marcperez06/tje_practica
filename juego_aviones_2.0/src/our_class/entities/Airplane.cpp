@@ -80,8 +80,10 @@ void Airplane::removeWeapons() {
 void Airplane::render(Camera* camera) {
 	EntityMesh::render(camera);
 	
-	if (this->particleSystem != NULL) {
+	if (this->particleSystem != NULL && this->particleSystem->particlesSize() > 0) {
+		glDisable(GL_DEPTH_TEST);
 		this->particleSystem->render(camera);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	#ifndef DEBUG
@@ -111,8 +113,9 @@ void Airplane::update(float deltaTime) {
 
 			this->material->color = Vector4(1, 1, 1, 1);
 
+			this->health = 45;
 			Bullet b;
-			onBulletCollision(b, this->collision.collisionPoint);
+			onBulletCollision(b, collision.collisionPoint);
 
 			if (this->particleSystem != NULL) {
 				this->particleSystem->update(deltaTime, this->getGlobalMatrix());
@@ -123,7 +126,7 @@ void Airplane::update(float deltaTime) {
 				this->fuell -= deltaTime;
 
 				if (this->fuell < 60) {
-					//SoundManager::reproducir("low_fuel.wav");
+					SoundManager::reproduceSound("low_fuel.wav");
 				}
 
 				if (this->fuell <= 0) {
@@ -226,6 +229,7 @@ void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 		if (this->particleSystem != NULL && this->particleSystem->particlesSize() == 0) {
 			delete this->particleSystem;
 			this->particleSystem = ParticleSystem::createSmoke(this->getGlobalMatrix());
+		
 		}
 	}
 
@@ -239,8 +243,7 @@ void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 		}
 
 		if (this->isPlayer == true) {
-			EndStage::instance->success = false;
-			EndStage::onChange("endStage");
+			EndStage::instance->lose();
 		}
 	}
 
@@ -255,8 +258,7 @@ void Airplane::collisionEffectAgainstStaticEntity() {
 	this->material->color = Vector4(0, 0, 0, 1);
 	this->state = AIRPLANE_DESTROYED;
 	if (this->isPlayer == true) {
-		EndStage::instance->success = false;
-		EndStage::onChange("endStage");
+		EndStage::instance->lose();
 	}
 	//airplanesToDestroy.push_back(this);
 }
@@ -265,8 +267,7 @@ void Airplane::collisionEffectAgainstDynamicEntity() {
 	this->material->color = Vector4(0, 0, 0, 1);
 	this->state = AIRPLANE_CRASHED;
 	if (this->isPlayer == true) {
-		EndStage::instance->success = false;
-		EndStage::onChange("endStage");
+		EndStage::instance->lose();
 	}
 	//airplanesToDestroy.push_back(this);
 }

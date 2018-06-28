@@ -60,25 +60,19 @@ void Bunker::onBulletCollision(Bullet & bullet, Vector3 collision) {
 		this->state = BUNKER_DESTROYED;
 
 		if (this->team != World::instance->player->team) {
-			EndStage::instance->success = true;
+			EndStage::instance->win();
 		} else {
-			EndStage::instance->success = false;
+			EndStage::instance->lose();
 		}
 
-		EndStage::onChange("endStage");
 	}
 
 	//SoundManager::reproduceSound("damage.wav");
 
-	Mesh mesh;
-	mesh.vertices.push_back(this->getGlobalMatrix() * collision);
-	mesh.colors.push_back(Vector4(0, 0, 1, 1));
-	glPointSize(500);
-	mesh.renderFixedPipeline(GL_POINTS);
 }
 
 void Bunker::collisionEffectAgainstDynamicEntity() {
-	this->material->color = Vector4(0, 0, 0, 1);
+	//this->material->color = Vector4(0, 0, 0, 1);
 	//this->state = AIRPLANE_DESTROYED;
 	//airplanesToDestroy.push_back(this);
 }

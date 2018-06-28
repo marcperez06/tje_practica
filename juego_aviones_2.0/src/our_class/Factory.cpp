@@ -17,13 +17,13 @@ Airplane* Factory::buildAirplane(char team, const Vector3 pos, float speed) {
 			airplane = Factory::buildSpitfire(pos, speed);
 			break;
 		case TEAM_DELTA:
-			airplane = Factory::buildBomber(pos, speed);
+			airplane = Factory::buildWildcat(pos, speed);
 			break;
 		case TEAM_BETA:
 			airplane = Factory::buildFighterPlaneP38(pos, speed);
 			break;
 		case TEAM_GAMMA:
-			airplane = Factory::buildWildcat(pos, speed);
+			airplane = Factory::buildBomber(pos, speed);
 			break;
 
 	}
@@ -178,7 +178,7 @@ EntityMesh* Factory::buildSea(const Vector3 initialPos) {
 RocketLauncher* Factory::buildRocketLauncher(Airplane* owner) {
 	RocketLauncher* rocketLauncher = new RocketLauncher(owner, ROCKET_LAUNCHER);
 	rocketLauncher->damage = 400;
-	rocketLauncher->bulletSpeed = 230;
+	rocketLauncher->bulletSpeed = 300;
 	rocketLauncher->cooldown = 0;
 	rocketLauncher->fireRate = 5;
 	return rocketLauncher;

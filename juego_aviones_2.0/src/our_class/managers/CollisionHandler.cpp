@@ -1,7 +1,7 @@
 #include "CollisionHandler.h"
 #include "../World.h"
 #include "../entities/Airplane.h"
-#include "../weapons/Bullet.h"
+#include "../weapons/Projectile.h"
 
 bool CollisionHandler::rayCollision(Vector3 origin, Vector3 direction, EntityMesh* entityMesh, Vector3 & collision, Vector3 & normal) {
 	bool haveCollision = false;
@@ -312,6 +312,127 @@ void CollisionHandler::bulletsCollisionAgainstDynamicEntities(Bullet bullets[], 
 
 				bullet.timeToLive = 0;
 				dynamicEntity->onBulletCollision(bullet, collisionPoint); // LLamar desde testDynamicCollision, para idicarle al avion de que una bala a colisionado con el.
+
+			}
+
+		}
+
+	}
+}
+
+void CollisionHandler::projectilesCollisionAgainstStaticEntities(Projectile projectiles[], int projectilesSize) {
+	std::vector<Entity*> staticEntities = World::instance->staticObjects;
+
+	for (int i = 0; i < staticEntities.size(); i++) {
+
+		EntityMesh* staticEntity = (EntityMesh*)staticEntities[i];
+
+		if (staticEntity == NULL) {
+			continue;
+		}
+
+		Matrix44 modelMatrix = staticEntity->getGlobalMatrix();
+		Mesh* mesh = staticEntity->highMesh;
+
+		if (staticEntity->lowMesh != NULL) {
+			mesh = staticEntity->lowMesh;
+		}
+
+		if (!mesh->collision_model) {
+			if (!mesh->createCollisionModel()) {
+				break;
+			}
+		}
+
+		Vector3 boundingBoxCenter = staticEntity->getGlobalMatrix() * staticEntity->highMesh->box.center;
+		Vector3 boundingBoxHalfSize = staticEntity->getGlobalMatrix() * staticEntity->highMesh->box.halfsize;
+
+		CollisionModel3D* collision_model = (CollisionModel3D*)mesh->collision_model;
+		assert(collision_model && "CollisionModel3D must be created before using it, call createCollisionModel");
+
+		collision_model->setTransform(modelMatrix.m);
+
+		for (int j = 0; j < projectilesSize; j++) {
+
+			Projectile & projectile = projectiles[j];
+
+			if (projectile.timeToLive <= 0) {
+				continue;
+			}
+
+			if (projectile.position.distance(boundingBoxCenter) > boundingBoxHalfSize.length()) {
+				continue;
+			}
+
+			Vector3 origin = projectile.lastPosition;
+			Vector3 direction = projectile.position - projectile.lastPosition;
+			float maxRayDistance = direction.length();
+
+			if (collision_model->rayCollision(origin.v, direction.v, false, 0.0, maxRayDistance) == true) {
+				projectile.timeToLive = 0;
+			}
+
+		}
+
+	}
+}
+
+void CollisionHandler::projectilesCollisionAgainstDynamicEntities(Projectile projectiles[], int projectilesSize) {
+	std::vector<Entity*> dynamicEntities = World::instance->dynamicObjects;
+
+	for (int i = 0; i < dynamicEntities.size(); i++) {
+
+		Airplane* dynamicEntity = (Airplane*)dynamicEntities[i];
+
+		if (dynamicEntity == NULL) {
+			continue;
+		}
+
+		Matrix44 modelMatrix = dynamicEntity->getGlobalMatrix();
+		Mesh* mesh = dynamicEntity->highMesh;
+
+		if (dynamicEntity->lowMesh != NULL) {
+			mesh = dynamicEntity->lowMesh;
+		}
+
+		if (!mesh->collision_model) {
+			if (!mesh->createCollisionModel()) {
+				break;
+			}
+		}
+
+		Vector3 boundingBoxCenter = dynamicEntity->getGlobalMatrix() * dynamicEntity->highMesh->box.center;
+		Vector3 boundingBoxHalfSize = dynamicEntity->getGlobalMatrix() * dynamicEntity->highMesh->box.halfsize;
+
+		CollisionModel3D* collision_model = (CollisionModel3D*)mesh->collision_model;
+		assert(collision_model && "CollisionModel3D must be created before using it, call createCollisionModel");
+
+		collision_model->setTransform(modelMatrix.m);
+
+		for (int j = 0; j < projectilesSize; j++) {
+
+			Projectile & projectile = projectiles[j];
+
+			if (projectile.timeToLive <= 0 || projectile.owner == NULL || projectile.owner == dynamicEntity
+				|| projectile.owner->team == dynamicEntity->team) {
+				continue;
+			}
+
+			if (projectile.position.distance(boundingBoxCenter) > boundingBoxHalfSize.length()) {
+				continue;
+			}
+
+			Vector3 origin = projectile.lastPosition;
+			Vector3 direction = projectile.position - projectile.lastPosition;
+			float maxRayDistance = direction.length();
+
+			if (collision_model->sphereCollision(origin.v, dynamicEntity->highMesh->box.halfsize.length() + 5) == true) {
+
+				Vector3 collisionPoint;
+				collision_model->getCollisionPoint(collisionPoint.v, true);
+
+				projectile.timeToLive = 0;
+				dynamicEntity->onBulletCollision(projectile, collisionPoint); // LLamar desde testDynamicCollision, para idicarle al avion de que una bala a colisionado con el.
 
 			}
 

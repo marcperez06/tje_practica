@@ -44,7 +44,7 @@ void ParticleSystem::initParticles(Vector3 direction) {
 
 		particle.id = i;
 		Vector3 desviation = Vector3();
-		desviation.random(Vector3(0.25, 0, 0.25));
+		desviation.random(Vector3(0.50, 0, 0.50));
 		particle.direction = direction + desviation;
 
 		this->restartParticle(particle);
@@ -52,9 +52,9 @@ void ParticleSystem::initParticles(Vector3 direction) {
 }
 
 void ParticleSystem::restartParticle(Particle & particle) {
-	particle.pos = Vector3();
-	particle.size = 5 + (random() * 2);
-	particle.timeToLive = 2;
+	particle.pos = Vector3(0, 0, 5);
+	particle.size = 2;
+	particle.timeToLive = 3;
 	particle.speed = this->generalSpeed;
 }
 
@@ -66,6 +66,10 @@ void ParticleSystem::render(Camera* camera) {
 
 	Shader* shader = this->material->shader;
 	Texture* texture = this->material->texture;
+
+	if (texture == NULL || shader == NULL) {
+		return;
+	}
 
 	Vector3 cameraPos = camera->eye;
 	Vector3 top = camera->getLocalVector(Vector3(0, 1, 0));
@@ -81,7 +85,9 @@ void ParticleSystem::render(Camera* camera) {
 			continue;
 		}
 
-		if (particle.timeToLive <= 0) { continue; }
+		if (particle.timeToLive <= 0) {
+			continue;
+		}
 
 		Vector2 offset(0, 0);
 
@@ -90,8 +96,7 @@ void ParticleSystem::render(Camera* camera) {
 		}
 		else if (particle.id % 4 == 2) {
 			offset.y = 0.5;
-		}
-		else if (particle.id % 4 == 3) {
+		} else if (particle.id % 4 == 3) {
 			offset.x = 0.5;
 			offset.y = 0.5;
 		}
@@ -163,9 +168,9 @@ void ParticleSystem::update(float deltaTime, Matrix44 model) {
 
 			particle.timeToLive -= deltaTime;
 
-			particle.pos = Vector3(model.M[3][0], model.M[3][1], model.M[3][2]);
+			particle.pos = model.getTranslation();//Vector3(model.M[3][0], model.M[3][1], model.M[3][2]);
 
-			Vector3 movement = particle.direction * particle.speed * deltaTime;
+			Vector3 movement = particle.direction * particle.speed * deltaTime * (rand() % 5);
 
 			particle.pos = particle.pos + movement;
 
@@ -191,22 +196,23 @@ void ParticleSystem::setMaterial(Material* material) {
 }
 
 ParticleSystem* ParticleSystem::createExplosion(Matrix44 model, bool looping) {
-	Texture* texture = Texture::Load("data/clouds/clouds.tga");
+	Texture* texture = Texture::Load("data/particles/explosions.tga");
 	Shader* shader = Shader::Load("data/shaders/clouds.vs", "data/shaders/clouds.fs");
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1));
 
 	ParticleSystem* explosion = new ParticleSystem(model);
-	explosion->duration = 10;
+	explosion->duration = 5;
 	explosion->fixedDuration = explosion->duration;
 	explosion->setMaterial(material);
 	explosion->looping = looping;
-	explosion->initParticles(model.rotateVector(Transform::UP));
+	explosion->generalSpeed = 50;
+	explosion->initParticles(model.rotateVector(Transform::BACK * 2));
 	
 	return explosion;
 }
 
 ParticleSystem* ParticleSystem::createSmoke(Matrix44 model, bool looping) {
-	Texture* texture = Texture::Load("data/clouds/clouds.tga");
+	Texture* texture = Texture::Load("data/particles/smoke.tga");
 	Shader* shader = Shader::Load("data/shaders/clouds.vs", "data/shaders/clouds.fs");
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1));
 
@@ -216,7 +222,7 @@ ParticleSystem* ParticleSystem::createSmoke(Matrix44 model, bool looping) {
 	smoke->fixedDuration = smoke->duration;
 	smoke->setMaterial(material);
 	smoke->looping = looping;
-	smoke->initParticles(model.rotateVector(Transform::UP * 2));
-
+	smoke->generalSpeed = 30;
+	smoke->initParticles(model.rotateVector(Transform::BACK * 3));
 	return smoke;
 }
