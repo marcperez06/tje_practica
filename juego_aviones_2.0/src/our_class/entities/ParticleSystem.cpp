@@ -145,7 +145,7 @@ void ParticleSystem::render(Camera* camera) {
 
 void ParticleSystem::update(float deltaTime, Matrix44 model) {
 
-	model.translate(0, 0, 4);
+	model.translate(0, -2, 3);
 
 	this->ownerModel = model;
 

@@ -15,7 +15,7 @@ void PlayerController::update(float deltaTime) {
 
 	selectWeapon();
 
-	if (Input::isKeyPressed(SDL_SCANCODE_SPACE) == true || Input::isButtonPressed(TRIGGERS) == true) {
+	if (Input::isKeyPressed(SDL_SCANCODE_SPACE) == true || abs(Input::gamepads[0].axis[TRIGGERS]) > 0.2) {
 		this->airplane->shoot();
 	}
 

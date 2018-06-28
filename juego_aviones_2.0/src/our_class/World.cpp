@@ -24,7 +24,7 @@ World* World::instance = NULL;
 World::World(int hardFactor) {
 	this->hardFactor = hardFactor;
 	this->root = new Entity(Vector3(0, 0, 0));
-	this->numAIAirplanes = 12;
+	this->numAIAirplanes = 16;
 	this->numOfTeams = 2;
 	this->initPlayer();
 	this->initBunkers();
@@ -123,28 +123,26 @@ void World::initTeams() {
 		for (int i = 0; i < this->numAIAirplanes; i++) {
 
 			
-			/*if (AIAirplanes[i]->team == TEAM_ALFA) {
+			if (AIAirplanes[i]->team == TEAM_ALFA) {
 				if (i < limit / 2) {
 					typeTarget = WAYPOINT;
 					this->AIAirplanes[i]->target = this->AIAirplanes[i]->path.wayPoints[rand() % this->AIAirplanes[i]->path.wayPoints.size()];
-				}
-				else {
+				} else {
 					typeTarget = MILITARY_BASE;
 					this->AIAirplanes[i]->target = this->teamMilitaryBases[1];
 				}
-			}
-			else {
+			} else {
 				if (i < limit+limit/2) {
 					typeTarget = WAYPOINT;
 					this->AIAirplanes[i]->target = this->AIAirplanes[i]->path.wayPoints[rand() % this->AIAirplanes[i]->path.wayPoints.size()];
-				}
-				else {
+				} else {
 					typeTarget = MILITARY_BASE;
 					this->AIAirplanes[i]->target = this->teamMilitaryBases[0];
 				}
-			}*/
+			}
 			
 			//int probabilityOfFollowPath = rand() % 100;
+			/*
 			char typeTarget = WAYPOINT; // (probabilityOfFollowPath > 60) ? WAYPOINT : MILITARY_BASE;
 			int teamTarget = rand() % this->numOfTeams;
 
@@ -155,6 +153,7 @@ void World::initTeams() {
 			} else if (typeTarget == WAYPOINT) {
 				this->AIAirplanes[i]->target = this->AIAirplanes[i]->path.wayPoints[rand() % this->AIAirplanes[i]->path.wayPoints.size()];
 			}
+			*/
 
 			// Seleccionar un avion enemigo aleatorio dependiendo de tu equipo
 
@@ -194,9 +193,9 @@ void World::initTeamAlfa() {
 	float y = (rand() % 100) + 600 + this->player->highMesh->aabb_max.y;
 	float z = (rand() % 20) + bunkerPos.z + this->player->highMesh->aabb_max.z;
 
-	Airplane* airplaneTeam = Factory::buildAirplane(TEAM_ALFA, Vector3(x, y, z), 200);
+	Airplane* airplaneTeam = Factory::buildAirplane(TEAM_ALFA, Vector3(x, y, z), 400);
 	airplaneTeam->health = airplaneTeam->health * this->hardFactor;
-	airplaneTeam->path.createCircle(bunkerPos, 40, 200);
+	airplaneTeam->path.createCircle(bunkerPos, 400, 400);
 	airplaneTeam->isPlayer = false;
 
 	airplaneTeam->controller = new AIController();
@@ -213,9 +212,9 @@ void World::initTeamDelta() {
 	float y = (rand() % 100) + 600 + this->player->highMesh->aabb_max.y;
 	float z = (rand() % 20) + bunkerPos.z + this->player->highMesh->aabb_max.z;
 	
-	Airplane* airplaneTeam = Factory::buildAirplane(TEAM_DELTA, Vector3(x, y, z), 200);
+	Airplane* airplaneTeam = Factory::buildAirplane(TEAM_DELTA, Vector3(x, y, z), 400);
 	airplaneTeam->health = airplaneTeam->health * this->hardFactor;
-	airplaneTeam->path.createCircle(bunkerPos, 600, 400);
+	airplaneTeam->path.createCircle(bunkerPos, 400, 400);
 	airplaneTeam->isPlayer = false;
 
 	airplaneTeam->controller = new AIController();
@@ -322,20 +321,22 @@ void World::render(Camera* camera) {
 		this->renderWorldMap(camera);
 	}
 
+	this->clouds->render(camera);
+
+	this->renderBunkers(camera);
+
+	this->renderPowerups(camera);
+
+	BulletManager::instance->render();
+	ProjectileManager::instance->render();
+
 	if (this->player != NULL) {
 		this->player->render(camera);
 	}
 
 	this->renderAirplanes(camera);
 
-	this->renderBunkers(camera);
-
-	this->clouds->render(camera);
-
-	this->renderPowerups(camera);
-
-	BulletManager::instance->render();
-	ProjectileManager::instance->render();
+	
 }
 
 void World::renderWorldMap(Camera* camera) {
@@ -507,7 +508,7 @@ void World::update(float deltaTime) {
 
 	if (this->AIAirplanes.size() > 0) {
 		
-		//this->cameraFollowEntity(this->playerCamera, AIAirplanes[0]);
+		//this->cameraFollowEntity(this->playerCamera, AIAirplanes[1]);
 		
 	}
 

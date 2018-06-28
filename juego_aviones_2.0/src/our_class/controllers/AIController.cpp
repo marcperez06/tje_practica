@@ -9,7 +9,14 @@ AIController::AIController() : AirplaneController() {
 
 AIController::~AIController() {}
 
-void AIController::render() {}
+void AIController::render() {
+	Mesh m;
+	for (int i = 0; i < airplane->path.wayPoints.size(); ++i) {
+		m.vertices.push_back(airplane->path.wayPoints[i]->getPosition());
+	}
+
+	if (m.vertices.size()>0) m.renderFixedPipeline(GL_LINE_STRIP);
+}
 
 void AIController::update(float deltaTime) {
 
@@ -50,7 +57,7 @@ void AIController::update(float deltaTime) {
 }
 
 char AIController::checkBehaviour() {
-	//return PATROL;
+	return PATROL;
 	if (this->airplane->health <= 10) {
 		return ESCAPE;
 	}
@@ -69,7 +76,7 @@ char AIController::checkBehaviour() {
 
 	}
 
-	if (World::distanceBetween(this->airplane, this->airplane->target) < 350) {
+	if (World::distanceBetween(this->airplane, this->airplane->target) < 500) {
 		if (World::angleBetween(this->airplane, this->airplane->target) < 0.01) {
 			return SHOOT;
 		} else {
@@ -194,7 +201,7 @@ void AIController::patrol(float deltaTime) {
 		return;
 	}
 
-	if (this->airplane->target->getPosition().length() < 0.005) {
+	if (this->airplane->target->getPosition().length() < 100) {
 		this->airplane->target = this->airplane->path.selectNextWaypoint(this->airplane->target);
 	}
 		
@@ -205,7 +212,9 @@ void AIController::patrol(float deltaTime) {
 	Vector3 myFront = this->airplane->getFront();
 
 	Vector3 pos = this->airplane->getPosition();
+	pos.y = 0;
 	Vector3 targetPos = this->airplane->target->getPosition();
+	targetPos.y = 0;
 	Vector3 toTarget = (targetPos - pos);
 
 	if (abs(toTarget.length()) < 0.0005) {

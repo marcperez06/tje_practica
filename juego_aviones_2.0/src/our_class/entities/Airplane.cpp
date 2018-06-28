@@ -81,20 +81,9 @@ void Airplane::render(Camera* camera) {
 	EntityMesh::render(camera);
 	
 	if (this->particleSystem != NULL && this->particleSystem->particlesSize() > 0) {
-		glDisable(GL_DEPTH_TEST);
 		this->particleSystem->render(camera);
-		glEnable(GL_DEPTH_TEST);
 	}
 
-	#ifndef DEBUG
-
-	Mesh m;
-	for (int i = 0; i < path.wayPoints.size(); ++i) {
-		m.vertices.push_back(path.wayPoints[i]->getPosition());
-	}
-	if (m.vertices.size()>0) m.renderFixedPipeline(GL_LINE_STRIP);
-
-	#endif
 }
 
 void Airplane::update(float deltaTime) {
@@ -112,10 +101,6 @@ void Airplane::update(float deltaTime) {
 			this->controller->update(deltaTime);
 
 			this->material->color = Vector4(1, 1, 1, 1);
-
-			this->health = 45;
-			Bullet b;
-			onBulletCollision(b, collision.collisionPoint);
 
 			if (this->particleSystem != NULL) {
 				this->particleSystem->update(deltaTime, this->getGlobalMatrix());

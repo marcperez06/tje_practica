@@ -121,7 +121,9 @@ void GameStage::render() {
 		}
 
 		if (World::distanceBetween(this->world->player, this->world->AIAirplanes[i]) > 200) {
+			glEnable(GL_BLEND);
 			this->gui->highlightEntity(this->world->AIAirplanes[i]);
+			glDisable(GL_BLEND);
 		}
 
 	}
