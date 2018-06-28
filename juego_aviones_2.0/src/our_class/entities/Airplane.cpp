@@ -23,7 +23,7 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mate
 	this->isPlayer = false;
 	this->team = TEAM_DELTA;
 	this->type = AIRPLANE;
-	this->particleSystem = NULL;
+	this->particleSystem = new ParticleSystem();
 	airplanes.push_back(this);
 }
 
@@ -37,7 +37,7 @@ Airplane::Airplane(float speed, const Transform transform, Mesh * highMesh, Mesh
 	this->isPlayer = false;
 	this->team = TEAM_DELTA;
 	this->type = AIRPLANE;
-	this->particleSystem = NULL;
+	this->particleSystem = new ParticleSystem();
 	airplanes.push_back(this);
 }
 
@@ -111,16 +111,11 @@ void Airplane::update(float deltaTime) {
 
 			this->material->color = Vector4(1, 1, 1, 1);
 
+			Bullet b;
+			onBulletCollision(b, this->collision.collisionPoint);
+
 			if (this->particleSystem != NULL) {
 				this->particleSystem->update(deltaTime, this->getGlobalMatrix());
-			}
-
-			if (this->health <= 50) {
-				if (this->particleSystem != NULL) {
-					delete this->particleSystem;
-					this->particleSystem = NULL;
-				}
-				this->particleSystem = ParticleSystem::createExplosion(this->getGlobalMatrix());
 			}
 
 			if (this->isPlayer == true) {
@@ -227,10 +222,22 @@ void Airplane::onBulletCollision(Bullet & bullet, Vector3 collision) {
 		SoundManager::reproduceSound("damage.wav");
 	}
 
+	if (this->health <= 50) {
+		if (this->particleSystem != NULL && this->particleSystem->particlesSize() == 0) {
+			delete this->particleSystem;
+			this->particleSystem = ParticleSystem::createSmoke(this->getGlobalMatrix());
+		}
+	}
+
 	if (this->health <= 0) {
 		this->state = AIRPLANE_CRASHED;
 		World::instance->createRandomPowerup();
 		SoundManager::reproduceSound("killingAirplane.wav");
+		if (this->particleSystem != NULL) {
+			delete this->particleSystem;
+			this->particleSystem = ParticleSystem::createExplosion(this->getGlobalMatrix());
+		}
+
 		if (this->isPlayer == true) {
 			EndStage::instance->success = false;
 			EndStage::onChange("endStage");

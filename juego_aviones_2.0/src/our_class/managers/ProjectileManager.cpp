@@ -164,7 +164,7 @@ void ProjectileManager::updateBombs(float deltaTime) {
 
 		Vector3 newPos = bomb.velocity * deltaTime;
 		bomb.lastPosition = bomb.transform.getTranslation();
-		bomb.transform.translate(newPos.x, newPos.y, newPos.z);
+		bomb.transform.setTranslation(newPos.x, newPos.y, newPos.z);
 		bomb.position = bomb.transform.getTranslation();
 		bomb.velocity = bomb.velocity + Vector3(0, -9.8, 0) * deltaTime; // aplicar gravedad
 		bomb.timeToLive -= deltaTime;
@@ -185,7 +185,7 @@ void ProjectileManager::updateMisils(float deltaTime) {
 
 		Vector3 newPos = misil.velocity * deltaTime;
 		misil.lastPosition = misil.transform.getTranslation();
-		misil.transform.translate(newPos.x, newPos.y, newPos.z);
+		misil.transform.setTranslation(newPos.x, newPos.y, newPos.z);
 		misil.position = misil.transform.getTranslation();
 		misil.velocity = misil.velocity + Vector3(0, -2, 0) * deltaTime; // aplicar gravedad
 		misil.velocity = misil.velocity * 0.99999995;

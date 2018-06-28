@@ -201,19 +201,22 @@ ParticleSystem* ParticleSystem::createExplosion(Matrix44 model, bool looping) {
 	explosion->setMaterial(material);
 	explosion->looping = looping;
 	explosion->initParticles(model.rotateVector(Transform::UP));
+	
 	return explosion;
 }
 
 ParticleSystem* ParticleSystem::createSmoke(Matrix44 model, bool looping) {
-	ParticleSystem* smoke = new ParticleSystem(model);
-	smoke->duration = 10;
-	smoke->fixedDuration = smoke->duration;
 	Texture* texture = Texture::Load("data/clouds/clouds.tga");
 	Shader* shader = Shader::Load("data/shaders/clouds.vs", "data/shaders/clouds.fs");
-
 	Material* material = new Material(texture, shader, Vector4(1, 1, 1, 1));
+
+	ParticleSystem* smoke = new ParticleSystem(model);
 	
+	smoke->duration = 10;
+	smoke->fixedDuration = smoke->duration;
+	smoke->setMaterial(material);
 	smoke->looping = looping;
+	smoke->initParticles(model.rotateVector(Transform::UP * 2));
 
 	return smoke;
 }

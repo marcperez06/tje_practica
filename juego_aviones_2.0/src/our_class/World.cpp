@@ -542,7 +542,9 @@ void World::update(float deltaTime) {
 		
 	}
 
-	this->cameraFollowEntity(this->playerCamera, this->player);
+	//this->cameraFollowEntity(this->playerCamera, this->player);
+
+
 
 	this->updatePowerups(deltaTime);
 
