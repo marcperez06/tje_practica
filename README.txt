@@ -25,9 +25,13 @@ Seleccion de armas: (por defecto solo tienes metralleta, las otras armas se cons
 Otros:
 1 -->  free Cam
 2 --> resetea las propiedades del jugador, por si te quedas encallado
+3 --> Activar sistema de particulas
+Tab --> turbo hacia adelante
+Sifth + Tab --> turbo hacia detras
 
 Se ha programado:
 - Conjunto de aviones con uno de ellos como player.
+- Bunker
 - Colisiones contra suelo, aviones y bunker.
 - Inteligencia artificial --> Seguir una ruta de defensa, atacar base rival
 - Sistema de particulas
