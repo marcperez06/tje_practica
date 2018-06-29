@@ -104,7 +104,7 @@ void GUI::drawPlayerFuell() {
 void GUI::drawCrosshair() {
 
 	Texture* texture = Texture::Load("data/gui/crosshair.tga");
-	Vector3 center = World::instance->player->highMesh->box.center + Vector3(-0.58, 1.76, -3);
+	Vector3 center = World::instance->player->highMesh->box.center + Vector3(-1.2, 0, -12);
 	Vector3 pos = World::instance->player->getGlobalMatrix() * center;
 	//Vector3 pos = World::instance->player->getGlobalPosition() + Vector3(-1.05, 0.75, -3);
 	Vector3 pos2D = World::instance->playerCamera->project(pos, this->windowWidth, this->windowHeight);

@@ -56,8 +56,8 @@ World::~World() {
 
 void World::initCameras() {
 	Vector3 cameraPosition = this->player->transform.matrixModel * Vector3(0, 3, 9);
-	//Vector3 cameraCenter = this->player->transform.matrixModel * (this->player->highMesh->box.center + Vector3(0, 0, 1));
-	Vector3 cameraCenter = this->player->transform.matrixModel * this->player->getFront();
+	Vector3 cameraCenter = this->player->transform.matrixModel * ((this->player->highMesh->box.center + Vector3(0, 0, 1)));
+	//Vector3 cameraCenter = this->player->transform.matrixModel * this->player->getFront();
 	Vector3 cameraUp = this->player->transform.matrixModel.rotateVector(Transform::UP);
 
 	//create our free camera
@@ -525,11 +525,11 @@ void World::update(float deltaTime) {
 }
 
 void World::cameraFollowEntity(Camera* camera, Entity* entity) {
-	Vector3 cameraPosition = entity->transform.matrixModel * Vector3(0, 3, 9);
+	Vector3 cameraPosition = entity->transform.matrixModel * Vector3(0, 2, 12);
 	Vector3 cameraCenter = entity->transform.matrixModel * Vector3(0, 0, 0);
 	if (entity->type != ENTITY) {
-		//cameraCenter = entity->transform.matrixModel * ((EntityMesh*)entity)->highMesh->box.center + Vector3(0, 0, 1);
-		cameraCenter = entity->transform.matrixModel * entity->getFront();
+		cameraCenter = this->player->transform.matrixModel * ((this->player->highMesh->box.center + Vector3(0, 0, 1)));
+		//cameraCenter = entity->transform.matrixModel * entity->getFront();
 	}
 	Vector3 cameraUp = entity->transform.matrixModel.rotateVector(Transform::UP);
 	camera->lookAt(cameraPosition, cameraCenter, cameraUp);

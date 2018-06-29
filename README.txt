@@ -34,4 +34,8 @@ Se ha programado:
 - Audio --> En varios estados del avion (disparar, poco fuel ...), sonido de ambiente.
 - HUD
 - Powerups --> proporcionan armas, vida o fuel.
+- Post effects --> shader screen.fs
+
+Link video youtube:
+https://youtu.be/lUnhABGgQzY
 

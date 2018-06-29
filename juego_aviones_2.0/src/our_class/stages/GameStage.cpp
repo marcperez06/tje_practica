@@ -188,6 +188,11 @@ void GameStage::update(float deltaTime) {
 		this->world->player->state = 0;
 		this->world->player->health = 100;
 		this->world->player->fuell = 500;
+	} else if (Input::wasKeyPressed(SDL_SCANCODE_3) == true) {
+		this->world->player->state = 0;
+		this->world->player->health = 45;
+		Bullet b;
+		this->world->player->onBulletCollision(b, this->world->player->collision.collisionPoint);
 	}
 
 	this->world->update(deltaTime * this->gameSpeed);
