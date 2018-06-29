@@ -150,12 +150,14 @@ void GameStage::render() {
 	//drawGrid();
 
 	//render the FPS
+	/*
 	drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
 
 	Vector3 pos = this->world->player->getGlobalPosition();
 
 	std::string playerPos = "pos X: " + std::to_string(pos.x) + " pos Z: " + std::to_string(pos.z);
 	drawText(30, 30, playerPos, Vector3(1, 1, 1), 2);
+	*/
 	glDisable(GL_DEPTH_TEST);
 }
 
