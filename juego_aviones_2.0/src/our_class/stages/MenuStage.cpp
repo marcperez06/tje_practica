@@ -9,7 +9,7 @@
 MenuStage::MenuStage() {
 	this->gui = new GUI(Game::instance->window_width, Game::instance->window_height);
 	this->menuTexture = Texture::Load("data/stages/menu.tga");
-	SoundManager::reproduceSound("musicmenu.wav");
+	SoundManager::reproduceSound("musicmenu.wav", 1, BASS_SAMPLE_LOOP);
 	MenuStage::instance = this;
 }
 

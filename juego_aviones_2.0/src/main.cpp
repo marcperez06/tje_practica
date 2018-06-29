@@ -24,7 +24,7 @@ Game* game = NULL;
 
 // *********************************
 //create a window using SDL
-SDL_Window* createWindow(const char* caption, int width, int height, bool fullscreen = false)
+SDL_Window* createWindow(const char* caption, int width, int height, bool fullscreen = true)
 {
     int multisample = 8;
     bool retina = true; //change this to use a retina display

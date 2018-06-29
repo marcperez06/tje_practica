@@ -141,6 +141,8 @@ void World::initTeams() {
 				}
 			}
 			
+			((AIController*) this->AIAirplanes[i]->controller)->firstTarget = this->AIAirplanes[i]->target;
+
 			//int probabilityOfFollowPath = rand() % 100;
 			/*
 			char typeTarget = WAYPOINT; // (probabilityOfFollowPath > 60) ? WAYPOINT : MILITARY_BASE;
@@ -193,13 +195,12 @@ void World::initTeamAlfa() {
 	float y = (rand() % 100) + 600 + this->player->highMesh->aabb_max.y;
 	float z = (rand() % 20) + bunkerPos.z + this->player->highMesh->aabb_max.z;
 
-	Airplane* airplaneTeam = Factory::buildAirplane(TEAM_ALFA, Vector3(x, y, z), 400);
+	Airplane* airplaneTeam = Factory::buildAirplane(TEAM_ALFA, Vector3(x, y, z), 200);
 	airplaneTeam->health = airplaneTeam->health * this->hardFactor;
-	airplaneTeam->path.createCircle(bunkerPos, 400, 400);
+	airplaneTeam->path.createCircle(bunkerPos, 900, 400);
 	airplaneTeam->isPlayer = false;
 
-	airplaneTeam->controller = new AIController();
-	airplaneTeam->controller->airplane = airplaneTeam;
+	airplaneTeam->controller = new AIController(airplaneTeam);
 
 	this->root->addChild(airplaneTeam);
 	this->AIAirplanes.push_back(airplaneTeam);
@@ -212,13 +213,12 @@ void World::initTeamDelta() {
 	float y = (rand() % 100) + 600 + this->player->highMesh->aabb_max.y;
 	float z = (rand() % 20) + bunkerPos.z + this->player->highMesh->aabb_max.z;
 	
-	Airplane* airplaneTeam = Factory::buildAirplane(TEAM_DELTA, Vector3(x, y, z), 400);
+	Airplane* airplaneTeam = Factory::buildAirplane(TEAM_DELTA, Vector3(x, y, z), 200);
 	airplaneTeam->health = airplaneTeam->health * this->hardFactor;
-	airplaneTeam->path.createCircle(bunkerPos, 400, 400);
+	airplaneTeam->path.createCircle(bunkerPos, 900, 400);
 	airplaneTeam->isPlayer = false;
 
-	airplaneTeam->controller = new AIController();
-	airplaneTeam->controller->airplane = airplaneTeam;
+	airplaneTeam->controller = new AIController(airplaneTeam);
 
 	this->root->addChild(airplaneTeam);
 	this->AIAirplanes.push_back(airplaneTeam);
@@ -436,7 +436,7 @@ void World::renderAirplanes(Camera* camera) {
 			for (int i = 0; i < this->numOfTeams; i++) {
 
 				if (Airplane::airplanes.size() > 0) {
-					base = Airplane::airplanes[i * limit];
+					base = Airplane::airplanes[(i * limit) + 1];
 					airplaneMesh = base->getCorrectMeshRespectCameraDistance(camera);
 				}
 
@@ -508,7 +508,7 @@ void World::update(float deltaTime) {
 
 	if (this->AIAirplanes.size() > 0) {
 		
-		//this->cameraFollowEntity(this->playerCamera, AIAirplanes[1]);
+		//this->cameraFollowEntity(this->playerCamera, AIAirplanes[0]);
 		
 	}
 

@@ -16,10 +16,9 @@ void main()
 {
 
 	float time = u_time * 0.9;
-	float u_offset = 0;
 	
 	vec2 uv = v_uv;
-	uv = v_world_position.xz * 0.001;
+	uv = v_world_position.xz * 0.003;
 	//uv.x += sin(u_time + (uv.x)) * 0.05; 
 	//uv.x += u_time * 0.5;
 	
@@ -32,8 +31,8 @@ void main()
 	//uv.y += u_time * 0.5; 
 
 	vec3 N = normalize(v_normal);
-	N = texture2D(u_normal_texture, uvDeltaMoveX).xzy * vec3(2.0) - vec3(0.025);
-	N += texture2D(u_normal_texture, uvDeltaMoveY).xzy * vec3(2.0) - vec3(0.025);
+	N = texture2D(u_normal_texture, uvDeltaMoveX).xzy * vec3(2.0) - vec3(0.055);
+	N += texture2D(u_normal_texture, uvDeltaMoveY).xzy * vec3(2.0) - vec3(0.055);
 	N = normalize(N);
 	
 	vec3 E = v_world_position - u_camera_pos;
@@ -64,8 +63,8 @@ void main()
 	color = (1 - fresnel) * color + (fresnel * sky_color);
 	
 	float distance = length(u_camera_pos - v_world_position);
-	float fogMaxDistance = 20000.0;
-	float fogMinDistance = 9000.0;
+	float fogMaxDistance = 200.0;
+	float fogMinDistance = 900.0;
 	float fogDiferenceDistance = fogMaxDistance - distance;
 	float fogDiferenceMaxMin = fogMaxDistance - fogMinDistance;
 	float fogFactor = clamp(1.0 - (fogDiferenceDistance / fogDiferenceMaxMin) , 0.0, 1.0);
@@ -76,9 +75,9 @@ void main()
 	float blue = 203.0 / 255.0;
 	vec4 fogColor = vec4(red, green, blue, 0.10);
 	
-	color = mix(color, fogColor, fogFactor);
-	color = color - vec4(0.2, 0.2, 0.2, 0.0);
-	color.a = 0.8;
+	vec4 final_color = mix(color, fogColor, fogFactor);
+	final_color = final_color - vec4(0.25, 0.25, 0.25, 0.0);
+	final_color.a = 0.8;
 	
-	gl_FragColor = color * u_color;
+	gl_FragColor = final_color * u_color;
 }

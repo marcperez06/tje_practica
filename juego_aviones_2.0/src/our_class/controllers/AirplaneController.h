@@ -10,8 +10,10 @@ class AirplaneController {
 		Airplane* airplane;
 
 		AirplaneController();
+		AirplaneController(Airplane* airplane);
 		~AirplaneController();
 
+		virtual void render();
 		virtual void update(float deltaTime);
 
 };

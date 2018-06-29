@@ -15,6 +15,7 @@
 #include "our_class/stages/GameStage.h"
 #include "our_class/stages/EndStage.h"
 #include "our_class/World.h"
+#include "our_class/GUI.h"
 
 #include "rendertotexture.h"
 #include "bass.h"
@@ -130,4 +131,6 @@ void Game::onResize(int width, int height)
 	}
 	window_width = width;
 	window_height = height;
+	GameStage::instance->gui->windowHeight = window_height;
+	GameStage::instance->gui->windowWidth = window_width;
 }

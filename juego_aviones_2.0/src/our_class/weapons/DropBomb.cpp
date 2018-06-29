@@ -24,5 +24,7 @@ void DropBomb::shoot() {
 		this->ammounition -= 1;
 
 		SoundManager::reproduceSound("drop_bomb.wav");
+	} else {
+		SoundManager::reproduceSound("no_ammounition_original.wav");
 	}
 }

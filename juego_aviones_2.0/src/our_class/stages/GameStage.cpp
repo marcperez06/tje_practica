@@ -3,6 +3,7 @@
 #include "../managers/SoundManager.h"
 
 #include "../entities/Airplane.h"
+#include "../entities/Bunker.h"
 #include "../World.h"
 
 #include "../managers/BulletManager.h"
@@ -120,9 +121,24 @@ void GameStage::render() {
 			continue;
 		}
 
-		if (World::distanceBetween(this->world->player, this->world->AIAirplanes[i]) > 200) {
+		if (World::distanceBetween(this->world->player, this->world->AIAirplanes[i]) > 30) {
 			glEnable(GL_BLEND);
 			this->gui->highlightEntity(this->world->AIAirplanes[i]);
+			glDisable(GL_BLEND);
+		}
+
+	}
+
+	for (int i = 0; i < world->teamMilitaryBases.size(); i++) {
+
+		if (this->world->player->team == this->world->teamMilitaryBases[i]->team
+			|| this->world->teamMilitaryBases[i]->state == BUNKER_DESTROYED) {
+			continue;
+		}
+
+		if (World::distanceBetween(this->world->player, this->world->teamMilitaryBases[i]) > 200) {
+			glEnable(GL_BLEND);
+			this->gui->highlightEntity(this->world->teamMilitaryBases[i]);
 			glDisable(GL_BLEND);
 		}
 
@@ -138,8 +154,8 @@ void GameStage::render() {
 
 	Vector3 pos = this->world->player->getGlobalPosition();
 
-	std::string a = "pos X: " + std::to_string(pos.x) + " pos Z: " + std::to_string(pos.z);
-	drawText(30, 30, a, Vector3(1, 1, 1), 2);
+	std::string playerPos = "pos X: " + std::to_string(pos.x) + " pos Z: " + std::to_string(pos.z);
+	drawText(30, 30, playerPos, Vector3(1, 1, 1), 2);
 	glDisable(GL_DEPTH_TEST);
 }
 

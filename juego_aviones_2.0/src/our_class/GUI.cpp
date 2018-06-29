@@ -153,7 +153,13 @@ void GUI::drawGUIElement(Texture* texture, Vector2 start, Vector2 size) {
 
 void GUI::highlightEntity(Entity* entity) {
 
-	Vector3 pos = entity->getGlobalPosition();
+	Vector3 pos = entity->getGlobalMatrix() * Vector3(-0.25, 0, 3);
+	
+	if (entity->type == AIRPLANE || entity->type == MILITARY_BASE) {
+		EntityMesh* entityMesh = (EntityMesh*) entity;
+		Vector3 center = entityMesh->highMesh->box.center;
+		pos = entityMesh->getGlobalMatrix() * center;
+	}
 
 	Vector3 pos2D = World::instance->currentCamera->project(pos, this->windowWidth, this->windowHeight);
 

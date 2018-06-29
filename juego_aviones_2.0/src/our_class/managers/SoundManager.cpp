@@ -25,7 +25,7 @@ HSAMPLE SoundManager::loadSound(std::string sound, int flags) {
 	return hSample;
 }
 
-void SoundManager::reproduceSound(std::string sound, int flags) {
+void SoundManager::reproduceSound(std::string sound, int volume, int flags) {
 	SoundManager::init();
 	HSAMPLE hSample = SoundManager::loadSound(sound, flags);
 
@@ -34,6 +34,8 @@ void SoundManager::reproduceSound(std::string sound, int flags) {
 
 	//Creamos un canal para el sample
 	hSampleChannel = BASS_SampleGetChannel(hSample, false);
+	
+	BASS_ChannelSetAttribute(hSampleChannel, BASS_ATTRIB_MUSIC_VOL_CHAN, volume);
 
 	//Lanzamos un sample
 	BASS_ChannelPlay(hSampleChannel, true);

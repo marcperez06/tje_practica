@@ -4,6 +4,12 @@
 #include "../entities/Path.h"
 
 AIController::AIController() : AirplaneController() {
+	this->firstTarget = NULL;
+	this->state = FLYING;
+}
+
+AIController::AIController(Airplane* airplane) : AirplaneController(airplane) {
+	this->firstTarget = this->airplane->target;
 	this->state = FLYING;
 }
 
@@ -12,7 +18,7 @@ AIController::~AIController() {}
 void AIController::render() {
 	Mesh m;
 	for (int i = 0; i < airplane->path.wayPoints.size(); ++i) {
-		m.vertices.push_back(airplane->path.wayPoints[i]->getPosition());
+		m.vertices.push_back(airplane->path.wayPoints[i]->getGlobalPosition());
 	}
 
 	if (m.vertices.size()>0) m.renderFixedPipeline(GL_LINE_STRIP);
@@ -42,22 +48,12 @@ void AIController::update(float deltaTime) {
 				break;*/
 		}
 
-		/*
-		if (this->state != CRHASED) {
-			checkStateEnemy();
-		}
-		else if (this->state == CRHASED) {
-			//Eliminar mesh i cridar destructor de Airplane
-		}
-
-		*/
-
 	}
 
 }
 
 char AIController::checkBehaviour() {
-	return PATROL;
+
 	if (this->airplane->health <= 10) {
 		return ESCAPE;
 	}
@@ -70,19 +66,25 @@ char AIController::checkBehaviour() {
 		}
 
 		selectTarget(airplanes[i]);
+		/*
 		if (World::isEntityANearEntityB(this->airplane, airplanes[i]) == true) {
 			return EVADE;
 		}
+		*/
 
 	}
 
-	if (World::distanceBetween(this->airplane, this->airplane->target) < 500) {
-		if (World::angleBetween(this->airplane, this->airplane->target) < 0.01) {
-			return SHOOT;
+	if (this->airplane->target->type != WAYPOINT) {
+		if (World::distanceBetween(this->airplane, this->airplane->target) < 500) {
+			if (World::angleBetween(this->airplane, this->airplane->target) < 0.05) {
+				return SHOOT;
+			} else {
+				return FOLLOW;
+			}
 		} else {
 			return FOLLOW;
 		}
-	} else if (World::distanceBetween(this->airplane, this->airplane->target) < 1000 /*|| World::distanceBetween(this->airplane, this->airplane->target) > 1500*/) {
+	} else {
 		return PATROL;
 	}
 	
@@ -114,9 +116,6 @@ void AIController::selectTarget(Entity* entity) {
 			return;
 		}
 	}
-	else if (entity->type == WAYPOINT) {
-
-	}
 
 	if (this->airplane->target != NULL) {
 		if (this->airplane->target->type == AIRPLANE) {
@@ -130,25 +129,11 @@ void AIController::selectTarget(Entity* entity) {
 	if (World::entityACanSeeEntityB(this->airplane, entity) == true) {
 		if (this->airplane->target == NULL) {
 			this->airplane->target = entity;
-			return;
 		}
+	} else {
+		this->airplane->target = this->firstTarget;
 	}
 
-}
-
-void AIController::checkStateEnemy() {
-	std::vector<Airplane*> enemies = World::instance->AIAirplanes;
-	Airplane* player = World::instance->player;
-	for (int i = 1; i < enemies.size(); i++) {
-		Airplane* airplane = enemies[i];
-		Vector3 positionEnemi = airplane->getPosition();
-		if (positionEnemi.distance(player->getPosition())<150) {
-			this->state = SHOOT;
-		}
-		else if (positionEnemi.distance(player->getPosition()) < 300) {
-			this->state = FOLLOW;
-		}
-	}
 }
 
 void AIController::followTarget(float deltaTime) {
@@ -186,7 +171,7 @@ void AIController::followTarget(float deltaTime) {
 	Vector3 axis = toTarget.cross(myFront);
 
 	axis = modelInverse.rotateVector(axis);
-	this->airplane->transform.rotate(cos_angle * deltaTime * 3.5, axis);
+	this->airplane->transform.rotate(cos_angle * deltaTime * 2.5, axis);
 
 }
 
@@ -197,14 +182,9 @@ void AIController::patrol(float deltaTime) {
 		return;
 	}
 
-	if (this->airplane->target->type == WAYPOINT) {
-		return;
-	}
-
-	if (this->airplane->target->getPosition().length() < 100) {
+	if (World::distanceBetween(this->airplane, this->airplane->target) < 350) {
 		this->airplane->target = this->airplane->path.selectNextWaypoint(this->airplane->target);
 	}
-		
 
 	Matrix44 modelInverse = this->airplane->getGlobalMatrix();
 	modelInverse.inverse();
@@ -217,7 +197,7 @@ void AIController::patrol(float deltaTime) {
 	targetPos.y = 0;
 	Vector3 toTarget = (targetPos - pos);
 
-	if (abs(toTarget.length()) < 0.0005) {
+	if (abs(toTarget.length()) < 0.0001) {
 		return;
 	}
 

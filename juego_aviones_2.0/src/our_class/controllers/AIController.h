@@ -20,19 +20,20 @@ class AIController : public AirplaneController{
 	public:
 
 		char state;
-
+		Entity* firstTarget;
+		 
 		AIController();
+		AIController(Airplane* ariplane);
 		~AIController();
 
 		virtual void render();
 		virtual void update(float deltaTime);
-		virtual void checkStateEnemy();
+
 		char checkBehaviour();
 
 		void selectTarget(Entity* entity);
 		void followTarget(float deltaTime);
 		void patrol(float deltaTime);
-
 
 };
 

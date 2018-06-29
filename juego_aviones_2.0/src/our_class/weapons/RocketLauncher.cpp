@@ -27,5 +27,7 @@ void RocketLauncher::shoot() {
 		this->ammounition -= 1;
 
 		SoundManager::reproduceSound("misil_shoot.wav");
+	} else {
+		SoundManager::reproduceSound("no_ammounition_original.wav");
 	}
 }

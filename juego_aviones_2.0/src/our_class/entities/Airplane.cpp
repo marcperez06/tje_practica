@@ -84,6 +84,8 @@ void Airplane::render(Camera* camera) {
 		this->particleSystem->render(camera);
 	}
 
+	this->controller->render();
+
 }
 
 void Airplane::update(float deltaTime) {
@@ -102,7 +104,7 @@ void Airplane::update(float deltaTime) {
 
 			this->material->color = Vector4(1, 1, 1, 1);
 
-			if (this->particleSystem != NULL) {
+			if (this->particleSystem != NULL && this->particleSystem->particlesSize() > 0) {
 				this->particleSystem->update(deltaTime, this->getGlobalMatrix());
 			}
 
